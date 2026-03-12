@@ -4,7 +4,9 @@
 
 > Note: This English text was translated and edited with LLM assistance. If anything reads awkwardly, please check the Korean version or open an issue.
 
-`project-context` is a lightweight file-based context skill that helps AI agents recover project context across sessions at low cost.
+`project-context` is a file-based skill that helps coding agents keep working context in the project, so future sessions can pick up the work without rebuilding the state from scratch.
+
+It does this by leaving a small amount of working memory, reusable reference notes, and task records as ordinary files in the repository, so project documentation and working context do not fall apart over time. The structure stays simple enough for humans to read and edit directly, and it is not trying to create perfect documentation.
 
 - `docs/memory.md`: global working memory that is worth reloading often; compresses global rules, current phase, temporary constraints, and currently active cross-task conditions
 - `docs/reference/`: topic-scoped domain context reused across tasks
@@ -15,7 +17,7 @@ The optional `project-context-migration` skill is only for the first cleanup/ado
 ## Skill List
 
 - `project-context`: the main skill
-- `project-context-migration`: an optional skill used only when moving existing docs and context into this structure
+- `project-context-migration`: an optional skill used only for the first cleanup/adoption pass in a repository with scattered existing docs
 
 ## Quick Start
 
@@ -35,14 +37,10 @@ Or copy the skill(s) you need directly into `skills`.
 
 ## Prompt Examples
 
-- General work after wiring it into `AGENTS.md`:
-    `Fix the login redirect bug`
-- When mentioning it directly:
-    `$project-context implement the login page`
-- To continue a specific task:
-    `Continue docs/tasks/2026/03-11/login`
-- To migrate an existing doc structure:
-    `$project-context-migration move the existing docs and context into $project-context`
+- General work after wiring it into `AGENTS.md`: `Fix the login redirect bug`
+- When mentioning it directly: `$project-context implement the login page`
+- To continue a specific task: `Continue docs/tasks/2026/03-11/login`
+- To migrate an existing doc structure: `$project-context-migration move the existing docs and context into $project-context`
 
 ## Support
 

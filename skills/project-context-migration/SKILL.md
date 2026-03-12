@@ -1,11 +1,12 @@
 ---
 name: project-context-migration
-description: Adopt `project-context` in an existing repository by auditing and migrating current documentation, notes, ADRs, runbooks, and task history into `docs/memory.md`, `docs/reference/`, and `docs/tasks/...` dated tasks. Use when a repo already has scattered context that should be consolidated into the `project-context` structure.
+description: Adopt `project-context` in an existing repository by auditing scattered docs, notes, ADRs, runbooks, and task history, then deciding what should become `docs/memory.md`, `docs/reference/`, `docs/tasks/...`, or stay where it is. Use when a repo already has context that should be consolidated into the `project-context` structure.
 ---
 
 # Project Context Migration
 
 Adopt `project-context` in a repo that already has legacy docs, or partial target-tree adoption plus legacy docs elsewhere.
+Do not move everything blindly. First decide what should become agent working context, what should stay as human-facing documentation, and what can be archived if the user wants cleanup.
 If the repo is effectively empty and there is nothing to migrate, use `project-context` instead.
 
 ## Workflow

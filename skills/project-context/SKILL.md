@@ -1,11 +1,13 @@
 ---
 name: project-context
-description: Lightweight file-based project memory for AI agents using a compact global working memory, durable reference notes, and dated task records for most real work.
+description: File-based working context for coding agents using a compact global working memory, durable reference notes, and dated task records for most write-bearing work. Use when a repository keeps, or should start keeping, agent context in `docs/memory.md`, `docs/reference/`, and `docs/tasks/...` so later sessions can resume work without rebuilding state from scratch.
 ---
 
 # Project Context
 
-Keep project context recoverable across sessions with low context cost.
+Keep working context in the repository so later sessions can resume work without rebuilding state from scratch.
+
+Leave a small amount of working memory, reusable reference notes, and task-local history behind as ordinary files. Keep the structure simple enough that humans can read and edit it directly.
 
 ## Contract
 

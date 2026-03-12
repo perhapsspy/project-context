@@ -44,7 +44,7 @@ def runtime_shape_failures(case_root: Path) -> list[str]:
 
 def relative_files(case_root: Path) -> set[str]:
     return {
-        str(path.relative_to(case_root))
+        path.relative_to(case_root).as_posix()
         for path in case_root.rglob("*")
         if path.is_file()
     }
