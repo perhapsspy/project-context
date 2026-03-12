@@ -4,9 +4,7 @@
 
 > Note: This English text was translated and edited with LLM assistance. If anything reads awkwardly, please check the Korean version or open an issue.
 
-`project-context` is a file-based skill that helps coding agents keep working context in the project, so future sessions can pick up the work without rebuilding the state from scratch.
-
-It does this by leaving a small amount of working memory, reusable reference notes, and task records as ordinary files in the repository, so project documentation and working context do not fall apart over time. The structure stays simple enough for humans to read and edit directly, and it is not trying to create perfect documentation.
+`project-context` is a skill that helps coding agents keep working context in the project, so future sessions can pick up the work without rebuilding the state from scratch. It leaves the minimum useful notes, reference docs, and task records as files, so humans can read and edit them directly without relying on a separate system.
 
 - `docs/memory.md`: global working memory that is worth reloading often; compresses global rules, current phase, temporary constraints, and currently active cross-task conditions
 - `docs/reference/`: topic-scoped domain context reused across tasks
