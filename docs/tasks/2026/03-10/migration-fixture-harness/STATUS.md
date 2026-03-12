@@ -1,0 +1,6 @@
+- 상태: done
+- 다음 작업: 없음
+- blocker: 없음
+- declared read scope: `skills/project-context-migration/**`, `tests/project_context_migration/**`
+- declared write scope: `tests/project_context_migration/**`
+- latest validation: repo guardrail, unittest 통과

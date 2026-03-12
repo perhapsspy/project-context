@@ -1,0 +1,6 @@
+- 상태: hold
+- 다음 작업: 다음 릴리스 이후 passwordless 요구 재검토
+- blocker: 다음 릴리스 대기
+- declared read scope: legacy auth spike note only
+- declared write scope: 없음
+- latest validation: migrated historical task snapshot

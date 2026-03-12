@@ -1,0 +1,6 @@
+- 상태: done
+- 다음 작업: 없음
+- blocker: 없음
+- declared read scope: `skills/project-context/scripts/**`, `tests/project_context/**`
+- declared write scope: `skills/project-context/scripts/**`, `tests/project_context/**`
+- latest validation: guardrail과 unit test 통과

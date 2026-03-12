@@ -1,0 +1,6 @@
+- 상태: open
+- 다음 작업: root cause 확인
+- blocker: 없음
+- declared read scope: migrated legacy task note only
+- declared write scope: task-local docs only
+- latest validation: migrated historical task snapshot

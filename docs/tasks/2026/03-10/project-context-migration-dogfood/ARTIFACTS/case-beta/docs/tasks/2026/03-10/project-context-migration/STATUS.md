@@ -1,0 +1,6 @@
+- 상태: done
+- 다음 작업: 없음
+- blocker: 없음
+- declared read scope: migration audit, legacy 입력 4건
+- declared write scope: docs/memory.md, docs/reference/**, docs/tasks/**
+- latest validation: migration output snapshot

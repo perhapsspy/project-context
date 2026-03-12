@@ -1,0 +1,6 @@
+- 상태: done
+- 다음 작업: 없음
+- blocker: 없음
+- declared read scope: `skills/project-context/SKILL.md`, repo root guidance surface
+- declared write scope: `AGENTS.md`, `docs/skill-direction.md`
+- latest validation: 별도 실행 검증은 기록하지 않음
