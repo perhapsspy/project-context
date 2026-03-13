@@ -38,3 +38,11 @@
 - dogfood 결과는 durable domain context나 cross-task rule이 될 때만 승급한다.
 - 레포 로컬 문서는 shipped skill을 보조할 수는 있어도, 새 의무나 더 강한 계약을 덧씌우면 안 된다.
 - 이 문서는 방향만 다루고, 구조별 세부 계약은 각 surface가 맡는다.
+
+## README 자체 평가 루프
+- README 평가는 `activation surface` 기준으로 본다. 처음 쓰려는 사용자가 왜 써볼 만한지, 어떻게 켜는지, 필요하면 어떤 보조 스킬을 같이 볼지만 빠르게 판단할 수 있으면 1차 목적은 충족이다.
+- 검토 입력은 해당 `README`, 관련 shipped `SKILL.md`, 필요하면 이 문서까지만 두고, test fixture나 dogfood 기록으로 README 책임을 과장하지 않는다.
+- 평가는 fresh-context 서브에이전트 3갈래로 나눈다: 1) first-user activation read, 2) README framing accuracy vs shipped skill, 3) 과검토를 걷어내는 skepticism filter.
+- 최종 피드백에는 "첫 시도 자체를 막거나, 시작 시점 기대를 명확히 잘못 심는 지점"만 남긴다. 복구 가능한 선택 실수, 나중에 로컬 상태를 보면 바로 드러나는 차이, contract 전문 부재만으로는 결함으로 올리지 않는다.
+- exact output tree, read-only/write-bearing 세부 운영 경계, thin guardrail 전체 설명은 README의 필수 책임으로 보지 않는다. 그런 정보는 shipped `SKILL.md`나 실제 사용 흐름으로 넘겨도 된다.
+- 출력은 세 묶음이면 충분하다: 이미 충분한 점, 정말 시작을 막는 지점 0-2개, 있으면 좋은 선택적 문구 조정.
