@@ -38,6 +38,11 @@ npx skills add perhapsspy/project-context
 - 특정 task를 이어 할 때: `docs/tasks/2026/03-11/login 작업을 이어서해줘`
 - 기존 문서 구조 이관: `$project-context-migration 을 사용해서 기존 문서나 맥락을 $project-context 로 옮겨줘`
 
+## 함께 쓰기 좋은 스킬
+
+- [`project-context`](https://github.com/perhapsspy/project-context): 작업 맥락을 저장소 안에 남겨 다음 세션에도 이어가기 쉽게 정리
+- [`structure-first`](https://github.com/perhapsspy/structure-first): 코드의 성공 흐름을 먼저 읽히게 정리
+
 ## 지원
 
 [![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/perhapsspy)

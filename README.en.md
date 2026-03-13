@@ -40,6 +40,11 @@ Or copy the skill(s) you need directly into `skills`.
 - To continue a specific task: `Continue docs/tasks/2026/03-11/login`
 - To migrate an existing doc structure: `$project-context-migration move the existing docs and context into $project-context`
 
+## Good Skills to Use Together
+
+- [`project-context`](https://github.com/perhapsspy/project-context): keep working context in the repo so later sessions can resume quickly
+- [`structure-first`](https://github.com/perhapsspy/structure-first): organize code so the primary success path reads top-down
+
 ## Support
 
 [![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/perhapsspy)
