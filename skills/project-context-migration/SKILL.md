@@ -23,7 +23,7 @@ If the repo is effectively empty and there is nothing to migrate, use `project-c
 ## Classification
 
 - `TASK`: task-local, historical, exploratory, uncertain, or migration-audit material. Start here when unsure.
-- `REFERENCE`: reusable topic-scoped reference state. Rewrite to current reference state only, strip timeline noise, and keep durable topic detail that another task would actually reuse.
+- `REFERENCE`: reusable topic-scoped reference state. Rewrite to current state, strip timeline noise, and keep only durable topic detail another task would reuse.
 - `MEMORY`: small project-wide working memory worth loading almost every time: active invariants, current phase, temporary global constraints, currently active cross-task conditions, and other compressed global notes. Keep declarative and compressed.
 - `LEAVE`: product/user/team docs, human-facing top-level notes, and origin/about/repository narrative that do not belong in AI memory.
 - `ARCHIVE`: stale duplicates or superseded docs if the user wants cleanup; it is a migration decision, not a core `project-context` destination.
@@ -34,6 +34,7 @@ If the repo is effectively empty and there is nothing to migrate, use `project-c
 - Do not bulk-copy legacy docs into `docs/memory.md`.
 - Record audit decisions in the migration task before rewriting global files.
 - Merge overlapping sources into one preferred destination reference file or one dated task.
+- When migration creates or updates `REFERENCE`, keep canonical content in the reference file and record mapping, rationale, and change trace in the migration task.
 - Before promoting anything into `REFERENCE` or `MEMORY`, ask whether another task would reuse it as AI-working context. If not, prefer `LEAVE`.
 - Do not create `REFERENCE` files that mostly restate `docs/memory.md`. If the content is mostly compressed project-wide facts with little durable topic detail, keep it in `MEMORY` or `LEAVE`.
 - When migration creates new tasks, follow the `project-context` file shapes exactly: `BRIEF.md` is a rewrite-only reopen brief, `STATUS.md` is a rewrite-only current handoff note and should usually start directly with current-state lines rather than a title line, fixed headings are not required, `MEMORY-CANDIDATES.md` is omitted unless migration discovers task-derived global working-memory candidates, and when present it contains only plain `- <STATE> | <summary> | <evidence-pointer>` entries with no title text, while `logs/DECISIONS.md` / `logs/WORKLOG.md` are the append-only history and use `**YYYY-MM-DD**` headings followed only by bullet lines (latest `DECISIONS.md`: 4 bullets; latest `WORKLOG.md`: 1+ bullet).

@@ -1,0 +1,4 @@
+- goal: `reference`와 `task`의 경계를 더 선명하게 해 reference 본문이 task에 길게 중복되는 운영 drift를 줄인다.
+- scope: shipped skill, migration skill, README, repo-local direction 문서의 wording alignment
+- current understanding: `reference`는 반복 재사용할 주제별 정본 surface이고 `task`는 작업 운영과 판단 흔적을 남기는 surface인데, reference 작성 task에서 본문 재요약이 반복될 여지가 있다.
+- current output snapshot: shipped/local surface 모두에 "주제별 정본 내용은 reference가 소유하고 task에는 경로, 근거, 변경 흔적만 남긴다"는 경계를 반영했다.

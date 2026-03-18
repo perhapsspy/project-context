@@ -12,6 +12,7 @@
 - `docs/memory.md`는 active invariant, 현재 phase, 임시 전역 제약, 현재 유효한 cross-task 조건을 담는 짧은 전역 작업 메모리로 유지한다.
 - reference 파일 경로는 `docs/reference/**/*.md`를 사용하고 각 path segment는 kebab-case로 유지한다.
 - repo-local reference 문서는 task와 구별되는 durable project-domain context만 담고, 운영 guidance나 dogfood 안내서는 두지 않는다.
+- 문구, README, migration 변경은 가장 작은 실제 대상부터 dogfood하고, 시작을 막는 문제와 drift만 결과로 남긴다.
 - `docs/reference/`는 도메인 콘텍스트 정리 자체가 작업 목표일 때나 반복 참조될 도메인 콘텍스트가 이미 분명할 때 직접 작성할 수 있고, `MEMORY-CANDIDATES.md`는 task에서 나온 `docs/memory.md` 후보를 현재 후보판으로 관리할 때만 사용한다.
 - task는 `docs/tasks/yyyy/mm-dd/<slug>/` 단위로 관리하고, `BRIEF.md`와 `STATUS.md`는 rewrite-only snapshot으로 유지한다. `STATUS.md`는 보통 제목 줄 없이 바로 현재 상태를 적는다.
 - 읽기 전용 질문, 리뷰, 단발 inspection은 durable update가 필요할 때만 bootstrap이나 task 생성을 하고, 아니면 read-only로 끝낸다.

@@ -1,0 +1,4 @@
+- goal: 레포 로컬 dogfood 방식을 짧게 정리하고, 그 방식으로 현재 skill wording/style 변경을 실제로 점검해 결과를 남긴다.
+- scope: `AGENTS.md`, `docs/skill-direction.md`, `docs/memory.md`, current skill wording change, runtime validation
+- current understanding: dogfood 방법은 task 기록들에 흩어져 있고, 중앙에 짧게 정리된 repo-local 방식은 아직 없다.
+- current output snapshot: repo-local dogfood 루프를 방향 문서에 추가하고, 그 루프로 현재 wording/style 변경을 점검해 `skills/project-context/SKILL.md`의 `docs/reference/` 설명을 한 번 더 압축했다.

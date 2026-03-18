@@ -17,12 +17,15 @@
 - 읽기 전용 질문, 리뷰, 단발 inspection은 bootstrap이나 task 생성을 기본값으로 삼지 않는다.
 - `docs/reference/`는 단일 `task`를 넘어 반복 참조될 durable project-domain context만 담는다.
 - `docs/reference/`는 필요하면 직접 작성하는 1차 durable surface이며, task 로그의 부산물만 모아두는 곳이 아니다.
+- `reference`를 만들거나 고칠 때 정본 내용은 `docs/reference/`에 두고, task에는 경로·판단 근거·변경 흔적을 남긴다.
 - 운영 안내, dogfood 절차, shipped behavior보다 강한 계약은 `docs/reference/`에 두지 않는다.
 - `docs/memory.md`는 전역 작업 메모리다. active invariant, 현재 phase, 임시 전역 제약, 현재 유효한 cross-task 조건을 압축해서 담고, topic detail이나 task chronology는 넣지 않는다.
 
 ## 톤
 - 이름, 요약, help text는 실제로 증명된 범위 중 가장 좁은 범위를 기준으로 잡는다.
 - README 같은 로컬 문서에서는 왜 이 구조가 유용한지 설명할 수 있지만, shipped `SKILL.md`의 frontmatter와 help text는 여전히 좁고 검증 가능한 표현을 유지한다.
+- 같은 역할이면 더 짧은 문장을 택하고, 새 정보가 없으면 다른 말로 반복하지 않는다.
+- 설명을 늘리기보다 경계를 남긴다.
 - shipped guardrail이 shape, reachability 같은 얇은 runtime 사실만 볼 때는 과한 권위나 보증 표현을 피한다.
 - 에이전트 전용 표현보다 사람이 바로 읽고 고칠 수 있는 단순한 말과 구조를 선호한다.
 - 문서 이름도 역할을 과장하지 않게 고른다. guidance를 contract처럼, thin check를 validator처럼 부르지 않는다.
@@ -38,6 +41,12 @@
 - dogfood 결과는 durable domain context나 cross-task rule이 될 때만 승급한다.
 - 레포 로컬 문서는 shipped skill을 보조할 수는 있어도, 새 의무나 더 강한 계약을 덧씌우면 안 된다.
 - 이 문서는 방향만 다루고, 구조별 세부 계약은 각 surface가 맡는다.
+
+## Dogfood Loop
+- dogfood는 가장 작은 실제 대상부터 시작한다.
+- 입력은 바뀐 surface와 그 surface를 지배하는 shipped skill/로컬 방향만 둔다.
+- 문구, README, migration 같은 변화는 activation, contract drift, runtime의 세 패스로 본다.
+- 결과에는 시작을 막는 문제와 drift만 남기고, 반복되는 결과만 test, fixture, 로컬 방향으로 승급한다.
 
 ## README 자체 평가 루프
 - README 평가는 `activation surface` 기준으로 본다. 처음 쓰려는 사용자가 왜 써볼 만한지, 어떻게 켜는지, 필요하면 어떤 보조 스킬을 같이 볼지만 빠르게 판단할 수 있으면 1차 목적은 충족이다.

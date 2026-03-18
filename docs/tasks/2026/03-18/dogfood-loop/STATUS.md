@@ -1,0 +1,6 @@
+- status: 완료
+- next: 없음
+- blockers: 없음
+- declared read scope: `AGENTS.md`, `docs/skill-direction.md`, `docs/memory.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `docs/tasks/2026/03-10/project-context-migration-dogfood/**`, `docs/tasks/2026/03-10/migration-fixture-harness/**`, `docs/tasks/2026/03-13/readme-first-user-eval/**`, `docs/tasks/2026/03-18/dogfood-loop/**`
+- declared write scope: `AGENTS.md`, `docs/skill-direction.md`, `docs/memory.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `docs/tasks/2026/03-18/dogfood-loop/**`
+- latest validation: `python3 skills/project-context/scripts/check_runtime_shape.py`, `python3 -m unittest discover -s tests -p 'test_*.py'`
