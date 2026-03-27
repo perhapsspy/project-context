@@ -398,6 +398,16 @@ class TaskShapeTests(unittest.TestCase):
                 failures,
             )
 
+    def test_extra_task_local_doc_does_not_fail(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            root = Path(tmp)
+            _, task_dir = make_valid_runtime_tree(root)
+            (task_dir / "DESIGN.md").write_text("# design\n", encoding="utf-8")
+
+            failures = runtime_shape_check.task_failures(task_dir)
+
+            self.assertEqual(failures, [])
+
     def test_main_keeps_default_output(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
             root = Path(tmp)

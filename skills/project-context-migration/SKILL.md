@@ -37,7 +37,7 @@ This companion skill assumes the main `project-context` skill is installed along
 - Merge overlapping sources into one preferred destination reference file or one dated task.
 - When migration creates or updates `REFERENCE`, keep canonical content in the reference file and record mapping, rationale, and change trace in the migration task.
 - Before promoting anything into `REFERENCE` or `MEMORY`, ask whether another task would reuse it as agent working context. If not, prefer `LEAVE`. For `MEMORY`, also require current global state and no other canonical surface already owning it.
-- When migration creates new tasks, follow the current `project-context` task-file shape guidance. Only add migration-specific uncertainty or task-derived memory candidates when they actually exist.
+- When migration creates new tasks, follow the current `project-context` task-file shape guidance. If `BRIEF.md` and `STATUS.md` are not enough, keep extra task-local docs for the missing detail instead of forcing it into the brief or handoff note. Only add migration-specific uncertainty or task-derived memory candidates when they actually exist.
 - If a task item has no trustworthy date, use the migration date and record the uncertainty in that task.
 - Create `MEMORY-CANDIDATES.md` entries only for compressed global working-memory notes discovered during migration, not for reference file creation or plain file moves.
 - When unsure between `REFERENCE` and `LEAVE` for a human-facing top-level doc, bias toward `LEAVE`.

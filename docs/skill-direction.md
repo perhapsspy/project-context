@@ -14,6 +14,7 @@
 - 스크립트는 설치된 skill에서 에이전트가 skill-relative로 실행하거나, 이 레포 유지보수자가 직접 점검할 수 있을 때만 스킬 아래에 둔다.
 - 외부 시스템이나 전용 저장소보다 현재 저장소 안의 평범한 파일로 남기는 쪽을 우선한다.
 - `docs/tasks/...`는 대부분의 실제 작업이 머무는 기본 단위다.
+- task 안의 추가 문서는 `BRIEF.md`/`STATUS.md`만으로 부족할 때만 허용하고, 새 고정 surface 이름처럼 밀지 않는다.
 - 읽기 전용 질문, 리뷰, 단발 inspection은 bootstrap이나 task 생성을 기본값으로 삼지 않는다.
 - task handoff의 declared scope는 후속 세션이 빠르게 재사용 경계를 읽을 수 있게 literal label(`declared read scope`, `declared write scope`)을 우선한다.
 - `docs/reference/`는 단일 `task`를 넘어 반복 참조될 durable project-domain context만 담는다.
