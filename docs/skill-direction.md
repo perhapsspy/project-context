@@ -15,11 +15,14 @@
 - 외부 시스템이나 전용 저장소보다 현재 저장소 안의 평범한 파일로 남기는 쪽을 우선한다.
 - `docs/tasks/...`는 대부분의 실제 작업이 머무는 기본 단위다.
 - 읽기 전용 질문, 리뷰, 단발 inspection은 bootstrap이나 task 생성을 기본값으로 삼지 않는다.
+- task handoff의 declared scope는 후속 세션이 빠르게 재사용 경계를 읽을 수 있게 literal label(`declared read scope`, `declared write scope`)을 우선한다.
 - `docs/reference/`는 단일 `task`를 넘어 반복 참조될 durable project-domain context만 담는다.
 - `docs/reference/`는 필요하면 직접 작성하는 1차 durable surface이며, task 로그의 부산물만 모아두는 곳이 아니다.
 - `reference`를 만들거나 고칠 때 정본 내용은 `docs/reference/`에 두고, task에는 경로·판단 근거·변경 흔적을 남긴다.
 - 운영 안내, dogfood 절차, shipped behavior보다 강한 계약은 `docs/reference/`에 두지 않는다.
-- `docs/memory.md`는 전역 작업 메모리다. active invariant, 현재 phase, 임시 전역 제약, 현재 유효한 cross-task 조건을 압축해서 담고, topic detail이나 task chronology는 넣지 않는다.
+- `docs/memory.md`는 전역 작업 메모리다. active invariant, 현재 phase, 임시 전역 제약, 현재 유효한 cross-task 조건 같은 현재 전역 상태를 압축해서 담고, topic detail이나 task chronology는 넣지 않는다.
+- `docs/memory.md`는 `AGENTS.md`, shipped skill, `docs/reference/` 같은 다른 canonical surface의 standing rule을 다시 적는 두 번째 instruction surface가 아니다.
+- `MEMORY-CANDIDATES.md`는 전역 메모리 승급을 보수적으로 거르는 review surface로 다루고, 아직 없는 자동 판정기처럼 과하게 설명하지 않는다.
 
 ## 톤
 - 이름, 요약, help text는 실제로 증명된 범위 중 가장 좁은 범위를 기준으로 잡는다.

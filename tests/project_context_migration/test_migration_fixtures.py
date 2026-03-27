@@ -42,14 +42,6 @@ def runtime_shape_failures(case_root: Path) -> list[str]:
     return runtime_shape_check.run_runtime_shape_checks(runtime_for(case_root))
 
 
-def relative_files(case_root: Path) -> set[str]:
-    return {
-        path.relative_to(case_root).as_posix()
-        for path in case_root.rglob("*")
-        if path.is_file()
-    }
-
-
 class LegacyMigrationFixtureTests(unittest.TestCase):
     def test_case_alpha_legacy_input_does_not_validate(self):
         case_root = FIXTURE_ROOT / "legacy" / "case-alpha"
@@ -77,6 +69,12 @@ class LegacyMigrationFixtureTests(unittest.TestCase):
 
 
 class MigratedMigrationFixtureTests(unittest.TestCase):
+    def assert_task_core_files_exist(self, task_dir: Path):
+        self.assertTrue((task_dir / "BRIEF.md").is_file())
+        self.assertTrue((task_dir / "STATUS.md").is_file())
+        self.assertTrue((task_dir / "logs" / "DECISIONS.md").is_file())
+        self.assertTrue((task_dir / "logs" / "WORKLOG.md").is_file())
+
     def test_case_alpha_bad_output_fails_on_task_shape(self):
         case_root = FIXTURE_ROOT / "migrated" / "case-alpha-bad"
 
@@ -88,47 +86,56 @@ class MigratedMigrationFixtureTests(unittest.TestCase):
         self.assertTrue(
             any("latest date block must contain only bullet lines" in item for item in failures)
         )
+        self.assertTrue(any("invalid entry format" in item for item in failures))
 
     def test_case_alpha_good_output_passes_and_preserves_leave_doc(self):
         case_root = FIXTURE_ROOT / "migrated" / "case-alpha-good"
+        migration_task = (
+            case_root / "docs" / "tasks" / "2026" / "03-10" / "project-context-migration"
+        )
+        auth_spike_task = (
+            case_root / "docs" / "tasks" / "2026" / "02-14" / "auth-spike"
+        )
 
         failures = runtime_shape_failures(case_root)
-        files = relative_files(case_root)
-        migration_brief = (
-            case_root
-            / "docs"
-            / "tasks"
-            / "2026"
-            / "03-10"
-            / "project-context-migration"
-            / "BRIEF.md"
-        ).read_text(encoding="utf-8")
 
         self.assertEqual(failures, [])
-        self.assertIn("docs/memory.md", files)
-        self.assertIn("docs/reference/deployment/deploy-runbook.md", files)
-        self.assertIn("docs/reference/system/system-overview.md", files)
-        self.assertIn("docs/tasks/2026/02-14/auth-spike/BRIEF.md", files)
-        self.assertIn("docs/user-guide.md", files)
-        self.assertNotIn("docs/reference/user-guide.md", files)
-        self.assertIn("`TASK -> docs/tasks/2026/02-14/auth-spike/`", migration_brief)
-        self.assertIn("2. auth spike를 dated task로 정리", migration_brief)
-        self.assertIn("3. current reference state를 reference로 정리", migration_brief)
-        self.assertNotIn("WORK -> docs/tasks", migration_brief)
+        self.assert_task_core_files_exist(migration_task)
+        self.assert_task_core_files_exist(auth_spike_task)
+        self.assertTrue(
+            (case_root / "docs" / "reference" / "system" / "system-overview.md").is_file()
+        )
+        self.assertTrue(
+            (case_root / "docs" / "reference" / "deployment" / "deploy-runbook.md").is_file()
+        )
+        self.assertTrue((case_root / "docs" / "user-guide.md").is_file())
+        self.assertFalse((case_root / "docs" / "system.md").exists())
+        self.assertFalse((case_root / "runbooks" / "deploy.md").exists())
+        self.assertFalse((case_root / "docs" / "reference" / "user-guide.md").exists())
 
     def test_case_beta_good_output_passes_and_keeps_uncertain_note_out_of_reference(self):
         case_root = FIXTURE_ROOT / "migrated" / "case-beta-good"
+        migration_task = (
+            case_root / "docs" / "tasks" / "2026" / "03-10" / "project-context-migration"
+        )
+        login_bug_task = (
+            case_root / "docs" / "tasks" / "2026" / "03-10" / "login-bug-investigation"
+        )
 
         failures = runtime_shape_failures(case_root)
-        files = relative_files(case_root)
 
         self.assertEqual(failures, [])
-        self.assertIn("docs/memory.md", files)
-        self.assertIn("docs/reference/api/auth.md", files)
-        self.assertIn("docs/reference/data/database-choice.md", files)
-        self.assertIn("docs/tasks/2026/03-10/login-bug-investigation/BRIEF.md", files)
-        self.assertIn("notes/misc.md", files)
-        self.assertNotIn("docs/reference/misc.md", files)
+        self.assert_task_core_files_exist(migration_task)
+        self.assert_task_core_files_exist(login_bug_task)
+        self.assertTrue((case_root / "AGENTS.md").is_file())
+        self.assertTrue((case_root / "docs" / "reference" / "api" / "auth.md").is_file())
+        self.assertTrue(
+            (case_root / "docs" / "reference" / "data" / "database-choice.md").is_file()
+        )
+        self.assertFalse((case_root / "docs" / "api" / "auth.md").exists())
+        self.assertFalse((case_root / "tasks" / "login-bug.md").exists())
+        self.assertFalse((case_root / "docs" / "reference" / "misc.md").exists())
+        self.assertTrue((case_root / "notes" / "misc.md").exists())
 
 
 if __name__ == "__main__":

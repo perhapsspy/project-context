@@ -1,1 +1,0 @@
-- APPLIED | PocketBase is the primary datastore. | logs/DECISIONS.md@L4

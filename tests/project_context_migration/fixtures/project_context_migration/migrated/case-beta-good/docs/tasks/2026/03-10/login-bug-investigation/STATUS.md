@@ -1,6 +1,7 @@
 - 상태: open
 - 다음 작업: root cause 확인
 - blocker: 없음
+- note: source note에 trustworthy date가 없어 2026-03-10을 migration date로 사용했다
 - declared read scope: migrated legacy task note only
 - declared write scope: task-local docs only
 - latest validation: migrated historical task snapshot

@@ -6,16 +6,11 @@
 
 `project-context` is a skill that helps coding agents keep working context in the project, so future sessions can pick up the work without rebuilding the state from scratch. It leaves the minimum useful notes, reference docs, and task records as files, so humans can read and edit them directly without relying on a separate system.
 
-- `docs/memory.md`: global working memory that is worth reloading often; compresses global rules, current phase, temporary constraints, and currently active cross-task conditions
+- `docs/memory.md`: global working memory worth reloading during the current phase; compresses active invariants, current phase, temporary constraints, and currently active cross-task conditions
 - `docs/reference/`: topic-scoped domain context reused across tasks
 - `docs/tasks/...`: dated task records for most real work
 
 The optional `project-context-migration` skill is only for the first cleanup/adoption pass in an existing repository where docs are scattered or only partially moved into this structure.
-
-## Skill List
-
-- `project-context`: the main skill
-- `project-context-migration`: an optional skill used only for the first cleanup/adoption pass in a repository with scattered existing docs
 
 ## Quick Start
 
@@ -25,7 +20,7 @@ The optional `project-context-migration` skill is only for the first cleanup/ado
 npx skills add perhapsspy/project-context
 ```
 
-Or copy the skill(s) you need directly into `skills`.
+Or copy the skill(s) you need directly into `skills`. For migration/adoption work, copy both `project-context` and `project-context-migration`.
 
 **Set as a default in `AGENTS.md`**
 

@@ -1,0 +1,13 @@
+**2026-03-19**
+- 현재 shipped skill, migration skill, README, `docs/skill-direction.md`, `docs/memory.md`, migration tests/fixtures를 읽고 `memory` ownership drift가 어디서 다시 생길 수 있는지 확인했다.
+- 병렬 review pass와 직접 diff 점검을 합쳐 `memory`는 두 번째 instruction surface가 아니라는 문장을 shipped/local surface에 같은 방향으로 넣었다.
+- `case-alpha-good` fixture의 instruction성 memory 문장을 제거하고, migration test에 그 문장이 재도입되지 않는지 보는 assertion을 추가했다.
+- `case-beta-good` fixture에 root `AGENTS.md`를 남겨두는 migration 사례를 추가하고, test가 `memory`에 같은 문장이 중복되지 않는지 확인하게 했다.
+- 중복으로 생긴 `docs/tasks/2026/03-19/memory-ownership-boundary/` task 흔적을 제거한 뒤 runtime shape와 전체 unittest를 다시 돌려 통과를 확인했다.
+- 리뷰에서 지적된 stale `docs/memory.md` 상태 문구와 누락된 dogfood artifact write scope를 현재 task 기록에 맞게 정리했다.
+- workflow step의 source inventory를 `repo-root instruction files when present`까지 포함하도록 고치고, `AGENTS.md`는 fast rule 예시로만 남겼다.
+- follow-up review를 반영해 migration fast rule의 Markdown nesting을 풀고, `docs/memory.md`에서 task rollout 성격이 강한 문장을 한 번 더 압축했다.
+- memory는 task backlog를 들고 있지 않도록 `## 다음 작업` 섹션을 제거하고 현재 상태형 문장만 남겼다.
+- `MEMORY-CANDIDATES`를 semantic validator가 아니라 보수적 승급 게이트로 설명하도록 skill 본문과 reference 문구를 다시 정리했다.
+- 같은 철학이 shipped/local surface 모두에 남도록 `docs/skill-direction.md`에도 보수적 승급 게이트라는 방향 문구를 추가했다.
+- `PENDING`과 `REJECTED`의 의미를 shipped skill과 reference 문서에 직접 적어, unresolved review와 확정 비승급 후보를 구분하도록 정리했다.

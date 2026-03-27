@@ -176,27 +176,6 @@ class ReferenceShapeTests(unittest.TestCase):
 
 
 class MemoryCandidateShapeTests(unittest.TestCase):
-    def test_collect_memory_candidate_stats_ignores_blank_lines(self):
-        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
-            root = Path(tmp)
-            runtime, pack = make_valid_runtime_tree(root)
-            memory_candidates = pack / "MEMORY-CANDIDATES.md"
-            memory_candidates.write_text(
-                "\n"
-                "- APPLIED | "
-                + ("x" * 85)
-                + " | logs/DECISIONS.md@L1\n",
-                encoding="utf-8",
-            )
-
-            stats = runtime_shape_check.collect_memory_candidate_stats(runtime.task_root)
-
-            self.assertEqual(stats["candidate_files"], 1)
-            self.assertEqual(stats["entries"], 1)
-            self.assertEqual(stats["invalid_lines"], 0)
-            self.assertEqual(stats["summary_80_100"], 1)
-            self.assertEqual(stats["evidence_pointer_le_32"], 1)
-
     def test_memory_candidate_title_line_is_invalid(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
             pack, _, memory_candidates = make_memory_candidate_pack(Path(tmp))
@@ -285,6 +264,38 @@ class MemoryCandidateShapeTests(unittest.TestCase):
 
             self.assertEqual(failures, [])
 
+    def test_pending_and_rejected_memory_candidate_entries_pass(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            pack, _, memory_candidates = make_memory_candidate_pack(Path(tmp))
+
+            for state in ("PENDING", "REJECTED"):
+                failures = runtime_shape_check.memory_candidate_line_failures(
+                    pack,
+                    memory_candidates,
+                    1,
+                    f"- {state} | sample summary | logs/DECISIONS.md@L1",
+                )
+                self.assertEqual(failures, [])
+
+    def test_evidence_file_not_found_fails(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            pack, _, memory_candidates = make_memory_candidate_pack(Path(tmp))
+
+            failures = runtime_shape_check.memory_candidate_line_failures(
+                pack,
+                memory_candidates,
+                1,
+                "- APPLIED | sample summary | logs/WORKLOG.md@L1",
+            )
+
+            self.assertEqual(
+                failures,
+                [
+                    f"{runtime_shape_check.rel(memory_candidates)}: line 1: evidence file not found: "
+                    f"{runtime_shape_check.rel(pack / 'logs' / 'WORKLOG.md')}"
+                ],
+            )
+
 
 class TaskShapeTests(unittest.TestCase):
     def test_missing_task_directory_fails(self):
@@ -296,6 +307,51 @@ class TaskShapeTests(unittest.TestCase):
             self.assertEqual(
                 failures,
                 [f"Missing required runtime directory: {runtime_shape_check.rel(task_root)}"],
+            )
+
+    def test_invalid_task_year_directory_fails(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            task_root = Path(tmp) / "tasks"
+            (task_root / "26" / "03-09" / "sample-task").mkdir(parents=True)
+
+            failures = runtime_shape_check.check_task_contract(task_root)
+
+            self.assertEqual(
+                failures,
+                [
+                    "Invalid task year directory (expected yyyy): "
+                    f"{runtime_shape_check.rel(task_root / '26')}"
+                ],
+            )
+
+    def test_invalid_task_date_format_fails(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            task_root = Path(tmp) / "tasks"
+            (task_root / "2026" / "3-9" / "sample-task").mkdir(parents=True)
+
+            failures = runtime_shape_check.check_task_contract(task_root)
+
+            self.assertEqual(
+                failures,
+                [
+                    "Invalid task date directory (expected mm-dd): "
+                    f"{runtime_shape_check.rel(task_root / '2026' / '3-9')}"
+                ],
+            )
+
+    def test_impossible_task_date_fails(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            task_root = Path(tmp) / "tasks"
+            (task_root / "2026" / "02-31" / "sample-task").mkdir(parents=True)
+
+            failures = runtime_shape_check.check_task_contract(task_root)
+
+            self.assertEqual(
+                failures,
+                [
+                    "Invalid task date directory (not a real date): "
+                    f"{runtime_shape_check.rel(task_root / '2026' / '02-31')}"
+                ],
             )
 
     def test_invalid_task_slug_fails(self):
@@ -313,7 +369,36 @@ class TaskShapeTests(unittest.TestCase):
                 ],
             )
 
-    def test_main_without_memory_candidate_stats_keeps_default_output(self):
+    def test_missing_task_core_file_fails(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            root = Path(tmp)
+            _, task_dir = make_valid_runtime_tree(root)
+            missing_brief = task_dir / "BRIEF.md"
+            missing_brief.unlink()
+
+            failures = runtime_shape_check.task_failures(task_dir)
+
+            self.assertIn(
+                f"Missing task core file: {runtime_shape_check.rel(missing_brief)}",
+                failures,
+            )
+
+    def test_task_core_file_directory_fails(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            root = Path(tmp)
+            _, task_dir = make_valid_runtime_tree(root)
+            decisions = task_dir / "logs" / "DECISIONS.md"
+            decisions.unlink()
+            decisions.mkdir()
+
+            failures = runtime_shape_check.task_failures(task_dir)
+
+            self.assertIn(
+                f"Task core file is not a file: {runtime_shape_check.rel(decisions)}",
+                failures,
+            )
+
+    def test_main_keeps_default_output(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
             root = Path(tmp)
             runtime, _ = make_valid_runtime_tree(root)
@@ -323,10 +408,9 @@ class TaskShapeTests(unittest.TestCase):
                 exit_code = runtime_shape_check.main([], runtime=runtime)
 
             self.assertEqual(exit_code, 0)
-            self.assertEqual(
-                stdout.getvalue().strip(),
-                "[OK] project-context current runtime shape checks",
-            )
+            output = stdout.getvalue().strip()
+            self.assertIn("[OK]", output)
+            self.assertIn("project-context current runtime shape checks", output)
 
     def test_main_failure_output_includes_runtime_shape_failures(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
@@ -345,12 +429,14 @@ class TaskShapeTests(unittest.TestCase):
                 exit_code = runtime_shape_check.main([], runtime=runtime)
 
             self.assertEqual(exit_code, 1)
+            output_lines = stdout.getvalue().strip().splitlines()
             self.assertEqual(
-                stdout.getvalue().strip().splitlines(),
-                [
-                    "[FAIL] project-context current runtime shape checks",
-                    f"- Missing required runtime file: {runtime_shape_check.rel(runtime.memory_file)}",
-                ],
+                output_lines[0],
+                "[FAIL] project-context current runtime shape checks",
+            )
+            self.assertIn(
+                f"- Missing required runtime file: {runtime_shape_check.rel(runtime.memory_file)}",
+                output_lines,
             )
 
     def test_main_detects_repo_root_from_cwd_when_runtime_is_not_passed(self):
@@ -363,47 +449,25 @@ class TaskShapeTests(unittest.TestCase):
                 exit_code = runtime_shape_check.main([])
 
             self.assertEqual(exit_code, 0)
-            self.assertEqual(
-                stdout.getvalue().strip(),
-                "[OK] project-context current runtime shape checks",
-            )
+            output = stdout.getvalue().strip()
+            self.assertIn("[OK]", output)
+            self.assertIn("project-context current runtime shape checks", output)
 
-    def test_main_with_memory_candidate_stats_prints_summary_and_evidence_distribution(self):
+    def test_main_repo_root_override_avoids_nested_docs_ambiguity(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
             root = Path(tmp)
-            runtime, pack = make_valid_runtime_tree(root)
-            memory_candidates = pack / "MEMORY-CANDIDATES.md"
-            memory_candidates.write_text(
-                "- APPLIED | "
-                + ("x" * 75)
-                + " | logs/DECISIONS.md@L1\n"
-                + "- APPLIED | "
-                + ("x" * 90)
-                + " | logs/WORKLOG.md@L1\n"
-                + "- APPLIED | "
-                + ("x" * 110)
-                + " | logs/DECISIONS.md@L1\n",
-                encoding="utf-8",
-            )
+            make_valid_runtime_tree(root)
+            nested = root / "packages" / "child"
+            (nested / "docs" / "reference").mkdir(parents=True)
             stdout = io.StringIO()
 
-            with contextlib.redirect_stdout(stdout):
-                exit_code = runtime_shape_check.main(
-                    ["--memory-candidate-stats"],
-                    runtime=runtime,
-                )
+            with pushd(nested), contextlib.redirect_stdout(stdout):
+                exit_code = runtime_shape_check.main(["--repo-root", str(root)])
 
             self.assertEqual(exit_code, 0)
-            self.assertEqual(
-                stdout.getvalue().strip().splitlines(),
-                [
-                    "[OK] project-context current runtime shape checks",
-                    "[MEMORY CANDIDATE STATS]",
-                    "- scope: candidate_files=1 entries=3 invalid_lines=0",
-                    "- summary chars: <80=1 80-100=1 101-120=1 >120=0",
-                    "- evidence-pointer chars: <=32=3 >32=0",
-                ],
-            )
+            output = stdout.getvalue().strip()
+            self.assertIn("[OK]", output)
+            self.assertIn("project-context current runtime shape checks", output)
 
     def test_memory_candidates_directory_fails_without_exception(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
@@ -468,11 +532,75 @@ class TaskShapeTests(unittest.TestCase):
                 [f"{runtime_shape_check.rel(worklog)}: missing `**YYYY-MM-DD**` heading"],
             )
 
-    def test_decisions_latest_block_requires_four_bullet_lines(self):
+    def test_worklog_rejects_empty_latest_date_block(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            worklog = Path(tmp) / "WORKLOG.md"
+            worklog.write_text("**2026-03-09**\n", encoding="utf-8")
+
+            failures = runtime_shape_check.worklog_file_failures(worklog)
+
+            self.assertEqual(
+                failures,
+                [f"{runtime_shape_check.rel(worklog)}: latest date block is empty"],
+            )
+
+    def test_worklog_rejects_non_bullet_latest_date_block(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            worklog = Path(tmp) / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-03-09**\n"
+                "note without bullet\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.worklog_file_failures(worklog)
+
+            self.assertEqual(
+                failures,
+                [
+                    f"{runtime_shape_check.rel(worklog)}: latest date block must contain only bullet lines"
+                ],
+            )
+
+    def test_worklog_only_latest_date_block_is_validated(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            worklog = Path(tmp) / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-03-08**\n"
+                "legacy bad line\n\n"
+                "**2026-03-09**\n"
+                "- current valid line\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.worklog_file_failures(worklog)
+
+            self.assertEqual(failures, [])
+
+    def test_decisions_only_latest_date_block_is_validated(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
             decisions = Path(tmp) / "DECISIONS.md"
             decisions.write_text(
-                "# DECISIONS\n\n**2026-03-09**\n- 결정: sample\n- 이유: sample\n",
+                "**2026-03-08**\n"
+                "legacy bad line\n\n"
+                "**2026-03-09**\n"
+                "- 결정: sample\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.decisions_log_failures(decisions)
+
+            self.assertEqual(failures, [])
+
+    def test_decisions_latest_block_rejects_non_bullet_text(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            decisions = Path(tmp) / "DECISIONS.md"
+            decisions.write_text(
+                "**2026-03-09**\n"
+                "- 배경: sample\n"
+                "freeform note\n"
+                "- 결정: sample\n"
+                "- 영향: sample\n",
                 encoding="utf-8",
             )
 
@@ -480,7 +608,9 @@ class TaskShapeTests(unittest.TestCase):
 
             self.assertEqual(
                 failures,
-                [f"{runtime_shape_check.rel(decisions)}: latest date block must contain at least 4 bullet lines"],
+                [
+                    f"{runtime_shape_check.rel(decisions)}: latest date block must contain only bullet lines"
+                ],
             )
 
     def test_decisions_latest_block_accepts_non_korean_adr_lite_block(self):

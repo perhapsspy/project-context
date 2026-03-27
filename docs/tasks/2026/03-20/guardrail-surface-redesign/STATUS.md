@@ -1,0 +1,6 @@
+- status: completed
+- next: 없음
+- blockers: 없음
+- declared read scope: `AGENTS.md`, `docs/skill-direction.md`, `docs/reference/model/context-surfaces.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `skills/project-context/scripts/check_runtime_shape.py`, `tests/project_context/test_runtime_shape.py`, `tests/project_context_migration/**`
+- declared write scope: `skills/project-context/scripts/check_runtime_shape.py`, `tests/project_context/test_runtime_shape.py`, `tests/project_context_migration/**`, `docs/tasks/2026/03-20/guardrail-surface-redesign/**`
+- latest validation: `python3 skills/project-context/scripts/check_runtime_shape.py` 통과, `python3 -m unittest discover -s tests -p 'test_*.py'` 통과

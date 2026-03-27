@@ -37,8 +37,6 @@ SECRET_LIKE_MARKERS = (
     re.compile(r"BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY"),
     re.compile(r"(?i)(api[_-]?key|access[_-]?token|secret)\s*[:=]\s*[A-Za-z0-9_\-]{16,}"),
 )
-MEMORY_CANDIDATE_SUMMARY_TARGET_MIN = 80
-MEMORY_CANDIDATE_SUMMARY_TARGET_MAX = 100
 MEMORY_CANDIDATE_SUMMARY_HARD_CAP = 120
 MEMORY_CANDIDATE_EVIDENCE_HARD_CAP = 32
 
@@ -87,13 +85,16 @@ def main(
     runtime: RuntimePaths | None = None,
 ) -> int:
     args = parse_args(argv)
-    runtime = runtime or runtime_paths(detect_repo_root(Path.cwd()))
+    if runtime is None:
+        repo_root = (
+            Path(args.repo_root).resolve()
+            if args.repo_root is not None
+            else detect_repo_root(Path.cwd())
+        )
+        runtime = runtime_paths(repo_root)
     set_display_root(runtime.repo_root)
     failures = run_runtime_shape_checks(runtime)
-    exit_code = report_failures(failures)
-    if args.memory_candidate_stats:
-        report_memory_candidate_stats(collect_memory_candidate_stats(runtime.task_root))
-    return exit_code
+    return report_failures(failures)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -106,11 +107,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         )
     )
     parser.add_argument(
-        "--memory-candidate-stats",
-        action="store_true",
+        "--repo-root",
         help=(
-            "print summary/evidence-pointer length distribution for current "
-            "MEMORY-CANDIDATES.md entries"
+            "explicit repo root to validate when current-working-directory "
+            "detection would be ambiguous"
         ),
     )
     return parser.parse_args(argv)
@@ -281,20 +281,20 @@ def task_failures(task_dir: Path) -> list[str]:
 
 
 def decisions_log_failures(path: Path) -> list[str]:
-    block = latest_log_block(path, minimum_items=4)
+    block = latest_log_block(path)
     if isinstance(block, str):
         return [block]
     return []
 
 
 def worklog_file_failures(path: Path) -> list[str]:
-    block = latest_log_block(path, minimum_items=1)
+    block = latest_log_block(path)
     if isinstance(block, str):
         return [block]
     return []
 
 
-def latest_log_block(path: Path, minimum_items: int) -> list[str] | str:
+def latest_log_block(path: Path) -> list[str] | str:
     lines = read_text(path).splitlines()
     heading_indexes = [
         index for index, raw in enumerate(lines) if LOG_DATE_HEADING_RE.match(raw.strip())
@@ -310,11 +310,6 @@ def latest_log_block(path: Path, minimum_items: int) -> list[str] | str:
     if any(not raw.startswith("- ") for raw in block_lines):
         return f"{rel(path)}: latest date block must contain only bullet lines"
 
-    if len(block_lines) < minimum_items:
-        return (
-            f"{rel(path)}: latest date block must contain at least {minimum_items} bullet lines"
-        )
-
     return block_lines
 
 
@@ -327,93 +322,6 @@ def memory_candidate_file_failures(pack: Path, memory_candidates_path: Path) -> 
         )
 
     return failures
-
-
-def collect_memory_candidate_stats(task_root: Path | None = None) -> dict[str, int]:
-    task_root = task_root or runtime_paths(detect_repo_root(Path.cwd())).task_root
-    stats = empty_memory_candidate_stats()
-    if not task_root.exists() or not task_root.is_dir():
-        return stats
-
-    tasks, _ = collect_tasks(task_root)
-    for task_dir in tasks:
-        memory_candidates_path = task_dir / "MEMORY-CANDIDATES.md"
-        if not memory_candidates_path.is_file():
-            continue
-
-        stats["candidate_files"] += 1
-        for _, line in iter_memory_candidate_lines(memory_candidates_path):
-            stats["entries"] += 1
-            match = parse_memory_candidate_entry(line)
-            if not match:
-                stats["invalid_lines"] += 1
-                continue
-
-            summary = match.group("summary").strip()
-            evidence_pointer = match.group("evidence_pointer")
-            stats[summary_bucket_key(len(summary))] += 1
-            stats[evidence_pointer_bucket_key(len(evidence_pointer))] += 1
-
-    return stats
-
-
-def report_memory_candidate_stats(stats: dict[str, int]) -> None:
-    for line in render_memory_candidate_stats(stats):
-        print(line)
-
-
-def render_memory_candidate_stats(stats: dict[str, int]) -> list[str]:
-    return [
-        "[MEMORY CANDIDATE STATS]",
-        (
-            "- scope: "
-            f"candidate_files={stats['candidate_files']} "
-            f"entries={stats['entries']} "
-            f"invalid_lines={stats['invalid_lines']}"
-        ),
-        (
-            "- summary chars: "
-            f"<{MEMORY_CANDIDATE_SUMMARY_TARGET_MIN}={stats['summary_lt_80']} "
-            f"{MEMORY_CANDIDATE_SUMMARY_TARGET_MIN}-{MEMORY_CANDIDATE_SUMMARY_TARGET_MAX}={stats['summary_80_100']} "
-            f"{MEMORY_CANDIDATE_SUMMARY_TARGET_MAX + 1}-{MEMORY_CANDIDATE_SUMMARY_HARD_CAP}={stats['summary_101_120']} "
-            f">{MEMORY_CANDIDATE_SUMMARY_HARD_CAP}={stats['summary_gt_120']}"
-        ),
-        (
-            "- evidence-pointer chars: "
-            f"<={MEMORY_CANDIDATE_EVIDENCE_HARD_CAP}={stats['evidence_pointer_le_32']} "
-            f">{MEMORY_CANDIDATE_EVIDENCE_HARD_CAP}={stats['evidence_pointer_gt_32']}"
-        ),
-    ]
-
-
-def empty_memory_candidate_stats() -> dict[str, int]:
-    return {
-        "candidate_files": 0,
-        "entries": 0,
-        "invalid_lines": 0,
-        "summary_lt_80": 0,
-        "summary_80_100": 0,
-        "summary_101_120": 0,
-        "summary_gt_120": 0,
-        "evidence_pointer_le_32": 0,
-        "evidence_pointer_gt_32": 0,
-    }
-
-
-def summary_bucket_key(length: int) -> str:
-    if length < MEMORY_CANDIDATE_SUMMARY_TARGET_MIN:
-        return "summary_lt_80"
-    if length <= MEMORY_CANDIDATE_SUMMARY_TARGET_MAX:
-        return "summary_80_100"
-    if length <= MEMORY_CANDIDATE_SUMMARY_HARD_CAP:
-        return "summary_101_120"
-    return "summary_gt_120"
-
-
-def evidence_pointer_bucket_key(length: int) -> str:
-    if length <= MEMORY_CANDIDATE_EVIDENCE_HARD_CAP:
-        return "evidence_pointer_le_32"
-    return "evidence_pointer_gt_32"
 
 
 def iter_memory_candidate_lines(memory_candidates_path: Path) -> Iterator[tuple[int, str]]:
