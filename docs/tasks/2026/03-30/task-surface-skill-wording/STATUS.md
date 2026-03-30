@@ -1,0 +1,6 @@
+- status: completed
+- next: 없음
+- blockers: 없음
+- declared read scope: `AGENTS.md`, `README.md`, `docs/memory.md`, `docs/skill-direction.md`, `docs/reference/model/context-surfaces.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `tests/project_context/test_runtime_shape.py`, `docs/tasks/2026/03-17/compact-reference-wording/**`
+- declared write scope: `AGENTS.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `docs/skill-direction.md`, `docs/reference/model/context-surfaces.md`, `docs/tasks/2026/03-30/task-surface-skill-wording/**`
+- latest validation: `python3 skills/project-context/scripts/check_runtime_shape.py`, `python3 -m unittest discover -s tests -p 'test_*.py'`

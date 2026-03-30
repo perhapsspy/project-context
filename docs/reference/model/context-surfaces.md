@@ -21,6 +21,7 @@
 
 - `docs/tasks/yyyy/mm-dd/<task-slug>/`는 대부분의 실제 작업이 머무는 기본 task surface이며, rewrite-only snapshot과 append-only history로 나뉜다.
 - task 안의 rewrite-only snapshot(`BRIEF.md`, `STATUS.md`)은 현재 reopen/handoff 상태를 담고, append-only log(`logs/DECISIONS.md`, `logs/WORKLOG.md`)는 판단과 실행 흔적을 누적한다.
+- routine check 나열은 `STATUS.md`의 `latest validation`으로 접고, `WORKLOG.md`에는 reopen/handoff에 다시 필요할 실행 변화만 남긴다.
 - task가 더 많은 구조를 필요로 하면 필요한 역할에 한해 추가 task-local 문서를 둘 수 있지만, 이는 새 필수 surface가 아니다.
 - 세부 파일 shape와 운영 규칙은 durable model이 아니라 shipped skill contract가 소유한다.
 

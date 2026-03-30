@@ -1,0 +1,4 @@
+- goal: task surface compactness 원칙을 `project-context` skill contract와 repo-local authoring guidance에 같은 흐름으로 반영한다.
+- scope: `AGENTS.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `docs/skill-direction.md`, `docs/reference/model/context-surfaces.md`, 관련 README/test 점검
+- current understanding: 기존 contract와 로컬 철학은 compactness 방향 자체는 있었지만, task surface에서 routine check를 어디로 접고 `BRIEF`/`STATUS`/`WORKLOG`가 무엇을 빼야 하는지는 두 단계로 따로 기록될 만큼 직접성이 부족했다.
+- current output snapshot: `AGENTS.md`와 shipped/local surface가 모두 task surface 최소 기록 원칙을 같은 방향으로 가리키고, 기록은 하나의 task로 합쳐져 routine check는 `latest validation`으로 접고 `WORKLOG`에는 의미 있는 실행 변화만 남긴다는 기준을 한곳에서 읽을 수 있다. README와 runtime test contract는 추가 drift가 없어 변경하지 않는다.
