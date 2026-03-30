@@ -37,6 +37,16 @@ SECRET_LIKE_MARKERS = (
     re.compile(r"BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY"),
     re.compile(r"(?i)(api[_-]?key|access[_-]?token|secret)\s*[:=]\s*[A-Za-z0-9_\-]{16,}"),
 )
+ENVIRONMENT_PATH_MARKERS = (
+    re.compile(r"(?<![A-Za-z0-9])~/"),
+    re.compile(r"\$HOME(?:/|\\)"),
+    re.compile(r"\$\{HOME\}(?:/|\\)"),
+    re.compile(r"%USERPROFILE%(?:\\|/)"),
+    re.compile(r"file:///[^\s)]+"),
+    re.compile(r"/Users/[^/\s`]+(?:/[^\s`)]+)+"),
+    re.compile(r"/home/[^/\s`]+(?:/[^\s`)]+)+"),
+    re.compile(r"[A-Za-z]:\\Users\\[^\\\s`]+(?:\\[^\s`)]+)+"),
+)
 MEMORY_CANDIDATE_SUMMARY_HARD_CAP = 120
 MEMORY_CANDIDATE_EVIDENCE_HARD_CAP = 32
 
@@ -123,6 +133,7 @@ def run_runtime_shape_checks(runtime: RuntimePaths | None = None) -> list[str]:
         *check_memory_contract(runtime.memory_file),
         *check_reference_contract(runtime.reference_root),
         *check_task_contract(runtime.task_root),
+        *check_portable_path_scan(runtime.docs_root, runtime.repo_root),
         *check_secret_marker_scan(runtime.docs_root),
     ]
 
@@ -419,6 +430,65 @@ def check_secret_marker_scan(docs_root: Path | None = None) -> list[str]:
                 break
 
     return failures
+
+
+def check_portable_path_scan(
+    docs_root: Path | None = None,
+    repo_root: Path | None = None,
+) -> list[str]:
+    runtime = runtime_paths((repo_root or detect_repo_root(Path.cwd())).resolve())
+    docs_root = docs_root or runtime.docs_root
+    if not docs_root.exists():
+        return []
+
+    repo_markers = tuple(repo_root_markers(runtime.repo_root))
+    failures: list[str] = []
+    for path in iter_portable_path_files(runtime):
+        text = read_text_if_scannable(path)
+        if text is None:
+            continue
+        if contains_portable_path_marker(text, repo_markers):
+            failures.append(
+                f"Possible absolute or environment-specific path marker found in {rel(path)}"
+            )
+
+    return failures
+
+
+def repo_root_markers(repo_root: Path) -> Iterator[re.Pattern[str]]:
+    markers = {str(repo_root.resolve()), repo_root.resolve().as_posix()}
+    for marker in sorted(markers):
+        if marker and marker not in {".", "/"}:
+            yield re.compile(re.escape(marker))
+
+
+def contains_portable_path_marker(
+    text: str,
+    repo_markers: tuple[re.Pattern[str], ...],
+) -> bool:
+    for pattern in repo_markers:
+        if pattern.search(text):
+            return True
+
+    return any(pattern.search(text) for pattern in ENVIRONMENT_PATH_MARKERS)
+
+
+def iter_portable_path_files(runtime: RuntimePaths) -> Iterator[Path]:
+    if runtime.memory_file.is_file():
+        yield runtime.memory_file
+
+    if runtime.reference_root.exists():
+        yield from sorted(runtime.reference_root.rglob("*.md"))
+
+    if not runtime.task_root.exists():
+        return
+
+    tasks, _ = collect_tasks(runtime.task_root)
+    for task_dir in tasks:
+        for name in ("BRIEF.md", "STATUS.md", "MEMORY-CANDIDATES.md"):
+            path = task_dir / name
+            if path.is_file():
+                yield path
 
 
 def iter_memory_files(docs_root: Path) -> Iterator[Path]:

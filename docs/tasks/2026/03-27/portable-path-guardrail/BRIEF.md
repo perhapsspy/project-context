@@ -1,0 +1,4 @@
+- goal: make `project-context` itself prevent repo docs from keeping absolute filesystem paths or environment-specific paths.
+- scope: shipped `project-context`/`project-context-migration` contract, runtime-shape guardrail, local direction/reference/memory alignment, related tests.
+- current understanding: path portability drift is recurring because the skill contract says where to write context, but not how path strings inside docs should be normalized.
+- current output snapshot: shipped skills now require portable doc paths, runtime-shape checker scans path markers only in `memory/reference/current task snapshots`, README dropped the extra note, `memory` no longer repeats the rule, and local direction/reference wording now uses project-owned placeholder examples.

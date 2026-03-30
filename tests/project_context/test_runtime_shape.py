@@ -683,5 +683,112 @@ class SecretShapeTests(unittest.TestCase):
             self.assertEqual(failures, [])
 
 
+class PortablePathShapeTests(unittest.TestCase):
+    def test_repo_root_absolute_path_is_scanned(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            runtime, _ = make_valid_runtime_tree(Path(tmp))
+            artifact = runtime.reference_root / "portability.md"
+            artifact.write_text(
+                f"Use {runtime.repo_root}/docs/reference/portability.md\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.check_portable_path_scan(
+                runtime.docs_root,
+                runtime.repo_root,
+            )
+
+            self.assertEqual(
+                failures,
+                [
+                    "Possible absolute or environment-specific path marker found in "
+                    f"{runtime_shape_check.rel(artifact)}"
+                ],
+            )
+
+    def test_environment_home_path_is_scanned(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            runtime, _ = make_valid_runtime_tree(Path(tmp))
+            artifact = runtime.task_root / "2026" / "03-09" / "sample-task" / "STATUS.md"
+            artifact.write_text(
+                "- latest validation: copied from ~/work/project/docs/memory.md\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.check_portable_path_scan(
+                runtime.docs_root,
+                runtime.repo_root,
+            )
+
+            self.assertEqual(
+                failures,
+                [
+                    "Possible absolute or environment-specific path marker found in "
+                    f"{runtime_shape_check.rel(artifact)}"
+                ],
+            )
+
+    def test_repo_relative_and_placeholders_are_allowed(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            runtime, _ = make_valid_runtime_tree(Path(tmp))
+            artifact = runtime.reference_root / "portability.md"
+            artifact.write_text(
+                "Use docs/reference/portability.md from <repo-root> and "
+                "$CODEX_HOME/skills for installed skill references.\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.check_portable_path_scan(
+                runtime.docs_root,
+                runtime.repo_root,
+            )
+
+            self.assertEqual(failures, [])
+
+    def test_task_logs_are_not_scanned_for_portable_paths(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            runtime, task_dir = make_valid_runtime_tree(Path(tmp))
+            artifact = task_dir / "logs" / "WORKLOG.md"
+            artifact.write_text(
+                "**2026-03-09**\n"
+                f"- preserved source path: {runtime.repo_root}/legacy/docs/note.md\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.check_portable_path_scan(
+                runtime.docs_root,
+                runtime.repo_root,
+            )
+
+            self.assertEqual(failures, [])
+
+    def test_nested_task_artifacts_are_not_scanned_for_portable_paths(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            runtime, task_dir = make_valid_runtime_tree(Path(tmp))
+            artifact = (
+                task_dir
+                / "ARTIFACTS"
+                / "case-alpha"
+                / "docs"
+                / "tasks"
+                / "2026"
+                / "03-09"
+                / "legacy-task"
+                / "BRIEF.md"
+            )
+            artifact.parent.mkdir(parents=True)
+            artifact.write_text(
+                f"- source path: {runtime.repo_root}/legacy/docs/brief.md\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.check_portable_path_scan(
+                runtime.docs_root,
+                runtime.repo_root,
+            )
+
+            self.assertEqual(failures, [])
+
+
 if __name__ == "__main__":
     unittest.main()

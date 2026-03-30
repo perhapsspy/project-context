@@ -27,6 +27,7 @@ docs/
 - `STATUS.md` is the rewrite-only current handoff note: status, next step, blockers, declared scopes, and latest validation. Prefer no title line. When declared scopes are present, prefer literal `declared read scope` / `declared write scope` labels so later sessions can scan reuse boundaries quickly.
 - If `BRIEF.md` and `STATUS.md` are not enough for the task, keep extra task-local docs for the missing detail only. Do not duplicate the brief, handoff note, or logs. Mention them briefly in the current snapshot when they matter for reopen or handoff.
 - `MEMORY-CANDIDATES.md` is the optional rewrite-only current memory-candidate board for task-derived `docs/memory.md` updates. Do not use it for `docs/reference/`, direct reference authoring, or append history. If present, keep it plain: no title text, no comments, only `- <STATE> | <summary> | <evidence-pointer>` entries.
+- Keep saved doc paths portable: use repo-relative paths or stable placeholders like `<repo-root>`, `<task-root>`, and `$CODEX_HOME`, not absolute or user-specific paths.
 - Only logs are append-only. Add entries under `**YYYY-MM-DD**` headings in the current user language. Keep the latest `DECISIONS.md` block ADR-lite (usually 4 bullets) and the latest `WORKLOG.md` block as 1+ execution bullets.
 - Subagents start without inherited context; pass only a small task brief: goal, constraints, declared read scope, declared write scope, validation command, artifact path.
 - If a relevant task exists, read `BRIEF.md`, `STATUS.md` before logs and merge only after confirming the result stayed within its declared read scope.
@@ -62,7 +63,7 @@ For that bootstrap case, create `docs/memory.md`, `docs/reference/`, and one dat
 
 ## Guardrail Check
 
-- Checks only current runtime shape: required paths/files, `docs/memory.md` line cap, latest log-block shape, optional `MEMORY-CANDIDATES.md` syntax/hard caps/evidence-pointer reachability, and secret-like markers.
+- Checks only current runtime shape: required paths/files, `docs/memory.md` line cap, latest log-block shape, optional `MEMORY-CANDIDATES.md` syntax/hard caps/evidence-pointer reachability, path markers, and secret-like markers.
 - Does not judge candidate ownership, semantic quality, full history, merge correctness, or broader scope discipline.
 
 Run the bundled checker by resolving the skill-relative script `scripts/check_runtime_shape.py` from the installed `project-context` skill directory and executing it from the active repo root. If running from a subdirectory, pass `--repo-root <path>` when nested `docs` trees could confuse root detection.

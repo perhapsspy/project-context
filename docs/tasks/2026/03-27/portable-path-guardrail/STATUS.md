@@ -1,0 +1,6 @@
+- status: done
+- next step: watch dogfood for false positives in current snapshot surfaces and tighten patterns only if real repos hit noise.
+- blockers: none.
+- declared read scope: `skills/project-context/**`, `skills/project-context-migration/**`, `docs/skill-direction.md`, `docs/reference/model/context-surfaces.md`, `docs/memory.md`, `README*.md`, `tests/project_context/test_runtime_shape.py`
+- declared write scope: `skills/project-context/SKILL.md`, `skills/project-context/scripts/check_runtime_shape.py`, `skills/project-context-migration/SKILL.md`, `docs/skill-direction.md`, `docs/reference/model/context-surfaces.md`, `docs/memory.md`, `README.md`, `README.en.md`, `tests/project_context/test_runtime_shape.py`, `docs/tasks/2026/03-27/portable-path-guardrail/**`
+- latest validation: `python3 skills/project-context/scripts/check_runtime_shape.py`; `python3 -m unittest discover -s tests -p 'test_*.py'`

@@ -7,6 +7,7 @@
 - 이를 위해 필요한 최소한의 메모, 참고 문서, 작업 기록이 저장소 안의 평범한 파일로 정해진 위치에 남도록 하고, 프로젝트 문서와 작업 맥락이 쉽게 흩어지지 않게 한다. 사람도 바로 읽고 고칠 수 있는 단순한 구조를 우선하며, 완전한 문서화를 강제하는 쪽은 아니다.
 - 스킬은 작고, 절차적이고, 언어에 덜 묶인 형태를 우선한다.
 - 같은 행동이라면 레포 고유 표현보다 더 안정적인 개념을 먼저 고른다.
+- 문서 경로 표기는 repo-relative나 `<repo-root>`, `<task-root>`, `$CODEX_HOME` 같은 project-owned placeholder를 우선한다.
 
 ## 경계
 - 스킬에는 에이전트가 바로 실행해야 하는 행동만 둔다.
@@ -36,7 +37,7 @@
 
 ## 가드레일
 - 가드레일은 현재 runtime shape의 drift를 빨리 잡기 위해 존재한다.
-- 경로, 파일 존재, 형식, 최신 로그 블록 shape, evidence-pointer reachability, secret-like marker 정도만 본다.
+- 경로, 파일 존재, 형식, 최신 로그 블록 shape, evidence-pointer reachability, path marker, secret-like marker 정도만 본다.
 - working read budget 준수나 declared scope 준수 여부는 보지 않는다.
 - 의미 품질, merge correctness, 전체 이력의 일관성, 문체까지 보증하지 않는다.
 

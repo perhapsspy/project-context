@@ -2,6 +2,8 @@
 
 `project-context`는 프로젝트 맥락을 두 가지 repo-wide durable surface와 하나의 task workspace로 나눈다.
 
+- 이 surface들에 남기는 경로는 repo-relative나 `<repo-root>`, `<task-root>`, `$CODEX_HOME` 같은 project-owned placeholder를 우선한다.
+
 ## memory
 
 - `docs/memory.md`는 rewrite-only 전역 작업 메모리다.
