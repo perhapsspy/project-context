@@ -1,9 +1,5 @@
 # Login Bug Investigation
 
-- owner: ai
-- started_at: 2026-03-10
-- status: active
-
 ## 목적
 - Safari 로그인 실패 조사 기록을 current truth와 분리해 추적한다.
 
@@ -17,4 +13,17 @@
 - root cause는 아직 확인되지 않았다.
 
 ## 현재 산출물 스냅샷
-- 조사 상태는 reference나 memory로 승급되지 않고 task-local로 남아 있다.
+- 조사 상태는 reference로 승급되지 않고 task-local로 남아 있다.
+
+## 현재 상태
+- status는 open이다.
+- blockers: 없음
+- note: source note에 trustworthy date가 없어 2026-03-10을 migration date로 사용했다
+- latest validation: migrated historical task snapshot
+
+## Next Step
+- root cause를 확인한다.
+
+## Working Boundary
+- declared read scope: migrated legacy task note only
+- declared write scope: task-local docs only

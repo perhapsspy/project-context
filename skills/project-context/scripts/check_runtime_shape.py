@@ -6,9 +6,9 @@ from __future__ import annotations
 import argparse
 from collections.abc import Iterator
 from dataclasses import dataclass
-import re
 from datetime import datetime
 from pathlib import Path
+import re
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = SKILL_ROOT.parents[1]
@@ -17,7 +17,6 @@ DISPLAY_ROOT = DEFAULT_CWD
 
 CORE_TASK_FILES = (
     "BRIEF.md",
-    "STATUS.md",
     "logs/DECISIONS.md",
     "logs/WORKLOG.md",
 )
@@ -26,13 +25,6 @@ KEBAB_NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 TASK_YEAR_RE = re.compile(r"^[0-9]{4}$")
 TASK_DATE_RE = re.compile(r"^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$")
 LOG_DATE_HEADING_RE = re.compile(r"^\*\*[0-9]{4}-[0-9]{2}-[0-9]{2}\*\*$")
-MEMORY_CANDIDATE_ENTRY_RE = re.compile(
-    r"^- "
-    r"(?P<state>PENDING|APPLIED|REJECTED) "
-    r"\| (?P<summary>[^|]+?) "
-    r"\| (?P<evidence_pointer>logs/(?:DECISIONS|WORKLOG)\.md@L[1-9][0-9]*)"
-    r"$"
-)
 SECRET_LIKE_MARKERS = (
     re.compile(r"BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY"),
     re.compile(r"(?i)(api[_-]?key|access[_-]?token|secret)\s*[:=]\s*[A-Za-z0-9_\-]{16,}"),
@@ -47,15 +39,12 @@ ENVIRONMENT_PATH_MARKERS = (
     re.compile(r"/home/[^/\s`]+(?:/[^\s`)]+)+"),
     re.compile(r"[A-Za-z]:\\Users\\[^\\\s`]+(?:\\[^\s`)]+)+"),
 )
-MEMORY_CANDIDATE_SUMMARY_HARD_CAP = 120
-MEMORY_CANDIDATE_EVIDENCE_HARD_CAP = 32
 
 
 @dataclass(frozen=True)
 class RuntimePaths:
     repo_root: Path
     docs_root: Path
-    memory_file: Path
     reference_root: Path
     task_root: Path
 
@@ -66,11 +55,7 @@ def detect_repo_root(start: Path | None = None) -> Path:
 
     for candidate in (current, *current.parents):
         docs_root = candidate / "docs"
-        if (
-            (docs_root / "memory.md").exists()
-            or (docs_root / "reference").exists()
-            or (docs_root / "tasks").exists()
-        ):
+        if (docs_root / "reference").exists() or (docs_root / "tasks").exists():
             return candidate
         if git_root is None and (candidate / ".git").exists():
             git_root = candidate
@@ -84,7 +69,6 @@ def runtime_paths(repo_root: Path) -> RuntimePaths:
     return RuntimePaths(
         repo_root=repo_root,
         docs_root=docs_root,
-        memory_file=docs_root / "memory.md",
         reference_root=docs_root / "reference",
         task_root=docs_root / "tasks",
     )
@@ -130,10 +114,9 @@ def run_runtime_shape_checks(runtime: RuntimePaths | None = None) -> list[str]:
     runtime = runtime or runtime_paths(detect_repo_root(Path.cwd()))
     set_display_root(runtime.repo_root)
     return [
-        *check_memory_contract(runtime.memory_file),
         *check_reference_contract(runtime.reference_root),
         *check_task_contract(runtime.task_root),
-        *check_portable_path_scan(runtime.docs_root, runtime.repo_root),
+        *check_portable_path_scan(runtime),
         *check_secret_marker_scan(runtime.docs_root),
     ]
 
@@ -147,20 +130,6 @@ def report_failures(failures: list[str]) -> int:
 
     print("[OK] project-context current runtime shape checks")
     return 0
-
-
-def check_memory_contract(memory_file: Path | None = None) -> list[str]:
-    memory_file = memory_file or runtime_paths(detect_repo_root(Path.cwd())).memory_file
-    if not memory_file.exists():
-        return [f"Missing required runtime file: {rel(memory_file)}"]
-    if not memory_file.is_file():
-        return [f"Required runtime file is not a file: {rel(memory_file)}"]
-
-    line_count = count_lines(memory_file)
-    if line_count <= 120:
-        return []
-
-    return [f"Memory too long: {rel(memory_file)} has {line_count} lines (target <= 120)"]
 
 
 def check_reference_contract(reference_root: Path | None = None) -> list[str]:
@@ -223,12 +192,12 @@ def check_task_contract(task_root: Path | None = None) -> list[str]:
 
 
 def collect_tasks(task_root: Path) -> tuple[list[Path], list[str]]:
-    tasks: list[Path] = []
     failures: list[str] = []
+    tasks: list[Path] = []
 
     for year_dir in visible_children(task_root):
         if not year_dir.is_dir():
-            failures.append(f"Unexpected file in tasks root: {rel(year_dir)}")
+            failures.append(f"Unexpected file in task root: {rel(year_dir)}")
             continue
         if not TASK_YEAR_RE.match(year_dir.name):
             failures.append(f"Invalid task year directory (expected yyyy): {rel(year_dir)}")
@@ -267,18 +236,6 @@ def task_failures(task_dir: Path) -> list[str]:
             continue
         if not candidate.is_file():
             failures.append(f"Task core file is not a file: {rel(candidate)}")
-
-    memory_candidates_path = task_dir / "MEMORY-CANDIDATES.md"
-    if memory_candidates_path.exists():
-        if not memory_candidates_path.is_file():
-            failures.append(
-                "Optional MEMORY-CANDIDATES.md is not a file: "
-                f"{rel(memory_candidates_path)}"
-            )
-        else:
-            failures.extend(
-                memory_candidate_file_failures(task_dir, memory_candidates_path)
-            )
 
     decisions_path = task_dir / "logs" / "DECISIONS.md"
     if decisions_path.is_file():
@@ -324,102 +281,13 @@ def latest_log_block(path: Path) -> list[str] | str:
     return block_lines
 
 
-def memory_candidate_file_failures(pack: Path, memory_candidates_path: Path) -> list[str]:
-    failures: list[str] = []
-
-    for lineno, line in iter_memory_candidate_lines(memory_candidates_path):
-        failures.extend(
-            memory_candidate_line_failures(pack, memory_candidates_path, lineno, line)
-        )
-
-    return failures
-
-
-def iter_memory_candidate_lines(memory_candidates_path: Path) -> Iterator[tuple[int, str]]:
-    for lineno, raw in enumerate(read_text(memory_candidates_path).splitlines(), start=1):
-        line = raw.strip()
-        if not line:
-            continue
-        yield lineno, line
-
-
-def parse_memory_candidate_entry(line: str) -> re.Match[str] | None:
-    return MEMORY_CANDIDATE_ENTRY_RE.match(line)
-
-
-def memory_candidate_line_failures(
-    pack: Path,
-    memory_candidates_path: Path,
-    lineno: int,
-    line: str,
-) -> list[str]:
-    if not line.startswith("- "):
-        return [
-            f"{rel(memory_candidates_path)}: line {lineno}: non-empty lines must start with '- '"
-        ]
-
-    match = parse_memory_candidate_entry(line)
-    if not match:
-        return [f"{rel(memory_candidates_path)}: line {lineno}: invalid entry format"]
-
-    summary = match.group("summary").strip()
-    evidence_pointer = match.group("evidence_pointer")
-    failures: list[str] = []
-
-    if not summary:
-        failures.append(f"{rel(memory_candidates_path)}: line {lineno}: summary is required")
-    if len(summary) > MEMORY_CANDIDATE_SUMMARY_HARD_CAP:
-        failures.append(
-            f"{rel(memory_candidates_path)}: line {lineno}: summary too long "
-            f"({len(summary)} > {MEMORY_CANDIDATE_SUMMARY_HARD_CAP})"
-        )
-    if len(evidence_pointer) > MEMORY_CANDIDATE_EVIDENCE_HARD_CAP:
-        failures.append(
-            f"{rel(memory_candidates_path)}: line {lineno}: evidence-pointer too long "
-            f"({len(evidence_pointer)} > {MEMORY_CANDIDATE_EVIDENCE_HARD_CAP})"
-        )
-
-    failures.extend(
-        evidence_pointer_failures(pack, memory_candidates_path, lineno, evidence_pointer)
-    )
-    return failures
-
-
-def evidence_pointer_failures(
-    pack: Path,
-    memory_candidates_path: Path,
-    lineno: int,
-    evidence: str,
-) -> list[str]:
-    rel_file, line_token = evidence.rsplit("@L", 1)
-    evidence_file = pack / rel_file
-
-    if not evidence_file.exists():
-        return [
-            f"{rel(memory_candidates_path)}: line {lineno}: evidence file not found: {rel(evidence_file)}"
-        ]
-    if not evidence_file.is_file():
-        return [
-            f"{rel(memory_candidates_path)}: line {lineno}: evidence path is not a file: {rel(evidence_file)}"
-        ]
-
-    evidence_line = int(line_token)
-    max_lines = count_lines(evidence_file)
-    if evidence_line > max_lines:
-        return [
-            f"{rel(memory_candidates_path)}: line {lineno}: evidence line out of range ({evidence_line} > {max_lines})"
-        ]
-
-    return []
-
-
 def check_secret_marker_scan(docs_root: Path | None = None) -> list[str]:
     docs_root = docs_root or runtime_paths(detect_repo_root(Path.cwd())).docs_root
     if not docs_root.exists():
         return []
 
     failures: list[str] = []
-    for path in iter_memory_files(docs_root):
+    for path in iter_scannable_files(docs_root):
         text = read_text_if_scannable(path)
         if text is None:
             continue
@@ -432,13 +300,9 @@ def check_secret_marker_scan(docs_root: Path | None = None) -> list[str]:
     return failures
 
 
-def check_portable_path_scan(
-    docs_root: Path | None = None,
-    repo_root: Path | None = None,
-) -> list[str]:
-    runtime = runtime_paths((repo_root or detect_repo_root(Path.cwd())).resolve())
-    docs_root = docs_root or runtime.docs_root
-    if not docs_root.exists():
+def check_portable_path_scan(runtime: RuntimePaths | None = None) -> list[str]:
+    runtime = runtime or runtime_paths(detect_repo_root(Path.cwd()))
+    if not runtime.docs_root.exists():
         return []
 
     repo_markers = tuple(repo_root_markers(runtime.repo_root))
@@ -474,9 +338,6 @@ def contains_portable_path_marker(
 
 
 def iter_portable_path_files(runtime: RuntimePaths) -> Iterator[Path]:
-    if runtime.memory_file.is_file():
-        yield runtime.memory_file
-
     if runtime.reference_root.exists():
         yield from sorted(runtime.reference_root.rglob("*.md"))
 
@@ -485,13 +346,14 @@ def iter_portable_path_files(runtime: RuntimePaths) -> Iterator[Path]:
 
     tasks, _ = collect_tasks(runtime.task_root)
     for task_dir in tasks:
-        for name in ("BRIEF.md", "STATUS.md", "MEMORY-CANDIDATES.md"):
-            path = task_dir / name
-            if path.is_file():
-                yield path
+        yield from sorted(task_dir.glob("*.md"))
+
+        logs_dir = task_dir / "logs"
+        if logs_dir.exists():
+            yield from sorted(logs_dir.glob("*.md"))
 
 
-def iter_memory_files(docs_root: Path) -> Iterator[Path]:
+def iter_scannable_files(docs_root: Path) -> Iterator[Path]:
     for path in sorted(docs_root.rglob("*")):
         if path.is_file():
             yield path

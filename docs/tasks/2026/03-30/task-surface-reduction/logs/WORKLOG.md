@@ -1,0 +1,12 @@
+**2026-03-30**
+- 사용자와 함께 `memory` 제거, `STATUS` 제거, `BRIEF` 재정의, backlog surface 비도입 방향을 정리했다.
+- 새 task를 열어 contract, checker/tests, repo-local docs를 함께 정렬하는 변경 범위를 확정했다.
+- shipped `project-context`/migration skill, README, local direction/reference docs를 `BRIEF.md + logs + role-driven extra docs` 모델로 다시 썼다.
+- runtime-shape checker를 memory/status 후보 로직 없이 `reference`/`task` shape만 확인하도록 단순화하고, 관련 unit tests를 새 contract에 맞게 다시 구성했다.
+- migration fixture는 good outputs에서 `docs/memory.md`와 `STATUS.md`를 제거하고, `BRIEF.md`가 current overview를 직접 담도록 정리했다. bad fixture는 log block shape failure만 남기도록 좁혔다.
+- follow-up으로 `BRIEF.md` format guidance를 top-level heading 중심으로 못 박고, current task와 representative fixture BRIEF 예시에서 상단 `key: value` bullet block을 제거했다.
+- 후속 리뷰를 반영해 `AGENTS.md`에서 제거된 surface를 다시 가리키던 repo-local 규칙을 걷어내고, live `docs/tasks/**` BRIEF를 heading-first 형식으로 재작성하면서 `STATUS.md`/`MEMORY-CANDIDATES.md`를 live tree에서 제거했다.
+- portable-path guardrail은 task top-level markdown뿐 아니라 `logs/*.md`도 스캔하도록 넓히고, corresponding unit test expectation을 같이 올렸다.
+- 추가로, reopen entrypoint로서 오해만 남기던 obsolete live task 몇 개를 삭제하고, task 재사용 규칙은 declared scope literal match보다 "같은 미완료 작업선" 판단을 우선하도록 skill/local docs를 다시 썼다.
+- migration fixture test는 최신 contract 안내 수준에서 good output의 legacy task surface 부재만 직접 확인하도록 유지하고, portable-path test에는 `DECISIONS.md` scan coverage를 추가했다.
+- `python3 skills/project-context/scripts/check_runtime_shape.py`와 `python3 -m unittest discover -s tests -p 'test_*.py'`를 실행해 모두 통과했다.

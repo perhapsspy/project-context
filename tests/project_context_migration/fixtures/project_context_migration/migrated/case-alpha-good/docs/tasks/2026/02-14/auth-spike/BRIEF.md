@@ -11,6 +11,13 @@
 - 아직 production-ready가 아니다.
 - 다음 릴리스 이후 다시 검토가 필요하다.
 
+## 현재 상태
+
+- status: hold
+- next step: 다음 릴리스 이후 다시 검토
+- blockers: 다음 릴리스 대기
+- latest validation: migrated historical task snapshot
+
 ## 출처
 
 - `notes/2026-02-14-auth-spike.md`

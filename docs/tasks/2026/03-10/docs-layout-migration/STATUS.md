@@ -1,9 +1,0 @@
-- state: done
-- owner: ai
-- updated_at: 2026-03-10T00:00:00Z
-- summary: `docs/memory/`를 `docs/memory.md`, `docs/reference/`, `docs/tasks/`로 재배치하고 관련 계약과 예시 문서를 정리했다.
-- next_step: 없음
-- blocker: 없음
-- declared_read_scope: 기존 `docs/memory/**`, `skills/project-context/**`, `tests/**`
-- declared_write_scope: `docs/**`, `skills/project-context/**`, `tests/**`
-- latest_validation: 별도 실행 검증은 이 파일에 기록되지 않음

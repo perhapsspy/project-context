@@ -8,12 +8,9 @@
 - 이름과 help text는 실제로 증명된 범위 중 가장 좁은 범위를 기준으로 잡고, 얇은 guardrail에 과한 보증 톤을 싣지 않는다.
 - 스킬 문장은 같은 역할이면 더 짧은 쪽을 택하고, 새 정보가 없으면 다른 말로 반복하지 않는다.
 - 문구/README/migration 변경은 가장 작은 실제 대상부터 dogfood하고, 시작을 막는 문제와 drift만 결과로 남긴다.
-- task surface도 역할별 최소 정보만 남긴다. stable intent/output은 `BRIEF.md`, current handoff는 `STATUS.md`, 상태를 바꾼 실행 근거만 `WORKLOG.md`에 두고 routine check 나열은 `latest validation`으로 접거나 생략한다.
-- reference 문서는 work와 구별되는 durable project-domain context만 담고, 운영 guidance나 dogfood 안내서처럼 금방 사라질 내용은 두지 않는다.
-- reference를 만들거나 고칠 때 정본 내용은 `docs/reference/`에 두고, task에는 경로·판단 근거·변경 흔적을 남긴다.
-- shipped skill을 바꿀 때는 README, migration skill, `docs/skill-direction.md`, `docs/memory.md`, 관련 tests까지 함께 점검해 user-facing surface가 어긋나지 않게 유지한다.
+- shipped skill을 바꿀 때는 README, migration skill, `docs/skill-direction.md`, 관련 tests와 live repo example이 함께 어긋나지 않는지 점검한다.
 - 경로명이나 핵심 용어를 바꿨다면 `rg`로 README, docs, tests에 옛 표현이 남지 않았는지 확인한다.
-- task 예시를 고칠 때는 `README.md`/`STATUS.md`를 rewrite-only snapshot으로 유지하고, append-log 성 기록은 `logs/`에만 두는지 확인한다.
+- 레포의 live task 예시는 현재 shipped contract를 따라야 한다. 다만 `ARTIFACTS/` 아래의 비교용 snapshot은 당시 산출물 근거로 남길 수 있다.
 
 ## 테스트
 - runtime-shape guardrail 테스트는 [`tests/project_context/`](tests/project_context/) 아래에 둔다.

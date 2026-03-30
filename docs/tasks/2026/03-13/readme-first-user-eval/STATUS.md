@@ -1,6 +1,0 @@
-- 상태: done
-- 다음 작업: README는 유지하고, 다음 점검에서도 activation 기준으로만 얇게 평가한다. 필요하면 migration 문구만 선택적으로 다듬는다.
-- blocker: 없음
-- declared read scope: `README.md`, `docs/skill-direction.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `docs/tasks/2026/03-13/readme-first-user-eval/**`
-- declared write scope: `docs/skill-direction.md`, `docs/tasks/2026/03-13/readme-first-user-eval/**`
-- latest validation: `python3 skills/project-context/scripts/check_runtime_shape.py` && `python3 -m unittest discover -s tests -p 'test_*.py'`

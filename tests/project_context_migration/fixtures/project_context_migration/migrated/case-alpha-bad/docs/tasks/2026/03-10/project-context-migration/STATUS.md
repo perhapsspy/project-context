@@ -1,6 +1,0 @@
-- 상태: done
-- 다음 작업: 없음. 코디네이터 검증 대기
-- blocker: 없음
-- declared read scope: legacy 입력 4건
-- declared write scope: docs/memory.md, docs/reference/**, docs/tasks/**
-- latest validation: migration output snapshot only

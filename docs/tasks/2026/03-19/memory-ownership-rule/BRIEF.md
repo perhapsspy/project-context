@@ -1,4 +1,0 @@
-- goal: `docs/memory.md`가 `AGENTS.md` 같은 repo-local instruction surface를 다시 적지 않도록 shipped skill 계약을 선명하게 하고, 관련 surface와 tests를 함께 정렬한다.
-- scope: shipped `project-context`/`project-context-migration` skill, README, repo-local direction/reference docs, migration fixtures/tests, current repo `docs/memory.md`
-- current understanding: 현재 skill은 `memory`를 압축된 전역 작업 메모리로 설명해도, migration workflow가 repo-root instruction files를 source inventory에 넣지 않으면 ownership rule이 실제 절차에서 빠질 수 있다.
-- current output snapshot: shipped skill 두 개, README, 로컬 방향/reference 문서, 현재 repo `docs/memory.md`, migration fixture/test가 모두 `memory`를 current-state surface로만 다루고 canonical instruction surface의 재진술을 피하도록 정렬됐고, migration workflow inventory도 repo-root instruction files를 함께 보도록 넓혔다. `MEMORY-CANDIDATES`는 semantic validator가 아니라 보수적 승급 게이트로 다루도록 계약을 더 선명하게 적었다.

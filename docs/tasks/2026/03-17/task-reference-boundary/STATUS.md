@@ -1,6 +1,0 @@
-- status: 완료
-- next: 없음
-- blockers: 없음
-- declared read scope: `README.md`, `README.en.md`, `docs/skill-direction.md`, `docs/memory.md`, `docs/reference/model/context-surfaces.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `docs/tasks/2026/03-17/task-reference-boundary/**`
-- declared write scope: `README.md`, `README.en.md`, `docs/skill-direction.md`, `docs/memory.md`, `docs/reference/model/context-surfaces.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `docs/tasks/2026/03-17/task-reference-boundary/**`
-- latest validation: `python3 skills/project-context/scripts/check_runtime_shape.py`, `python3 -m unittest discover -s tests -p 'test_*.py'`

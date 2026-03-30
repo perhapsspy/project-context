@@ -1,1 +1,0 @@
-- APPLIED | 정본 memory 경로는 `docs/memory.md`이고 supporting trees는 `docs/reference/`, `docs/tasks/`를 사용한다. | logs/DECISIONS.md@L4

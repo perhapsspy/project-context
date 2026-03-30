@@ -1,6 +1,0 @@
-- 상태: done
-- 다음 작업: 없음
-- blocker: 없음
-- declared read scope: `skills/project-context-migration/**`, `docs/tasks/2026/03-10/project-context-migration-dogfood/ARTIFACTS/**`
-- declared write scope: `docs/tasks/2026/03-10/project-context-migration-dogfood/**`
-- latest validation: case-alpha clean rerun 통과, 결과 정리 완료

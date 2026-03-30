@@ -32,7 +32,6 @@ def runtime_for(case_root: Path) -> runtime_shape_check.RuntimePaths:
     return runtime_shape_check.RuntimePaths(
         repo_root=case_root,
         docs_root=case_root / "docs",
-        memory_file=case_root / "docs" / "memory.md",
         reference_root=case_root / "docs" / "reference",
         task_root=case_root / "docs" / "tasks",
     )
@@ -49,9 +48,6 @@ class LegacyMigrationFixtureTests(unittest.TestCase):
         failures = runtime_shape_failures(case_root)
 
         self.assertTrue(
-            any("Missing required runtime file" in item for item in failures)
-        )
-        self.assertTrue(
             any("Missing required runtime directory" in item for item in failures)
         )
 
@@ -61,9 +57,6 @@ class LegacyMigrationFixtureTests(unittest.TestCase):
         failures = runtime_shape_failures(case_root)
 
         self.assertTrue(
-            any("Missing required runtime file" in item for item in failures)
-        )
-        self.assertTrue(
             any("Missing required runtime directory" in item for item in failures)
         )
 
@@ -71,9 +64,15 @@ class LegacyMigrationFixtureTests(unittest.TestCase):
 class MigratedMigrationFixtureTests(unittest.TestCase):
     def assert_task_core_files_exist(self, task_dir: Path):
         self.assertTrue((task_dir / "BRIEF.md").is_file())
-        self.assertTrue((task_dir / "STATUS.md").is_file())
         self.assertTrue((task_dir / "logs" / "DECISIONS.md").is_file())
         self.assertTrue((task_dir / "logs" / "WORKLOG.md").is_file())
+
+    def assert_no_legacy_task_surfaces(self, case_root: Path):
+        self.assertEqual(list((case_root / "docs" / "tasks").rglob("STATUS.md")), [])
+        self.assertEqual(
+            list((case_root / "docs" / "tasks").rglob("MEMORY-CANDIDATES.md")),
+            [],
+        )
 
     def test_case_alpha_bad_output_fails_on_task_shape(self):
         case_root = FIXTURE_ROOT / "migrated" / "case-alpha-bad"
@@ -81,12 +80,8 @@ class MigratedMigrationFixtureTests(unittest.TestCase):
         failures = runtime_shape_failures(case_root)
 
         self.assertTrue(
-            any("non-empty lines must start with '- '" in item for item in failures)
-        )
-        self.assertTrue(
             any("latest date block must contain only bullet lines" in item for item in failures)
         )
-        self.assertTrue(any("invalid entry format" in item for item in failures))
 
     def test_case_alpha_good_output_passes_and_preserves_leave_doc(self):
         case_root = FIXTURE_ROOT / "migrated" / "case-alpha-good"
@@ -102,6 +97,7 @@ class MigratedMigrationFixtureTests(unittest.TestCase):
         self.assertEqual(failures, [])
         self.assert_task_core_files_exist(migration_task)
         self.assert_task_core_files_exist(auth_spike_task)
+        self.assert_no_legacy_task_surfaces(case_root)
         self.assertTrue(
             (case_root / "docs" / "reference" / "system" / "system-overview.md").is_file()
         )
@@ -109,6 +105,7 @@ class MigratedMigrationFixtureTests(unittest.TestCase):
             (case_root / "docs" / "reference" / "deployment" / "deploy-runbook.md").is_file()
         )
         self.assertTrue((case_root / "docs" / "user-guide.md").is_file())
+        self.assertFalse((case_root / "docs" / "memory.md").exists())
         self.assertFalse((case_root / "docs" / "system.md").exists())
         self.assertFalse((case_root / "runbooks" / "deploy.md").exists())
         self.assertFalse((case_root / "docs" / "reference" / "user-guide.md").exists())
@@ -127,7 +124,9 @@ class MigratedMigrationFixtureTests(unittest.TestCase):
         self.assertEqual(failures, [])
         self.assert_task_core_files_exist(migration_task)
         self.assert_task_core_files_exist(login_bug_task)
+        self.assert_no_legacy_task_surfaces(case_root)
         self.assertTrue((case_root / "AGENTS.md").is_file())
+        self.assertFalse((case_root / "docs" / "memory.md").exists())
         self.assertTrue((case_root / "docs" / "reference" / "api" / "auth.md").is_file())
         self.assertTrue(
             (case_root / "docs" / "reference" / "data" / "database-choice.md").is_file()

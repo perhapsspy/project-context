@@ -1,6 +1,0 @@
-- 상태: done
-- 다음 작업: 없음
-- blocker: 없음
-- declared read scope: `skills/project-context/**`, 기존 migration 요구사항과 dogfood 결과
-- declared write scope: `skills/project-context-migration/**`, 관련 repo-local truth
-- latest validation: repo guardrail 통과, 이후 dogfood 검증 완료

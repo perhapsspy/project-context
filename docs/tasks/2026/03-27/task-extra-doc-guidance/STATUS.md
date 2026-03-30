@@ -1,6 +1,0 @@
-- status: completed
-- next: 없음
-- blockers: 없음
-- declared read scope: `AGENTS.md`, `docs/memory.md`, `docs/reference/model/context-surfaces.md`, `docs/skill-direction.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `skills/project-context/scripts/check_runtime_shape.py`, `tests/project_context/test_runtime_shape.py`, `docs/tasks/2026/03-19/skill-contract-alignment/{BRIEF,STATUS}.md`
-- declared write scope: `docs/reference/model/context-surfaces.md`, `docs/skill-direction.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `tests/project_context/test_runtime_shape.py`, `docs/tasks/2026/03-27/task-extra-doc-guidance/**`
-- latest validation: `python3 skills/project-context/scripts/check_runtime_shape.py`, `python3 -m unittest discover -s tests -p 'test_*.py'`

@@ -1,6 +1,0 @@
-- 상태: done
-- 다음 작업: 없음
-- blocker: 없음
-- declared read scope: `README.md`, `README.en.md`, `docs/skill-direction.md`, `docs/memory.md`, `skills/project-context/**`, `skills/project-context-migration/**`, `tests/**`
-- declared write scope: `README.md`, `README.en.md`, `docs/skill-direction.md`, `skills/project-context/SKILL.md`, `skills/project-context-migration/SKILL.md`, `tests/project_context_migration/**`, `docs/tasks/2026/03-13/readme-skill-framing/**`
-- latest validation: `py -3 -m unittest discover -s tests -p 'test_*.py'` 통과

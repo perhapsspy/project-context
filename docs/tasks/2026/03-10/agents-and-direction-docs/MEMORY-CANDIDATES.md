@@ -1,1 +1,0 @@
-- REJECTED | 이번 문서 추가는 repo 방향성과 contributor 규칙 정리이며 project memory 운영 규칙 변화는 없다. | logs/DECISIONS.md@L4

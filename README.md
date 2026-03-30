@@ -2,11 +2,10 @@
 
 [한국어](README.md) | [English](README.en.md)
 
-`project-context`는 코딩 에이전트가 작업 맥락을 프로젝트 안에 계속 남기게 해 세션이 바뀐 뒤에도 다시 맥락을 잡고 일을 이어가기 쉽게 만드는 스킬입니다. 필요한 최소한의 메모, 참고 문서, 작업 기록을 파일로 남기기 때문에 별도 시스템 없이 사람도 바로 읽고 고치기 쉽습니다.
+`project-context`는 코딩 에이전트가 작업 맥락을 프로젝트 안에 계속 남기게 해 세션이 바뀐 뒤에도 다시 맥락을 잡고 일을 이어가기 쉽게 만드는 스킬입니다. 필요한 최소한의 참고 문서와 작업 기록을 파일로 남기기 때문에 별도 시스템 없이 사람도 바로 읽고 고치기 쉽습니다.
 
-- `docs/memory.md`: 자주 다시 읽는 전역 작업 메모리. 현재 단계, 임시 제약, 현재 유효한 cross-task 조건 같은 현재 전역 상태만 압축해 둠
 - `docs/reference/`: task를 넘어 반복 참조될 주제별 도메인 맥락
-- `docs/tasks/...`: 대부분의 실제 작업이 남는 날짜별 task 기록
+- `docs/tasks/...`: 대부분의 실제 작업이 남는 날짜별 task 기록. 각 task는 `BRIEF.md`를 current overview entrypoint로 두고, append-only logs와 task-specific docs를 필요할 때만 붙임
 
 선택 스킬인 `project-context-migration`은 이미 문서가 흩어져 있거나 일부만 이 구조로 옮겨진 저장소를 처음 정리하며 도입할 때만 사용합니다.
 

@@ -1,1 +1,0 @@
-- REJECTED | 이번 scripts/test 리팩터링은 구현과 검증 표면 정리이며 project memory 운영 규칙 변화는 없다. | logs/DECISIONS.md@L4
