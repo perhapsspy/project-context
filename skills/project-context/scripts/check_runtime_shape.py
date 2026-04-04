@@ -9,11 +9,18 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 import re
+import sys
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = SKILL_ROOT.parents[1]
 DEFAULT_CWD = Path.cwd().resolve()
 DISPLAY_ROOT = DEFAULT_CWD
+
+SCRIPT_ROOT = Path(__file__).resolve().parent
+if str(SCRIPT_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_ROOT))
+
+from task_logs import LogToolError, read_latest_block, read_latest_block_for_log
 
 CORE_TASK_FILES = (
     "BRIEF.md",
@@ -24,7 +31,6 @@ CORE_TASK_FILES = (
 KEBAB_NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 TASK_YEAR_RE = re.compile(r"^[0-9]{4}$")
 TASK_DATE_RE = re.compile(r"^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$")
-LOG_DATE_HEADING_RE = re.compile(r"^\*\*[0-9]{4}-[0-9]{2}-[0-9]{2}\*\*$")
 SECRET_LIKE_MARKERS = (
     re.compile(r"BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY"),
     re.compile(r"(?i)(api[_-]?key|access[_-]?token|secret)\s*[:=]\s*[A-Za-z0-9_\-]{16,}"),
@@ -88,7 +94,7 @@ def main(
         runtime = runtime_paths(repo_root)
     set_display_root(runtime.repo_root)
     failures = run_runtime_shape_checks(runtime)
-    return report_failures(failures)
+    return report_failures(failures, runtime.repo_root)
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -121,14 +127,17 @@ def run_runtime_shape_checks(runtime: RuntimePaths | None = None) -> list[str]:
     ]
 
 
-def report_failures(failures: list[str]) -> int:
+def report_failures(failures: list[str], repo_root: Path | None = None) -> int:
+    repo_label = f"repo root: {(repo_root or detect_repo_root(Path.cwd())).resolve()}"
     if failures:
         print("[FAIL] project-context current runtime shape checks")
+        print(repo_label)
         for item in failures:
             print(f"- {item}")
         return 1
 
     print("[OK] project-context current runtime shape checks")
+    print(repo_label)
     return 0
 
 
@@ -249,36 +258,24 @@ def task_failures(task_dir: Path) -> list[str]:
 
 
 def decisions_log_failures(path: Path) -> list[str]:
-    block = latest_log_block(path)
+    block = latest_log_block(path, "DECISIONS")
     if isinstance(block, str):
         return [block]
     return []
 
 
 def worklog_file_failures(path: Path) -> list[str]:
-    block = latest_log_block(path)
+    block = latest_log_block(path, "WORKLOG")
     if isinstance(block, str):
         return [block]
     return []
 
 
-def latest_log_block(path: Path) -> list[str] | str:
-    lines = read_text(path).splitlines()
-    heading_indexes = [
-        index for index, raw in enumerate(lines) if LOG_DATE_HEADING_RE.match(raw.strip())
-    ]
-    if not heading_indexes:
-        return f"{rel(path)}: missing `**YYYY-MM-DD**` heading"
-
-    start = heading_indexes[-1] + 1
-    block_lines = [raw.strip() for raw in lines[start:] if raw.strip()]
-    if not block_lines:
-        return f"{rel(path)}: latest date block is empty"
-
-    if any(not raw.startswith("- ") for raw in block_lines):
-        return f"{rel(path)}: latest date block must contain only bullet lines"
-
-    return block_lines
+def latest_log_block(path: Path, log_name: str) -> list[str] | str:
+    try:
+        return list(read_latest_block_for_log(path, log_name).bullet_lines)
+    except LogToolError as exc:
+        return f"{rel(path)}: {exc}"
 
 
 def check_secret_marker_scan(docs_root: Path | None = None) -> list[str]:

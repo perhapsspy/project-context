@@ -24,7 +24,8 @@ docs/
 - Keep `BRIEF.md` focused on current reopen/handoff context. Do not turn it into append history, long decision rationale, or reusable topic documentation.
 - If `BRIEF.md` and logs are not enough for the task, keep extra task-local docs for the missing detail only. Name them for their role, not as generic overflow files, and mention them briefly in `BRIEF.md` when they matter for reopen or handoff.
 - Keep saved doc paths portable: use repo-relative paths or stable placeholders like `<repo-root>`, `<task-root>`, and `$CODEX_HOME`, not absolute or user-specific paths.
-- Only logs are append-only. Add entries under `**YYYY-MM-DD**` headings in the current user language. Keep the latest `DECISIONS.md` block ADR-lite (usually 4 bullets). Keep the latest `WORKLOG.md` block to meaningful execution evidence another session may need; fold routine checks into `BRIEF.md` `latest validation` unless they changed task state.
+- Only logs are append-only. Add entries under `**YYYY-MM-DD**` headings in the current user language. Keep each latest `DECISIONS.md` entry as one ADR-lite 4-bullet block and keep the latest `WORKLOG.md` block to meaningful execution evidence another session may need; fold routine checks into `BRIEF.md` `latest validation` unless they changed task state.
+- When direct log editing is avoidable, use the bundled `scripts/task_logs.py` entrypoints instead of manually rewriting `logs/*.md`: `worklog append` adds one bullet to the current or newer `WORKLOG` date block for an existing task with `BRIEF.md`, `decision append` writes one 4-bullet `DECISIONS` block atomically, and each surface has its own `tail` / `check`.
 - Subagents start without inherited context; pass only a small task brief: goal, constraints, relevant boundary notes if you have them, validation command, artifact path.
 - If an older task looks close to the work at hand, do not continue it immediately. Read only its `BRIEF.md` first, then decide whether it is truly the same unfinished line of work.
 - Reuse an existing task only when the main question or intended output is still the same. Similar files, similar topic, or the same subsystem are not enough by themselves.
@@ -48,6 +49,17 @@ For that bootstrap case, create `docs/reference/` and one dated task with `BRIEF
 3. Reuse that older task only if the main question and expected output still match. Use declared boundary notes as a quick hint when they exist, but start a new dated task when you had to widen the investigation into a different file cluster or a different decision.
 4. For most write-bearing tasks, create or update one dated task, rewrite `BRIEF.md` in place as the current overview, append decisions/execution only to the logs, keep extra task-local docs only when the task genuinely needs them, and write reusable topic detail into `docs/reference/` directly when it becomes clear. Skip task creation only for very small, low-judgment, immediately-finished changes.
 5. If reference/task search finds no relevant context, proceed with explicit assumptions and record corrections after execution.
+
+For log-only operations, prefer the bundled script from the installed skill directory:
+
+```bash
+python3 scripts/task_logs.py worklog append --task-root docs/tasks/2026/04-05/sample-task --date 2026-04-05 --bullet "Ran focused tests"
+python3 scripts/task_logs.py decision append --task-root docs/tasks/2026/04-05/sample-task --date 2026-04-05 --background "배경: redirect bug reproduced" --options "선택지: hotfix now vs patch after repro" --decision "결정: guard redirect before session refresh" --impact "영향: login task unblock"
+python3 scripts/task_logs.py worklog tail --task-root docs/tasks/2026/04-05/sample-task
+python3 scripts/task_logs.py decision check --task-root docs/tasks/2026/04-05/sample-task
+```
+
+If you are driving the CLI from PowerShell and need to pass an intentionally empty bullet for a failure-path check, prefer `--bullet=` over `--bullet ""` so the value reaches the script.
 
 ## Guardrail Check
 

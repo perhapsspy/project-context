@@ -253,6 +253,7 @@ class TaskShapeTests(unittest.TestCase):
             output = stdout.getvalue().strip()
             self.assertIn("[OK]", output)
             self.assertIn("project-context current runtime shape checks", output)
+            self.assertIn(f"repo root: {root.resolve()}", output)
 
     def test_main_failure_output_includes_runtime_shape_failures(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
@@ -275,6 +276,7 @@ class TaskShapeTests(unittest.TestCase):
                 output_lines[0],
                 "[FAIL] project-context current runtime shape checks",
             )
+            self.assertEqual(output_lines[1], f"repo root: {root.resolve()}")
             self.assertIn(
                 f"- Missing required runtime directory: {runtime_shape_check.rel(runtime.reference_root)}",
                 output_lines,
@@ -366,6 +368,24 @@ class LogShapeTests(unittest.TestCase):
                 failures,
                 [
                     f"{runtime_shape_check.rel(decisions)}: latest date block must contain only bullet lines"
+                ],
+            )
+
+    def test_decisions_latest_block_requires_exactly_four_bullets(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            decisions = Path(tmp) / "DECISIONS.md"
+            decisions.write_text(
+                "**2026-03-09**\n"
+                "- 배경: sample\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.decisions_log_failures(decisions)
+
+            self.assertEqual(
+                failures,
+                [
+                    f"{runtime_shape_check.rel(decisions)}: latest decision block must contain exactly 4 bullet lines"
                 ],
             )
 

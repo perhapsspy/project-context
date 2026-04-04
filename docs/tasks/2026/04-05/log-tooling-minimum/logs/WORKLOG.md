@@ -1,0 +1,17 @@
+**2026-04-05**
+- `structure-first`와 `project-context` 기준을 읽고, 현재 shipped skill contract와 runtime-shape checker가 logs를 어떻게 다루는지 확인했다.
+- 최소안은 `append/tail/check`를 한 스크립트의 서브커맨드로 제공하고, checker가 latest-block 판독에 그 공용 로직을 재사용하는 방향으로 좁혔다.
+- Added task_logs.py append/tail/check flow, wired check_runtime_shape.py to latest-block reader, and passed repo-level unittest discovery.
+- Dogfood scenario A: verified append/tail/check happy path from repo root.
+- Planned subagent dogfood across happy path, nested cwd handling, and failure ergonomics; reopened the task until those runs are reviewed.
+- Ran subagent dogfood across happy path, nested cwd handling, and failure paths; all functional flows passed, with only minor output ergonomics noted.
+- Applied review fix: append now requires an existing task root with BRIEF.md.
+- Improved checker output to show selected repo root and documented append target requirements plus the PowerShell empty-bullet caveat.
+- Reopened the task to re-run dogfood and code review after the checker-output and CLI-guidance follow-up changes.
+- Dogfood scenario A: verified append/tail/check happy path from repo root after existing-task requirement change.
+- Re-ran failure-path dogfood after the follow-up fixes: missing task root, missing BRIEF.md, older-date append, invalid log name, empty bullet, multiline bullet, and malformed latest block all failed as intended.
+- Local re-dogfood confirmed missing-task-root rejection and repo-root disclosure in checker output.
+- Re-ran dogfood after the latest fixes: happy path, nested cwd path, and failure-path guards all passed again.
+- Switched task_logs.py success and guard paths to repo-relative display with absolute fallback.
+- Added append-decision, made DECISIONS checks require an exact 4-bullet latest block, and moved the live task back to a valid latest decision block via append-only write.
+- Refactored task_logs.py CLI into separate worklog/decision surfaces and revalidated the stricter DECISIONS contract.
