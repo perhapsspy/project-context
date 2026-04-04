@@ -80,23 +80,6 @@ def runtime_paths(repo_root: Path) -> RuntimePaths:
     )
 
 
-def main(
-    argv: list[str] | None = None,
-    runtime: RuntimePaths | None = None,
-) -> int:
-    args = parse_args(argv)
-    if runtime is None:
-        repo_root = (
-            Path(args.repo_root).resolve()
-            if args.repo_root is not None
-            else detect_repo_root(Path.cwd())
-        )
-        runtime = runtime_paths(repo_root)
-    set_display_root(runtime.repo_root)
-    failures = run_runtime_shape_checks(runtime)
-    return report_failures(failures, runtime.repo_root)
-
-
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
@@ -116,52 +99,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def run_runtime_shape_checks(runtime: RuntimePaths | None = None) -> list[str]:
-    runtime = runtime or runtime_paths(detect_repo_root(Path.cwd()))
-    set_display_root(runtime.repo_root)
-    return [
-        *check_reference_contract(runtime.reference_root),
-        *check_task_contract(runtime.task_root),
-        *check_portable_path_scan(runtime),
-        *check_secret_marker_scan(runtime.docs_root),
-    ]
-
-
-def report_failures(failures: list[str], repo_root: Path | None = None) -> int:
-    repo_label = f"repo root: {(repo_root or detect_repo_root(Path.cwd())).resolve()}"
-    if failures:
-        print("[FAIL] project-context current runtime shape checks")
-        print(repo_label)
-        for item in failures:
-            print(f"- {item}")
-        return 1
-
-    print("[OK] project-context current runtime shape checks")
-    print(repo_label)
-    return 0
-
-
-def check_reference_contract(reference_root: Path | None = None) -> list[str]:
-    reference_root = reference_root or runtime_paths(detect_repo_root(Path.cwd())).reference_root
-    if not reference_root.exists():
-        return [f"Missing required runtime directory: {rel(reference_root)}"]
-    if not reference_root.is_dir():
-        return [f"Required runtime directory is not a directory: {rel(reference_root)}"]
-
-    failures: list[str] = []
-    for path in sorted(reference_root.rglob("*.md")):
-        failures.extend(reference_path_failures(path, reference_root))
-
-    return failures
-
-
-def reference_path_failures(
-    path: Path,
-    reference_root: Path | None = None,
-) -> list[str]:
-    reference_root = reference_root or runtime_paths(detect_repo_root(Path.cwd())).reference_root
-    parts = path.relative_to(reference_root).parts
-    return reference_parts_failures(parts, rel(path))
+def kebab_name_failures(name: str, label: str, display: str) -> list[str]:
+    if KEBAB_NAME_RE.match(name):
+        return []
+    return [f"Invalid {label} (kebab-case required): {display}"]
 
 
 def reference_parts_failures(parts: tuple[str, ...], display: str) -> list[str]:
@@ -178,26 +119,46 @@ def reference_parts_failures(parts: tuple[str, ...], display: str) -> list[str]:
     return failures
 
 
-def kebab_name_failures(name: str, label: str, display: str) -> list[str]:
-    if KEBAB_NAME_RE.match(name):
-        return []
-    return [f"Invalid {label} (kebab-case required): {display}"]
+def rel(path: Path) -> str:
+    try:
+        return str(path.relative_to(DISPLAY_ROOT))
+    except ValueError:
+        return str(path)
 
 
-def check_task_contract(task_root: Path | None = None) -> list[str]:
-    task_root = task_root or runtime_paths(detect_repo_root(Path.cwd())).task_root
-    if not task_root.exists():
-        return [f"Missing required runtime directory: {rel(task_root)}"]
-    if not task_root.is_dir():
-        return [f"Required runtime directory is not a directory: {rel(task_root)}"]
+def reference_path_failures(
+    path: Path,
+    reference_root: Path | None = None,
+) -> list[str]:
+    reference_root = reference_root or runtime_paths(detect_repo_root(Path.cwd())).reference_root
+    parts = path.relative_to(reference_root).parts
+    return reference_parts_failures(parts, rel(path))
 
-    tasks, layout_failures = collect_tasks(task_root)
-    failures = list(layout_failures)
 
-    for task_dir in tasks:
-        failures.extend(task_failures(task_dir))
+def check_reference_contract(reference_root: Path | None = None) -> list[str]:
+    reference_root = reference_root or runtime_paths(detect_repo_root(Path.cwd())).reference_root
+    if not reference_root.exists():
+        return [f"Missing required runtime directory: {rel(reference_root)}"]
+    if not reference_root.is_dir():
+        return [f"Required runtime directory is not a directory: {rel(reference_root)}"]
+
+    failures: list[str] = []
+    for path in sorted(reference_root.rglob("*.md")):
+        failures.extend(reference_path_failures(path, reference_root))
 
     return failures
+
+
+def visible_children(path: Path) -> list[Path]:
+    return [child for child in sorted(path.iterdir()) if not child.name.startswith(".")]
+
+
+def is_valid_task_date(year: str, month_day: str) -> bool:
+    try:
+        datetime.strptime(f"{year}-{month_day}", "%Y-%m-%d")
+    except ValueError:
+        return False
+    return True
 
 
 def collect_tasks(task_root: Path) -> tuple[list[Path], list[str]]:
@@ -235,6 +196,27 @@ def collect_tasks(task_root: Path) -> tuple[list[Path], list[str]]:
     return tasks, failures
 
 
+def latest_log_block(path: Path, log_name: str) -> list[str] | str:
+    try:
+        return list(read_latest_block_for_log(path, log_name).bullet_lines)
+    except LogToolError as exc:
+        return f"{rel(path)}: {exc}"
+
+
+def decisions_log_failures(path: Path) -> list[str]:
+    block = latest_log_block(path, "DECISIONS")
+    if isinstance(block, str):
+        return [block]
+    return []
+
+
+def worklog_file_failures(path: Path) -> list[str]:
+    block = latest_log_block(path, "WORKLOG")
+    if isinstance(block, str):
+        return [block]
+    return []
+
+
 def task_failures(task_dir: Path) -> list[str]:
     failures: list[str] = []
 
@@ -257,25 +239,33 @@ def task_failures(task_dir: Path) -> list[str]:
     return failures
 
 
-def decisions_log_failures(path: Path) -> list[str]:
-    block = latest_log_block(path, "DECISIONS")
-    if isinstance(block, str):
-        return [block]
-    return []
+def check_task_contract(task_root: Path | None = None) -> list[str]:
+    task_root = task_root or runtime_paths(detect_repo_root(Path.cwd())).task_root
+    if not task_root.exists():
+        return [f"Missing required runtime directory: {rel(task_root)}"]
+    if not task_root.is_dir():
+        return [f"Required runtime directory is not a directory: {rel(task_root)}"]
+
+    tasks, layout_failures = collect_tasks(task_root)
+    failures = list(layout_failures)
+
+    for task_dir in tasks:
+        failures.extend(task_failures(task_dir))
+
+    return failures
 
 
-def worklog_file_failures(path: Path) -> list[str]:
-    block = latest_log_block(path, "WORKLOG")
-    if isinstance(block, str):
-        return [block]
-    return []
+def iter_scannable_files(docs_root: Path) -> Iterator[Path]:
+    for path in sorted(docs_root.rglob("*")):
+        if path.is_file():
+            yield path
 
 
-def latest_log_block(path: Path, log_name: str) -> list[str] | str:
-    try:
-        return list(read_latest_block_for_log(path, log_name).bullet_lines)
-    except LogToolError as exc:
-        return f"{rel(path)}: {exc}"
+def read_text_if_scannable(path: Path) -> str | None:
+    sample = path.read_bytes()[:4096]
+    if b"\x00" in sample:
+        return None
+    return path.read_text(encoding="utf-8", errors="ignore")
 
 
 def check_secret_marker_scan(docs_root: Path | None = None) -> list[str]:
@@ -293,25 +283,6 @@ def check_secret_marker_scan(docs_root: Path | None = None) -> list[str]:
             if pattern.search(text):
                 failures.append(f"Possible secret-like marker found in {rel(path)}")
                 break
-
-    return failures
-
-
-def check_portable_path_scan(runtime: RuntimePaths | None = None) -> list[str]:
-    runtime = runtime or runtime_paths(detect_repo_root(Path.cwd()))
-    if not runtime.docs_root.exists():
-        return []
-
-    repo_markers = tuple(repo_root_markers(runtime.repo_root))
-    failures: list[str] = []
-    for path in iter_portable_path_files(runtime):
-        text = read_text_if_scannable(path)
-        if text is None:
-            continue
-        if contains_portable_path_marker(text, repo_markers):
-            failures.append(
-                f"Possible absolute or environment-specific path marker found in {rel(path)}"
-            )
 
     return failures
 
@@ -350,49 +321,78 @@ def iter_portable_path_files(runtime: RuntimePaths) -> Iterator[Path]:
             yield from sorted(logs_dir.glob("*.md"))
 
 
-def iter_scannable_files(docs_root: Path) -> Iterator[Path]:
-    for path in sorted(docs_root.rglob("*")):
-        if path.is_file():
-            yield path
+def check_portable_path_scan(runtime: RuntimePaths | None = None) -> list[str]:
+    runtime = runtime or runtime_paths(detect_repo_root(Path.cwd()))
+    if not runtime.docs_root.exists():
+        return []
+
+    repo_markers = tuple(repo_root_markers(runtime.repo_root))
+    failures: list[str] = []
+    for path in iter_portable_path_files(runtime):
+        text = read_text_if_scannable(path)
+        if text is None:
+            continue
+        if contains_portable_path_marker(text, repo_markers):
+            failures.append(
+                f"Possible absolute or environment-specific path marker found in {rel(path)}"
+            )
+
+    return failures
 
 
-def read_text_if_scannable(path: Path) -> str | None:
-    sample = path.read_bytes()[:4096]
-    if b"\x00" in sample:
-        return None
-    return path.read_text(encoding="utf-8", errors="ignore")
+def set_display_root(repo_root: Path) -> None:
+    global DISPLAY_ROOT
+    DISPLAY_ROOT = repo_root.resolve()
 
 
-def visible_children(path: Path) -> list[Path]:
-    return [child for child in sorted(path.iterdir()) if not child.name.startswith(".")]
+def run_runtime_shape_checks(runtime: RuntimePaths | None = None) -> list[str]:
+    runtime = runtime or runtime_paths(detect_repo_root(Path.cwd()))
+    set_display_root(runtime.repo_root)
+    return [
+        *check_reference_contract(runtime.reference_root),
+        *check_task_contract(runtime.task_root),
+        *check_portable_path_scan(runtime),
+        *check_secret_marker_scan(runtime.docs_root),
+    ]
 
 
-def is_valid_task_date(year: str, month_day: str) -> bool:
-    try:
-        datetime.strptime(f"{year}-{month_day}", "%Y-%m-%d")
-    except ValueError:
-        return False
-    return True
+def report_failures(failures: list[str], repo_root: Path | None = None) -> int:
+    repo_label = f"repo root: {(repo_root or detect_repo_root(Path.cwd())).resolve()}"
+    if failures:
+        print("[FAIL] project-context current runtime shape checks")
+        print(repo_label)
+        for item in failures:
+            print(f"- {item}")
+        return 1
+
+    print("[OK] project-context current runtime shape checks")
+    print(repo_label)
+    return 0
 
 
-def count_lines(path: Path) -> int:
-    return len(read_text(path).splitlines())
+def main(
+    argv: list[str] | None = None,
+    runtime: RuntimePaths | None = None,
+) -> int:
+    args = parse_args(argv)
+    if runtime is None:
+        repo_root = (
+            Path(args.repo_root).resolve()
+            if args.repo_root is not None
+            else detect_repo_root(Path.cwd())
+        )
+        runtime = runtime_paths(repo_root)
+    set_display_root(runtime.repo_root)
+    failures = run_runtime_shape_checks(runtime)
+    return report_failures(failures, runtime.repo_root)
 
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def rel(path: Path) -> str:
-    try:
-        return str(path.relative_to(DISPLAY_ROOT))
-    except ValueError:
-        return str(path)
-
-
-def set_display_root(repo_root: Path) -> None:
-    global DISPLAY_ROOT
-    DISPLAY_ROOT = repo_root.resolve()
+def count_lines(path: Path) -> int:
+    return len(read_text(path).splitlines())
 
 
 if __name__ == "__main__":
