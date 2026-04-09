@@ -5,6 +5,8 @@
 - 이 파일은 레포 로컬 작성 컨텍스트만 다룬다.
 - 에이전트가 직접 따라야 할 스킬 동작은 이 파일이 아니라 shipped skill 파일에 둔다.
 - 스킬과 레포 로컬 자산의 경계는 [`docs/skill-direction.md`](docs/skill-direction.md)를 본다.
+- 이 레포의 로컬 리뷰 기준과 절차는 [`docs/review-method.md`](docs/review-method.md)를 본다.
+- 이 레포의 로컬 dogfood 루프는 [`docs/dogfood-method.md`](docs/dogfood-method.md)를 본다.
 - 이름과 help text는 실제로 증명된 범위 중 가장 좁은 범위를 기준으로 잡고, 얇은 guardrail에 과한 보증 톤을 싣지 않는다.
 - 스킬 문장은 같은 역할이면 더 짧은 쪽을 택하고, 새 정보가 없으면 다른 말로 반복하지 않는다.
 - 문구/README/migration 변경은 가장 작은 실제 대상부터 dogfood하고, 시작을 막는 문제와 drift만 결과로 남긴다.

@@ -1,0 +1,38 @@
+**2026-04-09**
+- `skills/project-context/SKILL.md`, `README.md`, `docs/skill-direction.md`를 다시 읽고 이 스킬의 현재 코어 계약과 local direction 범위를 재확인했다.
+- `../conalog/backoffice`와 `../conalog/patch-fielder`의 `AGENTS.md`, reference overview, representative task docs, backlog surface를 비교해 실제 운용 차이를 정리했다.
+- `python3 skills/project-context/scripts/check_runtime_shape.py --repo-root ../conalog/backoffice`를 실행해 `fieldwork` task log의 absolute path drift를 확인했다.
+- `python3 skills/project-context/scripts/check_runtime_shape.py --repo-root ../conalog/patch-fielder`를 실행해 `ios-blank-page-compat` empty task dir drift를 확인했다.
+- 외부 비교는 OpenAI Harness Engineering, Anthropic Claude Code memory, GitHub Copilot custom instructions support의 공식 문서만 읽고 공통 패턴을 추렸다.
+- 결과를 `IMPROVEMENT-PRINCIPLES.md`, `REPO-FOLLOWUPS.md`, `GARDENING-CHECKER-DESIGN.md`로 나눠 기록했다.
+- 이후 별도 세션에서 받은 `fieldwork` 정리 제안을 다시 읽고, 실제 `fieldwork` 폴더 파일들을 canonical current docs / active rework overlays / validation-history 후보로 분류해 봤다.
+- 이 추가 검토 결과를 반영해, long-running task에는 `task root canonical + workitems overlay + validation/archive/logs` 구조가 유효한 optional pattern이라는 결론을 문서들에 추가했다.
+- 추가로 `../structure-first`의 shipped skill과 README를 읽고, `structure-first-docs`의 기본 section rhythm이 `Intent / Current Facts / Next Actions` 쪽이라는 점을 확인했다.
+- 이를 반영해, `project-context`는 core BRIEF schema를 유지하되 long-running `workitems/`와 design/review 문서에서는 `structure-first`에 가까운 section vocabulary를 쓰는 partial alignment 방향을 문서들에 추가했다.
+- 그 다음 실제로 `skills/project-context/SKILL.md`를 `Purpose / Use / Core Bias / Contract / Operating Model / Anti-Patterns / Guardrail Check / Final Gates` 구조로 다시 썼다.
+- `docs/skill-direction.md`도 `Purpose / Boundaries / Core Bias / Spec Shape / Guardrail / Evolution` 중심으로 재정리해 shipped spec과 로컬 방향 문서의 읽기 흐름을 맞췄다.
+- 이어서 `skills/project-context-migration/SKILL.md`도 같은 spec shape로 재편해 companion skill의 명세 구조를 맞췄다.
+- `skills/project-context/scripts/check_gardening.py`를 추가해 `empty-task-dir`, `legacy-surface-respawn`, `task-extra-doc-growth`, `root-overlay-mixing` 4개 warning/info check를 구현했다.
+- `tests/project_context/test_gardening.py`를 추가하고, runtime shape 테스트 및 migration fixture 테스트와 함께 실행해 모두 통과했다.
+- `python3 skills/project-context/scripts/check_runtime_shape.py`와 `python3 skills/project-context/scripts/check_gardening.py`도 현재 repo 기준으로 둘 다 `[OK]`를 확인했다.
+- `python3 skills/project-context/scripts/check_gardening.py --repo-root <backoffice-repo-root>`를 실행해 recent `STATUS.md` 군집, `fieldwork` extra-doc growth, `root-overlay-mixing`이 잡히는 것을 확인했다. 현재 known drift를 의도대로 포착하는 결과로 봤다.
+- `python3 skills/project-context/scripts/check_gardening.py --repo-root <patch-fielder-repo-root>`를 실행해 `empty-task-dir` 1건만 잡히는 것을 확인했다. 이 결과는 비교적 깔끔했고 false positive로 보이는 항목은 없었다.
+- 이후 README 추가분을 다시 검토한 결과, activation surface를 닫기보다 스킬 사용 트리거를 반복하는 성격이 강해 `README.md`, `README.en.md`의 `When To Use / When Not To Use` 섹션은 되돌렸다.
+- 그 다음 long-running task 개선을 실제 shipped guidance에 반영하기 위해 `skills/project-context/SKILL.md`에 optional advanced pattern을 추가했다. core tree는 유지하되, task가 장기화되면 root에는 canonical current docs만 두고 active overlays는 `workitems/`, proof는 `validation/`, finished overlays는 `archive/`로 분리할 수 있게 했다.
+- 같은 방향을 `skills/project-context-migration/SKILL.md`에도 반영해 migration 시 long-running task surface를 정리하는 기준을 맞췄다.
+- `docs/skill-direction.md`에는 이 패턴이 optional advanced guidance일 뿐 required contract는 아니라는 점을 더 분명히 적었다.
+- `skills/project-context/scripts/check_gardening.py` suggestion 문구와 `tests/project_context/test_gardening.py` 기대값도 같은 vocabulary로 맞췄다.
+- 이후 `docs/skill-direction.md`를 다시 검토한 결과, 기준 문서에 process-heavy한 평가 루프와 진행 맥락이 섞여 있다고 판단해 문서를 전면 재작성했다.
+- 새 버전은 역할 경계, core bias, contract/spec/guardrail/evolution 방향 같은 what-why 기준만 남겼고, 리뷰 절차 자체는 `docs/review-method.md`로 분리했다.
+- `AGENTS.md`에도 `docs/review-method.md` 경로를 추가해 이 레포의 로컬 리뷰 방법이 어디에 있는지 바로 찾을 수 있게 했다.
+- 재작성 뒤 `python3 -m unittest discover -s tests -p 'test_*.py'`, `python3 skills/project-context/scripts/check_runtime_shape.py`, `python3 skills/project-context/scripts/check_gardening.py`를 다시 실행해 모두 통과했다.
+- 그 다음 `../conalog/backoffice/docs/reference/conventions/task-working-docs.md`와 실제 `working/README.md` 사례를 다시 읽었다.
+- 여기서 흡수 가치가 있다고 본 것은 네 가지였다: root에는 stable docs만 남긴다, 임시 실행 메모는 별도 helper lane으로 뺀다, 흡수 후 archive로 내린다, done/undone authority를 고정한다.
+- 반대로 `working/README.md` 자체, `IMPLEMENTATION_BACKLOG.md`, `Open/Archived/Done Rule`의 정확한 shape는 repo-local 성격이 강해 코어에 올리지 않기로 했다.
+- 이 판단을 반영해 shipped `project-context`, migration skill, `docs/skill-direction.md`, `docs/review-method.md`, gardening suggestion, 테스트 기대값을 모두 더 약한 helper-lane vocabulary로 조정했다.
+- 이어서 helper lane 예시 이름도 `working/`으로 통일했다. `workitems/`는 현재 guidance와 current research docs에서는 내리고, append-only logs에는 당시 대안으로 남겨 두었다.
+- 그 다음 실제 dogfood 루프가 아직 문서화돼 있지 않다는 점을 보완하기 위해 `docs/dogfood-method.md`를 추가했다.
+- method는 activation, write, reopen, guardrail, drift의 다섯 pass로 구성했다.
+- 이 same-turn dogfood를 현재 변경셋에 바로 적용하면서, 현재 task `BRIEF.md`의 declared write scope와 일부 current-state 설명이 이미 stale해져 있다는 점을 발견했다.
+- 이 발견을 반영해 `BRIEF.md` scope/current state/working boundary를 실제 write set 기준으로 다시 정리하고, 실행 결과는 `DOGFOOD-RUN.md`로 남겼다.
+- 커밋 전 재검증에서 전체 unittest discover가 latest main 의 tests/project_context/test_task_logs.py 경로 구분자 기대치 때문에 macOS에서 실패함을 확인했고, BRIEF.md 와 DOGFOOD-RUN.md 의 validation 표현을 그 실제 상태에 맞게 바로잡았다.

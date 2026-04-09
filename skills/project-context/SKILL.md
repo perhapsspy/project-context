@@ -1,11 +1,30 @@
 ---
 name: project-context
-description: Keep coding-agent working context in ordinary project files with reusable reference notes and dated task records.
+description: Keep durable repo context for session resume, handoff, long-running work, and multi-agent follow-through.
 ---
 
 # Project Context
 
+## Purpose
+
 Keep working context in ordinary repository files so later sessions can resume without rebuilding state from scratch.
+
+## Use / Do Not Use
+
+- Use this skill when the work should leave durable repo context another session can reopen from.
+- Use it when you are resuming or extending a long-running task that needs durable repo context.
+- Use it when the work needs reusable reference notes, a current task brief, and an append-only execution trail.
+- Do not bootstrap the layout for read-only questions, reviews, or one-shot inspections unless the work is explicitly meant to leave durable project-context files behind.
+- Do not treat the bootstrap path here as a migration plan for scattered legacy docs; choose an explicit adoption or migration approach instead.
+
+## Core Bias
+
+- Ordinary repo files over external systems or hidden memory.
+- Reusable topic context in `docs/reference/**`; current task reopen state in `BRIEF.md`; append-only trail in `logs/*.md`.
+- Small contract over many top-level surfaces.
+- Repo-relative or stable placeholder paths over user-specific paths.
+- When task reuse is unclear, prefer a new dated task.
+- Never store secrets.
 
 ## Contract
 
@@ -17,53 +36,54 @@ docs/
     logs/{DECISIONS,WORKLOG}.md
 ```
 
-- `docs/reference/` holds reusable project-domain context by topic: conventions, constraints, and integration patterns. Write canonical topic detail there, not in task logs. If a task updates reference content, keep the path, rationale, and change trace in the task. Keep paths lowercase kebab-case and use `rg`, not an index.
+- `docs/reference/` holds reusable project-domain context by topic: conventions, constraints, and integration patterns. Write canonical topic detail there, not in task logs. Keep paths lowercase kebab-case and use `rg`, not an index.
 - `docs/tasks/yyyy/mm-dd/<task-slug>/` is the default task workspace for most real work, split into one rewrite-only overview (`BRIEF.md`) and append-only history (`logs/DECISIONS.md`, `logs/WORKLOG.md`).
-- `BRIEF.md` is the rewrite-only canonical task overview for reopen and handoff. Keep goal, scope, current understanding, current state, next step, blockers, and any current validation or boundary notes another session needs. Do not force it to stay tiny when the task genuinely needs more current context.
-- Prefer heading-based top-level structure in `BRIEF.md`. Use section headings such as `Goal`, `Scope`, `Current Understanding`, `Current State`, `Next Step`, `Related Docs`, or `Working Boundary`, and avoid turning the whole file into a flat `key: value` bullet list.
-- Keep `BRIEF.md` focused on current reopen/handoff context. Do not turn it into append history, long decision rationale, or reusable topic documentation.
+- `BRIEF.md` is the rewrite-only canonical task overview for reopen and handoff. Keep current goal or intent, scope, current understanding or facts, current state, next step or next actions, and any validation or boundary notes another session needs.
+- Prefer heading-based top-level structure in `BRIEF.md`. Common headings include `Goal` or `Intent`, `Scope`, `Current Understanding` or `Current Facts`, `Current State`, `Next Step` or `Next Actions`, `Related Docs`, `Working Boundary`, and `Latest Validation`. Do not turn the brief into append history, long rationale, or reusable topic docs.
 - If `BRIEF.md` and logs are not enough for the task, keep extra task-local docs for the missing detail only. Name them for their role, not as generic overflow files, and mention them briefly in `BRIEF.md` when they matter for reopen or handoff.
+- If one dated task turns into a long-running working area, keep the root focused on `BRIEF.md` plus canonical current docs. A repo-local helper lane such as `working/` and `archive/` may hold temporary notes, but it stays optional and repo-local.
 - Keep saved doc paths portable: use repo-relative paths or stable placeholders like `<repo-root>`, `<task-root>`, and `$CODEX_HOME`, not absolute or user-specific paths.
-- Only logs are append-only. Add entries under `**YYYY-MM-DD**` headings in the current user language. Keep each latest `DECISIONS.md` entry as one ADR-lite 4-bullet block and keep the latest `WORKLOG.md` block to meaningful execution evidence another session may need; fold routine checks into `BRIEF.md` `latest validation` unless they changed task state.
-- When direct log editing is avoidable, use the bundled `scripts/task_logs.py` entrypoints instead of manually rewriting `logs/*.md`: `worklog append` adds one bullet to the current or newer `WORKLOG` date block for an existing task with `BRIEF.md`, `decision append` writes one 4-bullet `DECISIONS` block atomically, and each surface has its own `tail` / `check`.
+- Only logs are append-only. Add entries under `**YYYY-MM-DD**` headings in the current user language. Keep each latest `DECISIONS.md` entry as one ADR-lite 4-bullet block and keep the latest `WORKLOG.md` block to meaningful execution evidence another session may need; fold routine checks into `BRIEF.md` `Latest Validation` unless they changed task state.
+- When direct log editing is avoidable, prefer the bundled `scripts/task_logs.py` entrypoints over manual rewrites of `logs/*.md`.
 - Subagents start without inherited context; pass only a small task brief: goal, constraints, relevant boundary notes if you have them, validation command, artifact path.
-- If an older task looks close to the work at hand, do not continue it immediately. Read only its `BRIEF.md` first, then decide whether it is truly the same unfinished line of work.
-- Reuse an existing task only when the main question or intended output is still the same. Similar files, similar topic, or the same subsystem are not enough by themselves.
-- Treat `declared read scope` and `declared write scope` as quick boundary hints, not as the task's identity. Use them when they exist, but decide reuse from the work itself first: same goal, same unresolved question, same expected output.
-- Start a new dated task when the goal changed, the success condition changed, or you had to inspect a materially different cluster of files to understand the work. If you are unsure, prefer a new task and link the older one in `Related Docs`.
-- When unsure, prefer a new task. Duplicate tasks are easier to clean up later than a merged task that mixed two different investigations.
-- Never store secrets.
 
-## Working Loop
+## Operating Model
 
-Read-only work stops here: for questions, reviews, and one-shot inspections, stay read-only and do not bootstrap the layout or create a dated task unless the work is meant to leave durable project-context files behind.
+If the repo is effectively empty, bootstrap the layout first. If it already has `docs/reference/` and `docs/tasks/...`, use the normal flow below. Otherwise choose an explicit adoption approach instead of treating bootstrap as migration.
 
-If the repo is effectively empty, bootstrap the layout first.
-If the repo already has `docs/reference/` and `docs/tasks/...`, use the normal flow below.
-Otherwise, choose an explicit adoption approach instead of treating the bootstrap path below as a migration plan.
-
-For that bootstrap case, create `docs/reference/` and one dated task with `BRIEF.md` and `logs/DECISIONS.md` / `logs/WORKLOG.md`.
+For bootstrap, create `docs/reference/` and one dated task with `BRIEF.md` and `logs/DECISIONS.md` / `logs/WORKLOG.md`.
 
 1. Search `docs/reference/**/*.md` with `rg`; open at most 3 reference files, preferring the narrowest topic files closest to the active task.
 2. If an older task looks related, open at most one `docs/tasks/...` task and read `BRIEF.md` first. Do not open logs until the brief still looks like the same unfinished line of work.
 3. Reuse that older task only if the main question and expected output still match. Use declared boundary notes as a quick hint when they exist, but start a new dated task when you had to widen the investigation into a different file cluster or a different decision.
-4. For most write-bearing tasks, create or update one dated task, rewrite `BRIEF.md` in place as the current overview, append decisions/execution only to the logs, keep extra task-local docs only when the task genuinely needs them, and write reusable topic detail into `docs/reference/` directly when it becomes clear. Skip task creation only for very small, low-judgment, immediately-finished changes.
-5. If reference/task search finds no relevant context, proceed with explicit assumptions and record corrections after execution.
+4. For most write-bearing tasks, create or update one dated task, rewrite `BRIEF.md` in place as the current overview, append decisions and execution only to the logs, keep extra task-local docs only when the task genuinely needs them, and write reusable topic detail into `docs/reference/` directly when it becomes clear. Skip task creation only for very small, low-judgment, immediately-finished changes.
+5. If task-local root docs keep multiplying, first decide whether durable topic detail belongs in `docs/reference/**`. If the work is still one long-running task, separate canonical root docs from temporary working notes instead of stacking more mixed-purpose root files.
+6. If reference or task search finds no relevant context, proceed with explicit assumptions and record corrections after execution.
 
-For log-only operations, prefer the bundled script from the installed skill directory:
+For log-only operations, prefer `scripts/task_logs.py`. In PowerShell, prefer `--bullet=` over `--bullet ""` when you need an intentionally empty value.
 
-```bash
-python3 scripts/task_logs.py worklog append --task-root docs/tasks/2026/04-05/sample-task --date 2026-04-05 --bullet "Ran focused tests"
-python3 scripts/task_logs.py decision append --task-root docs/tasks/2026/04-05/sample-task --date 2026-04-05 --background "배경: redirect bug reproduced" --options "선택지: hotfix now vs patch after repro" --decision "결정: guard redirect before session refresh" --impact "영향: login task unblock"
-python3 scripts/task_logs.py worklog tail --task-root docs/tasks/2026/04-05/sample-task
-python3 scripts/task_logs.py decision check --task-root docs/tasks/2026/04-05/sample-task
-```
+## Anti-Patterns
 
-If you are driving the CLI from PowerShell and need to pass an intentionally empty bullet for a failure-path check, prefer `--bullet=` over `--bullet ""` so the value reaches the script.
+- Bootstrapping project-context files for read-only work that is not meant to leave durable context behind.
+- Reusing a task because of topic similarity rather than the same unresolved work and expected output.
+- Letting `BRIEF.md` turn into append history, reusable domain docs, or long rationale.
+- Creating generic overflow files instead of role-named task-local docs.
+- Mixing canonical current docs, temporary working notes, and finished remnants at one task root.
+- Saving absolute user-specific paths or secrets in docs.
+- Treating declared read and write scope as the task identity instead of quick boundary hints.
 
 ## Guardrail Check
 
 - Checks only current runtime shape: required paths/files, latest log-block shape, task/reference path markers, and secret-like markers.
-- Does not judge candidate ownership, semantic quality, full history, merge correctness, or broader scope discipline.
+- Does not judge ownership, semantic quality, full history, merge correctness, or broader scope discipline.
 
 Run the bundled checker by resolving the skill-relative script `scripts/check_runtime_shape.py` from the installed `project-context` skill directory and executing it from the active repo root. If running from a subdirectory, pass `--repo-root <path>` when nested `docs` trees could confuse root detection.
+
+## Final Gates
+
+- Can a later session reopen the work from `BRIEF.md` without reconstructing state from scratch?
+- Is reusable topic knowledge in `docs/reference/**` instead of buried in task logs?
+- Is the latest execution and decision trail confined to `logs/*.md`?
+- If the task became long-running, are canonical root docs not confusingly mixed with temporary working notes and finished remnants?
+- Did task reuse follow the unresolved work and expected output rather than topic similarity?
+- Are paths portable and secrets absent?
