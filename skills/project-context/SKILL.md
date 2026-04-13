@@ -44,7 +44,7 @@ docs/
 - If one dated task turns into a long-running working area, keep the root focused on `BRIEF.md` plus canonical current docs. A repo-local helper lane such as `working/` and `archive/` may hold temporary notes, but it stays optional and repo-local.
 - Keep saved doc paths portable: use repo-relative paths or stable placeholders like `<repo-root>`, `<task-root>`, and `$CODEX_HOME`, not absolute or user-specific paths.
 - Only logs are append-only. Add entries under `**YYYY-MM-DD**` headings in the current user language. Keep each latest `DECISIONS.md` entry as one ADR-lite 4-bullet block and keep the latest `WORKLOG.md` block to meaningful execution evidence another session may need; fold routine checks into `BRIEF.md` `Latest Validation` unless they changed task state.
-- When direct log editing is avoidable, prefer the bundled `scripts/task_logs.py` entrypoints over manual rewrites of `logs/*.md`.
+- For any task that updates logs, use the bundled `scripts/task_logs.py` entrypoints as the default write path instead of hand-patching `logs/*.md`.
 - Subagents start without inherited context; pass only a small task brief: goal, constraints, relevant boundary notes if you have them, validation command, artifact path.
 
 ## Operating Model
@@ -56,11 +56,11 @@ For bootstrap, create `docs/reference/` and one dated task with `BRIEF.md` and `
 1. Search `docs/reference/**/*.md` with `rg`; open at most 3 reference files, preferring the narrowest topic files closest to the active task.
 2. If an older task looks related, open at most one `docs/tasks/...` task and read `BRIEF.md` first. Do not open logs until the brief still looks like the same unfinished line of work.
 3. Reuse that older task only if the main question and expected output still match. Use declared boundary notes as a quick hint when they exist, but start a new dated task when you had to widen the investigation into a different file cluster or a different decision.
-4. For most write-bearing tasks, create or update one dated task, rewrite `BRIEF.md` in place as the current overview, append decisions and execution only to the logs, keep extra task-local docs only when the task genuinely needs them, and write reusable topic detail into `docs/reference/` directly when it becomes clear. Skip task creation only for very small, low-judgment, immediately-finished changes.
+4. For most write-bearing tasks, create or update one dated task, rewrite `BRIEF.md` in place as the current overview, append decisions and execution to the logs through `scripts/task_logs.py`, keep extra task-local docs only when the task genuinely needs them, and write reusable topic detail into `docs/reference/` directly when it becomes clear. Skip task creation only for very small, low-judgment, immediately-finished changes.
 5. If task-local root docs keep multiplying, first decide whether durable topic detail belongs in `docs/reference/**`. If the work is still one long-running task, separate canonical root docs from temporary working notes instead of stacking more mixed-purpose root files.
 6. If reference or task search finds no relevant context, proceed with explicit assumptions and record corrections after execution.
 
-For log-only operations, prefer `scripts/task_logs.py`. In PowerShell, prefer `--bullet=` over `--bullet ""` when you need an intentionally empty value.
+For log writes, use `scripts/task_logs.py`. `append` is the normal path even when the previous latest block drifted, because it can add a new valid latest block without hand-patching the file first. In PowerShell, prefer `--bullet=` over `--bullet ""` when you need an intentionally empty value.
 
 ## Anti-Patterns
 

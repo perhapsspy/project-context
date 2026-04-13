@@ -27,6 +27,8 @@ Or copy the skill(s) you need directly into `skills`. For migration/adoption wor
 - Always use $project-context for work
 ```
 
+As an operating habit, when the skill updates task logs, use the bundled `skills/project-context/scripts/task_logs.py` flow for append/check instead of making direct patches to `logs/*.md` by default.
+
 ## Prompt Examples
 
 - General work after wiring it into `AGENTS.md`: `Fix the login redirect bug`

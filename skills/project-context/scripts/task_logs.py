@@ -33,6 +33,17 @@ class LatestLogBlock:
 
 
 @dataclass(frozen=True)
+class RawLatestLogBlock:
+    path: Path
+    heading: str
+    block_lines: tuple[str, ...]
+
+    @property
+    def date(self) -> str:
+        return self.heading.strip("*")
+
+
+@dataclass(frozen=True)
 class CommandTarget:
     task_root: Path
     log_name: str
@@ -212,20 +223,24 @@ def infer_repo_root(task_root: Path) -> Path | None:
 def append_log_bullet(path: Path, date_text: str, bullet: str) -> None:
     normalized_date = normalize_date(date_text)
     bullet_line = normalize_bullet(bullet)
-    path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_log_path_writable(path)
 
     if not path.exists() or path.stat().st_size == 0:
         path.write_text(f"**{normalized_date}**\n{bullet_line}\n", encoding="utf-8")
         return
 
-    latest_block = read_latest_block(path)
-    if normalized_date < latest_block.date:
+    latest_block = latest_raw_block_or_none(path)
+    if latest_block is not None and normalized_date < latest_block.date:
         raise LogToolError(
             f"cannot append older date {normalized_date} before latest block {latest_block.date}"
         )
 
     with path.open("a", encoding="utf-8", newline="") as handle:
-        if normalized_date == latest_block.date:
+        if (
+            latest_block is not None
+            and normalized_date == latest_block.date
+            and raw_block_has_only_bullets(latest_block)
+        ):
             if not ends_with_newline(path):
                 handle.write("\n")
             handle.write(f"{bullet_line}\n")
@@ -243,11 +258,10 @@ def append_decision_block(
 ) -> None:
     normalized_date = normalize_date(date_text)
     normalized_lines = [normalize_bullet(line) for line in decision_lines]
-    path.parent.mkdir(parents=True, exist_ok=True)
+    ensure_log_path_writable(path)
 
-    if path.exists() and path.stat().st_size > 0:
-        latest_block = read_latest_block_for_log(path, DECISIONS_LOG_NAME)
-        if normalized_date < latest_block.date:
+    latest_block = latest_raw_block_or_none(path)
+    if latest_block is not None and normalized_date < latest_block.date:
             raise LogToolError(
                 f"cannot append older date {normalized_date} before latest block {latest_block.date}"
             )
@@ -263,6 +277,12 @@ def render_latest_block(block: LatestLogBlock) -> str:
 
 
 def read_latest_block(path: Path) -> LatestLogBlock:
+    raw_block = read_latest_raw_block(path)
+    bullet_lines = validate_raw_block_bullets(raw_block.block_lines)
+    return LatestLogBlock(path=path, heading=raw_block.heading, bullet_lines=bullet_lines)
+
+
+def read_latest_raw_block(path: Path) -> RawLatestLogBlock:
     if not path.exists():
         raise LogToolError(f"missing log file: {path}")
     if not path.is_file():
@@ -274,12 +294,11 @@ def read_latest_block(path: Path) -> LatestLogBlock:
         if not stripped:
             continue
         if LOG_DATE_HEADING_RE.match(stripped):
-            if not block_lines_reversed:
-                raise LogToolError("latest date block is empty")
-            bullet_lines = tuple(reversed(block_lines_reversed))
-            if any(not line.startswith("- ") for line in bullet_lines):
-                raise LogToolError("latest date block must contain only bullet lines")
-            return LatestLogBlock(path=path, heading=stripped, bullet_lines=bullet_lines)
+            return RawLatestLogBlock(
+                path=path,
+                heading=stripped,
+                block_lines=tuple(reversed(block_lines_reversed)),
+            )
         block_lines_reversed.append(stripped)
 
     raise LogToolError("missing `**YYYY-MM-DD**` heading")
@@ -295,6 +314,40 @@ def read_latest_block_for_log(path: Path, log_name: str) -> LatestLogBlock:
 def validate_decisions_block(block: LatestLogBlock) -> None:
     if len(block.bullet_lines) != DECISION_LINE_COUNT:
         raise LogToolError("latest decision block must contain exactly 4 bullet lines")
+
+
+def latest_raw_block_or_none(path: Path) -> RawLatestLogBlock | None:
+    if not path.exists() or path.stat().st_size == 0:
+        return None
+
+    try:
+        return read_latest_raw_block(path)
+    except LogToolError as exc:
+        if str(exc) == "missing `**YYYY-MM-DD**` heading":
+            return None
+        raise
+
+
+def validate_raw_block_bullets(block_lines: tuple[str, ...]) -> tuple[str, ...]:
+    if not block_lines:
+        raise LogToolError("latest date block is empty")
+    if any(not line.startswith("- ") for line in block_lines):
+        raise LogToolError("latest date block must contain only bullet lines")
+    return block_lines
+
+
+def raw_block_has_only_bullets(block: RawLatestLogBlock) -> bool:
+    try:
+        validate_raw_block_bullets(block.block_lines)
+    except LogToolError:
+        return False
+    return True
+
+
+def ensure_log_path_writable(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() and not path.is_file():
+        raise LogToolError(f"log path is not a file: {path}")
 
 
 def block_prefix(path: Path, normalized_date: str) -> str:

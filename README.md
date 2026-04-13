@@ -25,6 +25,8 @@ npx skills add perhapsspy/project-context
 - 작업 시 항상 $project-context 를 사용해
 ```
 
+운영 습관으로, task logs를 갱신할 때는 bundled `skills/project-context/scripts/task_logs.py`로 append/check 하고 `logs/*.md`를 직접 patch하는 흐름은 기본값으로 두지 않는다.
+
 ## 프롬프트 예시
 
 - AGENTS.md에 넣어둔 뒤 일반 작업: `로그인 리다이렉트 버그를 수정해줘`
