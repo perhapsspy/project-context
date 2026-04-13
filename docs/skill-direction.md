@@ -26,6 +26,7 @@
 - task 재사용은 label 유사성보다 "정말 같은 미완료 작업선과 같은 기대 산출물인가"를 기준으로 본다.
 - `BRIEF.md`는 current state를 다시 여는 문서이지, append history나 reusable domain doc이 되어서는 안 된다.
 - 에이전트의 정상적인 log write path는 bundled `task_logs.py`로 수렴시킨다. `logs/*.md` 직접 편집은 코어 task flow의 기본값이 아니다.
+- `BRIEF.md`와 logs만으로 부족해 에이전트가 임시 작업 문서를 더 만들면, task root에 generic checklist를 늘리기보다 역할 이름을 붙여 `working/` 아래에 두는 쪽을 기본값으로 본다.
 - long-running task 문제도 코어 required tree를 늘려 해결하지 않는다. 먼저 root current docs, 임시 working notes, finished remnants의 혼합을 줄이는 쪽을 우선한다.
 - helper lane 예시는 `working/`과 `archive/` 정도면 충분하다. 이 역시 repo-local aid일 뿐이며, core contract나 required tree는 아니다.
 

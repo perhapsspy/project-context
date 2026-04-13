@@ -49,7 +49,7 @@ Audit scattered repository docs and notes before moving the right working contex
 - When migration creates or updates `REFERENCE`, keep canonical content in the reference file and record mapping, rationale, and change trace in the migration task.
 - Normalize saved doc paths to repo-relative paths or stable placeholders.
 - Before promoting anything into `REFERENCE`, ask whether another task would reuse it as agent working context. If not, prefer `TASK`, `LEAVE`, or `ARCHIVE`.
-- When migration creates new tasks, follow the current `project-context` task-file shape guidance. If `BRIEF.md` and logs are not enough, keep extra task-local docs for the missing detail instead of forcing everything into the brief.
+- When migration creates new tasks, follow the current `project-context` task-file shape guidance. If `BRIEF.md` and logs are not enough, keep extra task-local docs for the missing detail instead of forcing everything into the brief. If those docs are temporary agent working material, prefer role-named files under `working/` instead of new generic checklist files at the task root.
 - When the migration task appends to `logs/*.md`, use the bundled `project-context` `scripts/task_logs.py` path instead of hand-editing the logs during normal flow.
 - If migration consolidates a long-running task area, keep the root focused on `BRIEF.md` plus canonical current docs. A repo-local helper lane such as `working/` stays optional and should exist only when it clearly lowers reopen cost.
 - Keep migrated `WORKLOG.md` entries to meaningful execution deltas; keep ordinary lint/test reruns out of `BRIEF.md` unless they change current confidence, state, or the next action.
