@@ -32,7 +32,8 @@
 ## Spec Shape Direction
 - shipped spec은 `Purpose`, `Use / Do Not Use`, `Core Bias`, `Contract`, `Operating Model`, `Anti-Patterns`, `Guardrail`, `Final Gates`처럼 역할이 분리된 구성을 우선한다.
 - 이유는 사용 트리거, 보장 범위, 실제 동작, 금지 패턴, 종료 점검을 섞지 않아야 문구와 drift가 함께 줄기 때문이다.
-- `project-context`는 task tracking이 목적이므로 `Scope`, `Working Boundary`, `Latest Validation` 같은 운영 heading은 계속 허용한다.
+- `project-context`의 기본 `BRIEF.md` skeleton은 `Goal`, `Scope`, `Current Understanding` 또는 `Current Facts`, `Current State`, `Next Step` 정도로 잡는다.
+- `Scope`, `Working Boundary`, `Latest Validation`, `Related Docs` 같은 운영 heading은 계속 허용하지만 default skeleton은 아니며, reopen cost를 실제로 낮출 때만 붙인다.
 - heading vocabulary는 한 표현에 과하게 묶지 않는다. `Goal/Intent`, `Current Understanding/Current Facts`, `Next Step/Next Actions` 같은 좁은 범위의 동의어는 허용 가능하다.
 
 ## Guardrail Direction
