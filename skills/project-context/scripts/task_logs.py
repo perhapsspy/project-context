@@ -64,10 +64,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "Append, tail, or validate project-context task logs without "
             "rewriting existing log history."
         ),
-        epilog=(
-            "append expects an existing task root with BRIEF.md. "
-            "In PowerShell, use --bullet= when you need to pass an empty string deliberately."
-        ),
+        epilog="append expects an existing task root with BRIEF.md.",
     )
     surfaces = parser.add_subparsers(dest="surface", required=True)
 
@@ -86,7 +83,7 @@ def add_worklog_surface(
     append_parser = commands.add_parser("append", help="append one bullet to WORKLOG.md")
     add_task_root_arg(append_parser)
     append_parser.add_argument("--date", required=True, help="target log date in YYYY-MM-DD")
-    append_parser.add_argument("--bullet", required=True, help="bullet text to append")
+    append_parser.add_argument("entry", help="one worklog bullet to append")
 
     tail_parser = commands.add_parser("tail", help="print the latest WORKLOG block only")
     add_task_root_arg(tail_parser)
@@ -107,10 +104,10 @@ def add_decision_surface(
     )
     add_task_root_arg(append_parser)
     append_parser.add_argument("--date", required=True, help="target log date in YYYY-MM-DD")
-    append_parser.add_argument("--background", required=True, help="background bullet text")
-    append_parser.add_argument("--options", required=True, help="options bullet text")
-    append_parser.add_argument("--decision", required=True, help="decision bullet text")
-    append_parser.add_argument("--impact", required=True, help="impact bullet text")
+    append_parser.add_argument("background", help="first decision bullet")
+    append_parser.add_argument("decision", help="second decision bullet")
+    append_parser.add_argument("why", help="third decision bullet")
+    append_parser.add_argument("impact", help="fourth decision bullet")
 
     tail_parser = commands.add_parser("tail", help="print the latest DECISIONS block only")
     add_task_root_arg(tail_parser)
@@ -135,7 +132,7 @@ def run_command(args: argparse.Namespace) -> int:
 
     if args.surface == "worklog" and args.command == "append":
         ensure_append_target(target.task_root)
-        append_log_bullet(log_path, args.date, args.bullet)
+        append_log_bullet(log_path, args.date, args.entry)
         print(f"[OK] appended {display_log_path}")
         return 0
 
@@ -144,7 +141,7 @@ def run_command(args: argparse.Namespace) -> int:
         append_decision_block(
             log_path,
             args.date,
-            (args.background, args.options, args.decision, args.impact),
+            (args.background, args.decision, args.why, args.impact),
         )
         print(f"[OK] appended {display_log_path}")
         return 0

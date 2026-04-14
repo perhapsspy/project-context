@@ -1,8 +1,9 @@
 # context surfaces
 
-`project-context`는 프로젝트 맥락을 `reference`와 `tasks`로 나눈다.
+`project-context`는 프로젝트 맥락을 몇 개의 루트 surface로 나눈다.
 
 - 이 surface들에 남기는 경로는 repo-relative나 `<repo-root>`, `<task-root>`, `$CODEX_HOME` 같은 project-owned placeholder를 우선한다.
+- 세부 파일 shape와 운영 규칙은 durable model이 아니라 shipped skill contract가 소유한다.
 
 ## reference
 
@@ -13,5 +14,9 @@
 
 - `docs/tasks/yyyy/mm-dd/<task-slug>/`는 대부분의 실제 작업이 머무는 task surface다.
 - task 안에는 현재 개요와 작업 흔적이 남는다.
-- task가 더 많은 구조를 필요로 하면 task-local 문서를 추가할 수 있다.
-- 세부 파일 shape와 운영 규칙은 durable model이 아니라 shipped skill contract가 소유한다.
+- task 내부 문서의 owner 구분은 shipped skill contract를 따른다.
+
+## backlog
+
+- `docs/BACKLOG.md`는 선택적 repo-level surface다.
+- 저장소 수준의 future work를 짧게 둘 때 쓴다.

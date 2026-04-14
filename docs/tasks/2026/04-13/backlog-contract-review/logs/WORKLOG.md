@@ -1,0 +1,33 @@
+**2026-04-13**
+- shipped `project-context` 계약, supporting docs, `work-board` 스킬, `backoffice` dogfood task docs를 읽고 backlog/carry-over 문제를 missing global board가 아니라 contract-boundary 문제로 정리했다.
+- shipped skill, `README`, local direction/reference docs를 고쳐 `BRIEF`가 immediate next move만 맡고, 여러 carry-over는 role-named task-local backlog로 넘기며, repo-level board는 코어 계약 밖에 두도록 맞췄다. 이후 runtime-shape validation도 통과했다.
+- 아직 active task가 아닌 service improvement를 위해 optional `docs/BACKLOG.md` overlay를 허용하되, done 시 누적하지 않고 지우며 task-progress mirroring은 하지 않는 방향으로 guidance를 다시 맞췄다.
+
+**2026-04-14**
+- reviewer subagent 둘을 병렬로 돌려 문서 역할 mismatch를 다시 점검했다.
+- `README`는 랜딩 페이지 수준의 소개만 남기도록 줄였고, `docs/reference/model/context-surfaces.md`는 top-level surface taxonomy 기준으로 다시 썼다.
+- `docs/skill-direction.md`는 철학과 진화 기준만 남기는 방향 문서로 다시 썼고, shipped `SKILL.md`도 반복되는 backlog 문구를 더 짧게 압축했다.
+- 현재 task logs의 영문 항목도 repo 기본 언어에 맞게 한글로 바로잡았다.
+- AGENTS.md에 문서 역할 선판단, README/방향 문서/reference의 역할 차이, 로컬 문서와 task logs의 기본 한국어 원칙을 추가했다.
+- 리뷰 findings를 반영해 shipped SKILL.md에 repo backlog handoff rule을 명시하고, README들에서 task_logs 운영 문장을 제거했으며, docs/skill-direction.md의 concrete owner/backlog 표현을 더 걷어냈다.
+- SKILL.md의 Contract를 core shape와 optional additions로 분리하고, Operating Model도 mode choice와 단계형 흐름으로 다시 끊어 한 줄에 여러 판단이 섞이지 않게 정리했다.
+- SKILL.md Contract를 core/optional 이중 블록 대신 하나의 tree에 [optional] 표기를 넣는 형태로 다시 정리하고, 아래 설명도 overall rule과 surface별 rule만 남기도록 압축했다.
+- SKILL.md Contract에서 공용 설명 중 surface별로 내려갈 수 있는 규칙을 각 항목 설명으로 흡수하고, 중복되던 overall/global bullets를 제거했다.
+- 브레인스토밍 서브에이전트 제안을 반영해 README는 context-surfaces 링크만 남기도록 더 줄였고, skill-direction은 Purpose / What To Preserve / What To Avoid / When To Revise 형태로 다시 썼으며, context-surfaces는 inventory-only로 더 얇게 만들고, SKILL.md도 surface one-liner와 7단계 operating model 중심으로 다시 압축했다.
+- README와 README.en은 최근 축소 전의 core shape 소개로 되돌리고,  언급은 제거했다. 이제 README에는 와 만 바로 보이게 남긴다.
+- README와 README.en은 최근 축소 전의 core shape 소개로 되돌리고, docs/BACKLOG.md 언급은 제거했다. 이제 README에는 docs/reference/와 docs/tasks/...만 바로 보이게 남긴다.
+- SKILL.md Operating Model을 Read, Check, Decide, Write, Optional surfaces, Fallback의 6단계 흐름으로 다시 구성해 실행 순서 중심으로 읽히게 바꿨다.
+- SKILL.md에서 docs/BACKLOG.md handoff를 active 시 제거로 단정하고, Operating Model을 task shell 확보와 canonical surfaces write로 분리했으며, task_logs.py 안내는 계약부 한 곳으로 모았다.
+- SKILL.md에서 Write canonical surfaces 단계에 logs/DECISIONS.md와 logs/WORKLOG.md를 직접 적고, task_logs.py 규칙은 기본 write path, append 기본값, PowerShell caveat로 나눠 정리했다.
+- SKILL.md에서 task_logs.py 정본 규칙을 append 기본 write path 한 줄과 PowerShell caveat 한 줄로 압축했다.
+- dogfood-method 기준으로 현재 task를 reopen해 README 진입, SKILL.md 확인, task_logs.py append, BRIEF 갱신, tests/checkers 실행까지 한 턴에서 다시 밟았다.
+- guardrail pass에서는 unittest 61개와 runtime shape check가 통과했고, gardening check는 docs/tasks/2026/04-09/backoffice-patch-fielder-dogfood-review의 extra top-level docs warning만 남겼다.
+- 추가 코드 변경은 하지 않았고, mature research task도 early signal로 잡히는 현재 heuristic을 운영 trade-off로 본다.
+- read-only drift pass로 backoffice-patch-fielder dogfood review task와 check_gardening.py를 다시 대조했고, extra-doc-growth warning은 false positive보다는 intentionally coarse한 gardening hint로 보는 쪽이 맞다고 정리했다.
+- task_logs.py --help를 다시 확인해 PowerShell caveat가 스크립트 도움말에 이미 있으므로, SKILL 본문에서는 해당 메모를 제거해도 된다고 판단했다.
+- SKILL.md에 durable-context bootstrap 조건, start-with read guidance, explicit log shapes, helper-script fallback, parent-agent canonical ownership, existing-task-language 우선 규칙을 반영했다.
+- SKILL.md에 WORKLOG 장황화 금지 문장을 Anti-Patterns에 추가하고, backlog 예시, rg 문장, appended decision block 표현, explicit adoption 보강만 반영했다.
+- task_logs.py를 개편해 worklog append는 단일 positional entry, decision append는 background/decision/why/impact positional 인자로 바꿨다.
+- task_logs.py --help와 decision append --help를 확인했고, 전체 unittest 61개와 runtime/gardening check도 현재 기대대로 통과했다.
+- SKILL.md에서 role-named backlog를 purpose-named backlog로 바꾸고, dated sections 표현과 task_logs.py 경로 해석 문장을 보강했으며, current reopen state와 WORKLOG block 문장도 다듬었다.
+- SKILL.md에서 role-named 잔여 표현을 purpose-named로 통일하고, BRIEF/Core Bias의 reopen 문장을 resume 기준으로 다듬었다.

@@ -54,7 +54,6 @@ class AppendLogTests(unittest.TestCase):
                         str(task_dir),
                         "--date",
                         "2026-04-05",
-                        "--bullet",
                         "created the first entry",
                     ]
                 )
@@ -136,7 +135,6 @@ class AppendLogTests(unittest.TestCase):
                         str(missing_task_dir),
                         "--date",
                         "2026-04-05",
-                        "--bullet",
                         "should fail",
                     ]
                 )
@@ -163,7 +161,6 @@ class AppendLogTests(unittest.TestCase):
                         str(task_dir),
                         "--date",
                         "2026-04-05",
-                        "--bullet",
                         "should fail",
                     ]
                 )
@@ -203,13 +200,9 @@ class AppendLogTests(unittest.TestCase):
                         str(task_dir),
                         "--date",
                         "2026-04-05",
-                        "--background",
                         "배경: sample",
-                        "--options",
-                        "선택지: sample",
-                        "--decision",
                         "결정: sample",
-                        "--impact",
+                        "이유: sample",
                         "영향: sample",
                     ]
                 )
@@ -223,8 +216,8 @@ class AppendLogTests(unittest.TestCase):
                 (task_dir / "logs" / "DECISIONS.md").read_text(encoding="utf-8"),
                 "**2026-04-05**\n"
                 "- 배경: sample\n"
-                "- 선택지: sample\n"
                 "- 결정: sample\n"
+                "- 이유: sample\n"
                 "- 영향: sample\n",
             )
 
@@ -235,8 +228,8 @@ class AppendLogTests(unittest.TestCase):
             decisions.write_text(
                 "**2026-04-05**\n"
                 "- 배경: first\n"
-                "- 선택지: first\n"
                 "- 결정: first\n"
+                "- 이유: first\n"
                 "- 영향: first\n",
                 encoding="utf-8",
             )
@@ -244,21 +237,21 @@ class AppendLogTests(unittest.TestCase):
             task_logs.append_decision_block(
                 decisions,
                 "2026-04-05",
-                ("배경: second", "선택지: second", "결정: second", "영향: second"),
+                ("배경: second", "결정: second", "이유: second", "영향: second"),
             )
 
             self.assertEqual(
                 decisions.read_text(encoding="utf-8"),
                 "**2026-04-05**\n"
                 "- 배경: first\n"
-                "- 선택지: first\n"
                 "- 결정: first\n"
+                "- 이유: first\n"
                 "- 영향: first\n"
                 "\n"
                 "**2026-04-05**\n"
                 "- 배경: second\n"
-                "- 선택지: second\n"
                 "- 결정: second\n"
+                "- 이유: second\n"
                 "- 영향: second\n",
             )
 
@@ -275,7 +268,7 @@ class AppendLogTests(unittest.TestCase):
             task_logs.append_decision_block(
                 decisions,
                 "2026-04-05",
-                ("배경: second", "선택지: second", "결정: second", "영향: second"),
+                ("배경: second", "결정: second", "이유: second", "영향: second"),
             )
 
             self.assertEqual(
@@ -285,12 +278,12 @@ class AppendLogTests(unittest.TestCase):
                 "\n"
                 "**2026-04-05**\n"
                 "- 배경: second\n"
-                "- 선택지: second\n"
                 "- 결정: second\n"
+                "- 이유: second\n"
                 "- 영향: second\n",
             )
             block = task_logs.read_latest_block_for_log(decisions, "DECISIONS")
-            self.assertEqual(block.bullet_lines, ("- 배경: second", "- 선택지: second", "- 결정: second", "- 영향: second"))
+            self.assertEqual(block.bullet_lines, ("- 배경: second", "- 결정: second", "- 이유: second", "- 영향: second"))
 
 
 class LatestBlockTests(unittest.TestCase):
@@ -416,8 +409,8 @@ class CheckCommandTests(unittest.TestCase):
             decisions.write_text(
                 "**2026-04-05**\n"
                 "- 배경: sample\n"
-                "- 선택지: sample\n"
                 "- 결정: sample\n"
+                "- 이유: sample\n"
                 "- 영향: sample\n",
                 encoding="utf-8",
             )

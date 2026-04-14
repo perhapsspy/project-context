@@ -7,7 +7,7 @@
 `project-context` is a skill that helps coding agents keep working context in the project, so future sessions can pick up the work without rebuilding the state from scratch. It leaves the minimum useful reference docs and task records as files, so humans can read and edit them directly without relying on a separate system.
 
 - `docs/reference/`: topic-scoped domain context reused across tasks
-- `docs/tasks/...`: dated task records for most real work; each task keeps `BRIEF.md` as the current overview entrypoint and adds logs or task-specific docs only when needed
+- `docs/tasks/...`: dated task records for most real work
 
 The optional `project-context-migration` skill is only for the first cleanup/adoption pass in an existing repository where docs are scattered or only partially moved into this structure.
 
@@ -26,8 +26,6 @@ Or copy the skill(s) you need directly into `skills`. For migration/adoption wor
 ```md
 - Always use $project-context for work
 ```
-
-As an operating habit, when the skill updates task logs, use the bundled `skills/project-context/scripts/task_logs.py` flow for append/check instead of making direct patches to `logs/*.md` by default.
 
 ## Prompt Examples
 
