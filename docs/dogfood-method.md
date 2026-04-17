@@ -14,7 +14,7 @@
 1. 대상 변경을 하나 고른다.
 2. shipped skill, 로컬 방향, 필요한 보조 문서만 읽고 작업을 수행한다.
 3. 작업 중 `BRIEF.md`, logs, 관련 guidance가 실제로 reopen/handoff에 충분한지 확인한다.
-4. runtime shape, gardening check, 전체 테스트를 다시 돌린다.
+4. 먼저 현재 task shell과 변경 직결 check로 confidence를 확인하고, 마감 전 runtime shape, gardening check, 전체 테스트를 다시 돌린다.
 5. 필요하면 mature repo 1개, newer repo 1개에 read-only spot check를 해 warning이나 wording이 너무 noisy한지 본다.
 6. 결과는 task-local doc과 logs에 남긴다.
 

@@ -48,7 +48,7 @@ docs/
 - `[optional] working/` and `[optional] archive/`: helper lanes for temporary or finished working notes.
 - `[optional] docs/BACKLOG.md`: not-yet-active repo-level future work only. Once a dated task becomes active, move the active state into that task and remove the repo backlog item.
 - Keep saved doc paths portable: use repo-relative paths or stable placeholders like `<repo-root>`, `<task-root>`, and `$CODEX_HOME`, not absolute or user-specific paths.
-- In `BRIEF.md`, use heading-based top-level structure. The default skeleton is usually `Goal` or `Intent`, `Scope`, `Current Understanding` or `Current Facts`, `Current State`, and `Next Step` or `Next Actions`.
+- In `BRIEF.md`, use heading-based top-level structure. The default skeleton is usually `Goal` or `Intent`, `Scope`, `Current Understanding` or `Current Facts`, `Current State`, and `Next Step` or `Next Actions`; keep extra detail in logs or task-local docs instead of thickening the brief.
 - In `BRIEF.md`, keep `Scope` as a short boundary summary, usually 1 to 3 bullets. Do not turn it into a touched-file inventory or long path list.
 - If exact read/write paths materially lower reopen cost, keep them in an optional `Working Boundary` section instead of expanding `Scope`.
 - In `BRIEF.md`, `Next Step` or `Next Actions` own only the nearest restartable move, not a carry-over backlog.

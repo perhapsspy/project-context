@@ -16,13 +16,9 @@
 
 ## Current State
 - status는 completed다.
-- shipped `project-context` guidance는 `BRIEF.md` 기본 skeleton을 `Goal`, `Scope`, `Current Understanding` 또는 `Current Facts`, `Current State`, `Next Step` 중심으로 다시 설명한다.
-- `Related Docs`, `Working Boundary`, `Latest Validation`는 계속 허용되지만 default heading이 아니라 reopen cost를 실제로 낮출 때만 쓰는 운영 heading으로 정리됐다.
-- `project-context-migration`와 `docs/skill-direction.md`는 같은 기준으로 맞췄고, README들은 스킬 내용을 다시 설명하지 않도록 skeleton guidance를 제거했다.
+- shipped guidance는 `BRIEF.md` 기본 skeleton을 다섯 heading 중심으로 다시 정리했다.
+- optional heading은 허용되지만 reopen cost를 실제로 낮출 때만 쓰도록 맞췄다.
+- runtime shape와 전체 unittest도 이번 정리와 맞게 통과했다.
 
 ## Next Step
 - 없음
-
-## Latest Validation
-- `python3 skills/project-context/scripts/check_runtime_shape.py`
-- `python3 -m unittest discover -s tests -p 'test_*.py'`
