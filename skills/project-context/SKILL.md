@@ -20,7 +20,7 @@ Keep working context in ordinary repository files so later sessions can resume w
 ## Core Bias
 
 - Ordinary repo files over external systems or hidden memory.
-- Reusable topic context in `docs/reference/**`; current task resume state in `BRIEF.md`; append-only trail in `logs/*.md`.
+- Current trusted topic context in `docs/reference/**`; current task resume state in `BRIEF.md`; append-only trail in `logs/*.md`.
 - Small contract over many top-level surfaces.
 - Repo-relative or stable placeholder paths over user-specific paths.
 - When task reuse is unclear, prefer a new dated task.
@@ -40,7 +40,7 @@ docs/
   [optional] BACKLOG.md
 ```
 
-- `docs/reference/**`: reusable topic context only. Write canonical detail here, not in task logs.
+- `docs/reference/**`: current trusted reference context only. Keep principles, rules, and recent reliable facts here. It may change often, but do not turn it into investigation history, progress tracking, or timeline narrative.
 - `docs/tasks/yyyy/mm-dd/<task-slug>/`: default task workspace for most real work.
 - `BRIEF.md`: rewrite-only current state for resume and handoff. Keep goal or intent, scope, current understanding or facts, current state, and the nearest next step. Do not turn it into append history, long rationale, or reusable topic docs.
 - `logs/DECISIONS.md` and `logs/WORKLOG.md`: append-only decision and execution trail. Keep evidence here, not in the brief.
@@ -85,7 +85,7 @@ docs/
 5. Write canonical surfaces.
 - Rewrite `BRIEF.md` in place.
 - Append decisions to `logs/DECISIONS.md` and execution to `logs/WORKLOG.md`.
-- Write reusable topic detail into `docs/reference/**` when it becomes clear.
+- Write reusable current rules or facts into `docs/reference/**` when they become clear, but keep investigation history and progress trail in task files.
 
 6. Add optional surfaces only when needed.
 - Add task-local backlog only when one next step is not enough.
@@ -100,6 +100,7 @@ docs/
 - Bootstrapping project-context files for read-only work that is not meant to leave durable context behind.
 - Reusing a task because of topic similarity rather than the same unresolved work and expected output.
 - Letting `BRIEF.md` turn into append history, reusable domain docs, or long rationale.
+- Turning `docs/reference/**` into investigation notes, progress status, or timeline narrative.
 - Letting `Next Step` or `Next Actions` turn into a many-item backlog.
 - Creating generic overflow files instead of purpose-named task-local docs.
 - Mirroring the same open work across `BRIEF.md`, a backlog doc, `working/`, and logs.
@@ -119,7 +120,7 @@ Run the bundled checker by resolving the skill-relative script `scripts/check_ru
 ## Final Gates
 
 - Can a later session reopen the work from `BRIEF.md` without reconstructing state from scratch?
-- Is reusable topic knowledge in `docs/reference/**` instead of buried in task logs?
+- Is current trusted reference context in `docs/reference/**` instead of buried in task logs?
 - Is the latest execution and decision trail confined to `logs/*.md`?
 - If the task became long-running, are canonical root docs not confusingly mixed with temporary working notes and finished remnants?
 - Did task reuse follow the unresolved work and expected output rather than topic similarity?

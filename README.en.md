@@ -6,7 +6,7 @@
 
 `project-context` is a skill that helps coding agents keep working context in the project, so future sessions can pick up the work without rebuilding the state from scratch. It leaves the minimum useful reference docs and task records as files, so humans can read and edit them directly without relying on a separate system.
 
-- `docs/reference/`: topic-scoped domain context reused across tasks
+- `docs/reference/`: current trusted reference context such as principles, rules, and recent reliable facts
 - `docs/tasks/...`: dated task records for most real work
 
 The optional `project-context-migration` skill is only for the first cleanup/adoption pass in an existing repository where docs are scattered or only partially moved into this structure.

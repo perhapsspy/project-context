@@ -7,8 +7,9 @@
 
 ## reference
 
-- `docs/reference/**/*.md`는 task를 넘어 반복 참조될 주제별 도메인 맥락을 담는다.
-- 외부 API 사용 규칙, 인증 방식, rate limit, 에러 처리, 프로젝트 내부 convention 같은 reusable topic detail이 여기에 온다.
+- `docs/reference/**/*.md`는 task 유무와 무관하게 현재 믿고 사용할 기준 맥락을 담는다.
+- 원리, 원칙, 운영 규칙, 최근 믿을 수 있는 사실처럼 다른 task가 바로 재사용할 현재 topic detail이 여기에 온다.
+- 이 surface는 자주 갱신될 수 있지만, 조사 경과, 진행 이력, 판단 흔적, 미확정 상태 추적을 본문 역할로 삼지 않는다.
 
 ## tasks
 

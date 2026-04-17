@@ -26,7 +26,7 @@ Audit scattered repository docs and notes before moving the right working contex
 ## Classification
 
 - `TASK`: task-local, historical, exploratory, uncertain, or migration-audit material. Start here when unsure.
-- `REFERENCE`: reusable project-domain context by topic. Rewrite to current state, strip timeline noise, and keep only durable topic detail another task would reuse.
+- `REFERENCE`: current trusted project-domain context by topic. Rewrite to current state, strip timeline noise, and keep only principles, rules, and recently reliable facts another task can directly use.
 - `LEAVE`: product/user/team docs, human-facing top-level notes, and origin/about/repository narrative that do not belong in agent working context.
 - `ARCHIVE`: stale duplicates or superseded docs if the user wants cleanup; it is a migration decision, not a core `project-context` destination.
 - Common mappings: `runbook -> reference`; `task note -> task`; `ADR -> current conclusion to reference / superseded to archive`; repo-root instruction notes and `origin/about/repository` docs usually stay `LEAVE`.
@@ -67,7 +67,7 @@ Audit scattered repository docs and notes before moving the right working contex
 ## Final Gates
 
 - Does the migration task explain why each moved source became `TASK`, `REFERENCE`, `LEAVE`, or `ARCHIVE`?
-- Is reusable topic context rewritten into current-state reference docs instead of copied over with stale timeline noise?
+- Is current trusted reference context rewritten into current-state reference docs instead of copied over with stale timeline noise?
 - Are uncertain, exploratory, or historical materials kept in tasks instead of over-promoted?
 - Did the destination tree pass the main `project-context` runtime-shape check?
 - Did the rollout preserve human-facing docs that do not belong in agent working context?

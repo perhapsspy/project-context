@@ -22,6 +22,7 @@
 ### 1. 역할 적합성
 - 본다: 이 파일이 자기 역할만 하고 있는가.
 - shipped `SKILL.md`는 실행 규칙, `docs/skill-direction.md`는 why와 direction, README는 activation surface, checker는 얇은 runtime 사실을 맡는다.
+- `reference`는 task provenance 설명 없이도 현재 믿고 쓸 기준 맥락으로 읽혀야 하고, 조사 경과나 진행 이력이 본문 역할을 차지하면 과하다.
 
 ### 2. 주장 강도 일치
 - 본다: 문구의 보장 강도가 실제 evidence와 맞는가.
@@ -53,6 +54,7 @@
 ## 현재 레포에 특히 중요한 판정선
 - README는 시작을 막는 문제만 강하게 본다.
 - `docs/skill-direction.md`는 진행 기록보다 기준 맥락과 이유를 우선한다.
+- `reference`는 최근 믿을 수 있는 현재 truth를 담을 수 있지만, 사건 조사나 진행 상태를 본문으로 끌어오면 안 된다.
 - long-running task guidance는 core required tree가 아니라 optional advanced guidance로 읽혀야 한다.
 - repo-local helper lane 이름(`working/` 등)을 shipped contract처럼 고정해 읽히면 과하다.
 - gardening checker는 warning-grade drift detector로 남아야 한다.

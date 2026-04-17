@@ -30,7 +30,7 @@
 
 ### 3. Reopen Pass
 - 본다: 방금 만든 변화가 나중 세션에서 다시 열기 쉬운지.
-- 성공 기준: `BRIEF.md`가 실제 read/write scope와 current state를 따라가고, current docs와 append-only logs의 역할이 섞이지 않는다.
+- 성공 기준: `BRIEF.md`가 실제 read/write scope와 current state를 따라가고, current docs와 append-only logs의 역할이 섞이지 않는다. `reference`는 provenance 설명 없이도 현재 기준 맥락으로 읽혀야 한다.
 
 ### 4. Guardrail Pass
 - 본다: 테스트와 thin checker가 여전히 통과하는지.
