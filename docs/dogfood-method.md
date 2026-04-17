@@ -26,7 +26,7 @@
 
 ### 2. Write Pass
 - 본다: 실제 작은 변경을 할 때 guidance가 과하게 폼을 강제하지 않는지.
-- 성공 기준: 코어 contract를 깨지 않고 수정할 수 있고, 새 guidance가 required tree처럼 읽히지 않는다.
+- 성공 기준: 코어 contract를 깨지 않고 수정할 수 있고, 새 guidance가 required tree처럼 읽히지 않는다. `BRIEF.md`의 `Scope`가 파일 나열로 길어지지 않는다.
 
 ### 3. Reopen Pass
 - 본다: 방금 만든 변화가 나중 세션에서 다시 열기 쉬운지.

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import re
 import sys
 from dataclasses import asdict, dataclass
 from datetime import date, datetime, timedelta
@@ -40,6 +41,9 @@ OVERLAY_KEYWORDS = (
     "FLOW",
 )
 LEGACY_SURFACES = ("STATUS.md", "MEMORY-CANDIDATES.md")
+SCOPE_HEADINGS = {"## Scope", "## 범위"}
+PATH_ONLY_SCOPE_BULLET_THRESHOLD = 5
+PATH_ONLY_SCOPE_BULLET_RE = re.compile(r"^[A-Za-z0-9_./<>\-$*]+$")
 
 
 @dataclass(frozen=True)
@@ -132,6 +136,7 @@ def run_gardening_checks(
             info_extra_docs=info_extra_docs,
         )
     )
+    findings.extend(check_scope_path_list_sprawl(runtime))
     findings.extend(check_root_overlay_mixing(runtime))
     return findings
 
@@ -307,6 +312,72 @@ def check_root_overlay_mixing(runtime: runtime_shape.RuntimePaths) -> list[Findi
             )
         )
     return findings
+
+
+def check_scope_path_list_sprawl(runtime: runtime_shape.RuntimePaths) -> list[Finding]:
+    runtime_shape.set_display_root(runtime.repo_root)
+    findings: list[Finding] = []
+    for task_dir in candidate_task_dirs(runtime.task_root):
+        brief_path = task_dir / "BRIEF.md"
+        if not brief_path.is_file():
+            continue
+
+        count = count_path_only_scope_bullets(brief_path)
+        if count < PATH_ONLY_SCOPE_BULLET_THRESHOLD:
+            continue
+
+        findings.append(
+            Finding(
+                severity="INFO",
+                code="scope-path-list-sprawl",
+                path=runtime_shape.rel(brief_path),
+                detail=f"{count} path-only bullets in Scope",
+                suggestion=(
+                    "keep Scope to 1-3 boundary bullets and move exact file lists to "
+                    "Working Boundary only when they materially lower reopen cost"
+                ),
+            )
+        )
+    return findings
+
+
+def count_path_only_scope_bullets(path: Path) -> int:
+    return sum(1 for line in heading_section_lines(path, SCOPE_HEADINGS) if is_path_only_scope_bullet(line))
+
+
+def heading_section_lines(path: Path, headings: set[str]) -> list[str]:
+    lines = path.read_text(encoding="utf-8").splitlines()
+    section_lines: list[str] = []
+    in_section = False
+
+    for raw_line in lines:
+        line = raw_line.rstrip()
+        if line.startswith("## "):
+            in_section = line in headings
+            continue
+        if in_section:
+            section_lines.append(line)
+
+    return section_lines
+
+
+def is_path_only_scope_bullet(line: str) -> bool:
+    if not line.startswith("- "):
+        return False
+
+    body = line[2:].strip()
+    if body.startswith("`") and body.endswith("`") and body.count("`") == 2:
+        body = body[1:-1]
+
+    if not body or " " in body:
+        return False
+    if not any(
+        token in body
+        for token in ("/", ".md", ".py", ".js", ".svelte", ".ts", ".tsx", ".jsx", "*", "$", "<")
+    ):
+        return False
+
+    return bool(PATH_ONLY_SCOPE_BULLET_RE.fullmatch(body))
 
 
 if __name__ == "__main__":

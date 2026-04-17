@@ -34,7 +34,7 @@
 
 ### 4. 재개 가능성
 - 본다: 나중 세션이 cold start 없이 다시 열 수 있는가.
-- 질문: `BRIEF`, `reference`, `logs`의 역할이 섞이지 않았는가. long-running guidance가 root 혼합을 줄이는 방향으로 쓰였는가.
+- 질문: `BRIEF`, `reference`, `logs`의 역할이 섞이지 않았는가. `Scope`가 touched-file inventory로 불어나지 않았는가. long-running guidance가 root 혼합을 줄이는 방향으로 쓰였는가.
 
 ### 5. drift 저항성
 - 본다: 변경이 legacy respawn, root mixing, misleading overlays를 줄이는가.

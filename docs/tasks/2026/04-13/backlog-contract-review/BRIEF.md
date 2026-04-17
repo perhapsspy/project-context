@@ -4,13 +4,9 @@
 - `project-context`를 compact하게 유지하면서, task-local future backlog와 repo-level service improvement backlog를 다루는 최소 계약을 다시 정리한다.
 
 ## Scope
-- `AGENTS.md`
-- shipped `skills/project-context/SKILL.md`
-- `README.md`
-- `README.en.md`
-- `docs/skill-direction.md`
-- `docs/reference/model/context-surfaces.md`
-- 비교 근거로 읽은 `work-board`와 dogfood task docs
+- task-local backlog와 repo-level backlog의 역할 경계를 다시 점검한다.
+- shipped/local docs를 one-step `Next Step` 기준과 맞춘다.
+- 비교 근거로 읽은 `work-board`와 dogfood task docs는 판단선 보정에만 쓴다.
 
 ## Current Understanding
 - 현재 shipped contract는 extra task-local docs를 허용하지만, `BRIEF.md`의 `Next Step / Next Actions`, task-local backlog, repo-level backlog overlay의 역할 경계는 충분히 선명하지 않다.

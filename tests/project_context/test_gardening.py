@@ -194,6 +194,58 @@ class GardeningCheckTests(unittest.TestCase):
                 ],
             )
 
+    def test_scope_path_list_sprawl_reports_info(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape.REPO_ROOT) as tmp:
+            root = Path(tmp)
+            runtime, task_dir = make_valid_runtime_tree(root)
+            runtime_shape.set_display_root(runtime.repo_root)
+            (task_dir / "BRIEF.md").write_text(
+                "# Sample Task\n\n"
+                "## Scope\n"
+                "- `src/lib/patchMap/patchmap.svelte`\n"
+                "- `src/lib/patchMap/recovery/policy.js`\n"
+                "- `src/lib/patchMap/recovery/policy.test.js`\n"
+                "- `src/lib/patchMap/recovery/runtime.js`\n"
+                "- `src/lib/patchMap/recovery/runtime.test.js`\n",
+                encoding="utf-8",
+            )
+
+            findings = gardening.check_scope_path_list_sprawl(runtime)
+
+            self.assertEqual(
+                findings,
+                [
+                    gardening.Finding(
+                        severity="INFO",
+                        code="scope-path-list-sprawl",
+                        path=runtime_shape.rel(task_dir / "BRIEF.md"),
+                        detail="5 path-only bullets in Scope",
+                        suggestion=(
+                            "keep Scope to 1-3 boundary bullets and move exact file lists to "
+                            "Working Boundary only when they materially lower reopen cost"
+                        ),
+                    )
+                ],
+            )
+
+    def test_scope_path_list_sprawl_ignores_short_or_descriptive_scope(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape.REPO_ROOT) as tmp:
+            root = Path(tmp)
+            runtime, task_dir = make_valid_runtime_tree(root)
+            runtime_shape.set_display_root(runtime.repo_root)
+            (task_dir / "BRIEF.md").write_text(
+                "# Sample Task\n\n"
+                "## Scope\n"
+                "- patch map recovery boundary 정리\n"
+                "- viewport/runtime policy alignment\n"
+                "- `src/lib/patchMap/patchmap.svelte`\n",
+                encoding="utf-8",
+            )
+
+            findings = gardening.check_scope_path_list_sprawl(runtime)
+
+            self.assertEqual(findings, [])
+
     def test_main_returns_zero_and_supports_json_output(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape.REPO_ROOT) as tmp:
             root = Path(tmp)

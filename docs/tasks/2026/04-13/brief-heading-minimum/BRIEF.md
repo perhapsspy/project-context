@@ -4,11 +4,9 @@
 - `BRIEF.md` 기본 skeleton을 더 작게 잡고, `Related Docs`, `Working Boundary`, `Latest Validation`를 default heading이 아니라 필요할 때만 추가하는 운영 heading으로 다시 안내한다.
 
 ## Scope
-- shipped `project-context` guidance
-- `project-context-migration` validation wording
-- `README.md`
-- `README.en.md`
-- `docs/skill-direction.md`
+- `BRIEF.md` 기본 skeleton을 더 작게 다시 정의한다.
+- optional heading은 reopen cost를 실제로 낮출 때만 쓰도록 shipped/local wording을 맞춘다.
+- README는 activation surface에 머물고, 상세 운영 guidance는 skill과 direction 문서에 남긴다.
 
 ## Current Understanding
 - 현재 shipped guidance는 이 heading들을 common heading 예시로만 두지만, 문장 흐름상 기본 skeleton처럼 읽히기 쉽다.

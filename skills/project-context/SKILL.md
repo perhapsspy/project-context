@@ -49,6 +49,8 @@ docs/
 - `[optional] docs/BACKLOG.md`: not-yet-active repo-level future work only. Once a dated task becomes active, move the active state into that task and remove the repo backlog item.
 - Keep saved doc paths portable: use repo-relative paths or stable placeholders like `<repo-root>`, `<task-root>`, and `$CODEX_HOME`, not absolute or user-specific paths.
 - In `BRIEF.md`, use heading-based top-level structure. The default skeleton is usually `Goal` or `Intent`, `Scope`, `Current Understanding` or `Current Facts`, `Current State`, and `Next Step` or `Next Actions`.
+- In `BRIEF.md`, keep `Scope` as a short boundary summary, usually 1 to 3 bullets. Do not turn it into a touched-file inventory or long path list.
+- If exact read/write paths materially lower reopen cost, keep them in an optional `Working Boundary` section instead of expanding `Scope`.
 - In `BRIEF.md`, `Next Step` or `Next Actions` own only the nearest restartable move, not a carry-over backlog.
 - In logs, follow the existing task language; if no task language exists yet, use the current user language.
 - Add log entries under dated sections using the existing `**YYYY-MM-DD**` format.
@@ -100,6 +102,7 @@ docs/
 - Bootstrapping project-context files for read-only work that is not meant to leave durable context behind.
 - Reusing a task because of topic similarity rather than the same unresolved work and expected output.
 - Letting `BRIEF.md` turn into append history, reusable domain docs, or long rationale.
+- Letting `Scope` turn into a per-file inventory instead of a short boundary summary.
 - Turning `docs/reference/**` into investigation notes, progress status, or timeline narrative.
 - Letting `Next Step` or `Next Actions` turn into a many-item backlog.
 - Creating generic overflow files instead of purpose-named task-local docs.

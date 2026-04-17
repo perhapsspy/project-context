@@ -6,14 +6,9 @@
 - 개선 방향을 코어 원칙, repo-specific follow-up, optional gardening checker 설계로 나눠 남긴다.
 
 ## Scope
-- `skills/project-context/SKILL.md`
-- `docs/skill-direction.md`
-- `docs/review-method.md`
-- `docs/dogfood-method.md`
-- `AGENTS.md`
-- `skills/project-context-migration/SKILL.md`
-- `skills/project-context/scripts/check_gardening.py`
-- `tests/project_context/test_gardening.py`
+- mature repo dogfood evidence를 바탕으로 `project-context` contract와 gardening 기준을 점검한다.
+- shipped skill, repo-local direction/review/dogfood 문서, gardening check를 같은 판정선으로 맞춘다.
+- same-turn drift가 보이면 현재 task `BRIEF.md`도 함께 바로잡는다.
 - `../conalog/backoffice/docs/**`
 - `../conalog/patch-fielder/docs/**`
 - 외부 비교용 공식 문서 몇 개
