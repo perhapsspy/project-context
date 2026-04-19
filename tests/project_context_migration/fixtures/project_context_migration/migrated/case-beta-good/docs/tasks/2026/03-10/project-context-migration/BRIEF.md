@@ -13,20 +13,9 @@
 | `tasks/login-bug.md` | task note | current-but-unresolved | task-local | `TASK` | Safari 로그인 조사 이력과 미확정 상태를 별도 task으로 유지한다. |
 | `notes/misc.md` | uncertain note | stale-or-unknown | exploratory | `LEAVE` | 현재성 판단이 안 되는 잡노트라 source 위치에 남기고 canonical truth로 승격하지 않는다. |
 
-## 현재 산출물 스냅샷
-- `docs/reference/api/auth.md`와 `docs/reference/data/database-choice.md`가 생성돼 있다.
-- `docs/tasks/2026/03-10/login-bug-investigation/`가 생성돼 있다.
-- `AGENTS.md`는 root에 남아 있다.
-- `notes/misc.md`는 source 위치에 그대로 남아 있다.
-
 ## 현재 상태
 - status는 done이다.
-- blockers: 없음
-- latest validation: migration output snapshot
+- auth 규칙과 datastore 결론은 reference로 정리돼 있고, 로그인 조사는 task으로 분리돼 있다.
 
 ## Next Step
 - 없음
-
-## Working Boundary
-- declared read scope: migration audit, legacy 입력 4건
-- declared write scope: docs/reference/**, docs/tasks/**

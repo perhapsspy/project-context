@@ -19,7 +19,8 @@ Audit scattered repository docs and notes before moving the right working contex
 ## Core Bias
 
 - Audit first, move second.
-- Keep only agent working context inside `project-context`; leave human-facing or repository-narrative docs where they already belong unless there is a strong reason to move them.
+- Shipped authority stays shipped.
+- Keep only agent working context inside `project-context`.
 - When unsure, start in `TASK` rather than over-promoting into `REFERENCE`.
 - Migration correctness depends on explicit mapping and spot review, not on destination shape alone.
 
@@ -29,7 +30,7 @@ Audit scattered repository docs and notes before moving the right working contex
 - `REFERENCE`: current trusted project-domain context by topic. Rewrite to current state, strip timeline noise, and keep only principles, rules, and recently reliable facts another task can directly use.
 - `LEAVE`: product/user/team docs, human-facing top-level notes, and origin/about/repository narrative that do not belong in agent working context.
 - `ARCHIVE`: stale duplicates or superseded docs if the user wants cleanup; it is a migration decision, not a core `project-context` destination.
-- Common mappings: `runbook -> reference`; `task note -> task`; `ADR -> current conclusion to reference / superseded to archive`; repo-root instruction notes and `origin/about/repository` docs usually stay `LEAVE`.
+- Common mappings: `runbook -> reference`; `task note -> task`; `ADR -> current conclusion to reference / superseded to archive`; repo-root instruction notes and `origin/about/repository` docs usually stay `LEAVE` unless they clearly remain repo-local agent guidance.
 
 ## Operating Model
 
@@ -37,7 +38,7 @@ Audit scattered repository docs and notes before moving the right working contex
 2. Create one dated migration task under `docs/tasks/...` first and use it as the audit surface for the whole move.
 3. Inventory likely source roots with `rg --files` across common context directories and repo-root instruction files when present.
 4. Before mapping, ask whether each source belongs in agent working context at all.
-5. Build an audit map before editing: `path | kind | current-or-stale | scope | target | note`.
+5. Build an audit map before editing: `path | kind | current-or-stale | scope | target | note`. Add extra columns only if they materially lower confusion for this repo.
 6. Apply in order: `TASK -> REFERENCE -> LEAVE/ARCHIVE`.
 7. Once the target tree exists, run the main `project-context` runtime-shape check.
 8. Treat that check as destination-shape confirmation only; migration correctness still depends on the audit map and spot review.
@@ -45,20 +46,19 @@ Audit scattered repository docs and notes before moving the right working contex
 ## Rules
 
 - Record audit decisions in the migration task before rewriting global files.
+- Follow the main `project-context` skill and bundled scripts by reference instead of summarizing them in repo-local migration docs.
 - Merge overlapping sources into one preferred destination reference file or one dated task.
 - When migration creates or updates `REFERENCE`, keep canonical content in the reference file and record mapping, rationale, and change trace in the migration task.
 - Normalize saved doc paths to repo-relative paths or stable placeholders.
 - Before promoting anything into `REFERENCE`, ask whether another task would reuse it as agent working context. If not, prefer `TASK`, `LEAVE`, or `ARCHIVE`.
-- When migration creates new tasks, follow the current `project-context` task-file shape guidance. If `BRIEF.md` and logs are not enough, keep extra task-local docs for the missing detail instead of forcing everything into the brief. If those docs are temporary agent working material, prefer role-named files under `working/` instead of new generic checklist files at the task root.
-- When migration writes a task `BRIEF.md`, keep `Scope` short and keep source inventories, validation checklists, and comparison detail in the audit map or task-local docs instead of thickening the brief.
-- When the migration task appends to `logs/*.md`, use the bundled `project-context` `scripts/task_logs.py` path instead of hand-editing the logs during normal flow.
-- If migration consolidates a long-running task area, keep the root focused on `BRIEF.md` plus canonical current docs. A repo-local helper lane such as `working/` stays optional and should exist only when it clearly lowers reopen cost.
-- Keep migrated `WORKLOG.md` entries to meaningful execution deltas; keep ordinary lint/test reruns out of `BRIEF.md` unless they change current confidence, state, or the next action.
+- Keep source inventories, comparison detail, and rewrite rationale in the audit map or task-local docs rather than thickening the migration brief.
 - If a task item has no trustworthy date, use the migration date and record the uncertainty in that task.
-- When unsure between `REFERENCE` and `LEAVE` for a human-facing top-level doc, bias toward `LEAVE`. If the rollout must be staged, move high-value task/reference material first.
+- When unsure between `REFERENCE` and `LEAVE` for a human-facing top-level doc, bias toward `LEAVE` unless the current move clearly makes it canonical agent working context.
+- When cleanup is about duplication, remove duplicated repo-local summaries before touching task outputs.
 
 ## Anti-Patterns
 
+- Rewriting repo-local docs into a second copy of the shipped skill contract or bundled script behavior.
 - Moving docs into `REFERENCE` just because they are technical, even when they are not reusable working context.
 - Using the runtime-shape check as proof that the migration itself is correct.
 - Rewriting or deleting global docs before the migration task has an explicit audit map.

@@ -7,6 +7,7 @@
 - 저장소 안의 파일을 우선한다.
 - 코어 계약은 작게 유지한다.
 - 사람도 바로 읽고 고칠 수 있는 구조를 우선한다.
+- shipped skill과 bundled script의 authority는 shipped asset에 남기고, repo-local 문서는 local adapter 역할만 맡긴다.
 - `reference`는 provenance보다 현재 믿고 쓸 기준 맥락을 우선한다.
 - `BRIEF.md`의 `Scope`는 파일 인벤토리보다 작업 경계 요약을 우선한다.
 - `BRIEF.md`는 얇게 유지한다.
@@ -15,6 +16,7 @@
 - 숨은 메모리나 외부 시스템을 계약처럼 만들지 않는다.
 - 새 surface를 코어처럼 키우지 않는다.
 - 증명되지 않은 범위를 이름과 설명에 싣지 않는다.
+- shipped contract나 shipped script semantics를 repo-local 문서에 다시 적지 않는다.
 - `reference`를 조사 메모나 진행 로그처럼 쓰지 않는다.
 
 ## When To Revise
