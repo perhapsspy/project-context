@@ -7,24 +7,22 @@ description: Keep durable repo context for session resume, handoff, long-running
 
 ## Purpose
 
-Keep working context in ordinary repository files so later sessions can resume without rebuilding state from scratch.
+Keep durable repo context in ordinary files so later sessions can resume without rebuilding state.
 
 ## Use / Do Not Use
 
-- Use this skill when the work should leave durable repo context another session can reopen from.
-- Use it when you are resuming or extending a long-running task that needs durable repo context.
-- Use it when the work needs reusable reference notes, a current task brief, and an append-only execution trail.
-- Do not bootstrap the layout for read-only questions, reviews, or one-shot inspections unless the work is explicitly meant to leave durable project-context files behind.
-- Do not treat the bootstrap path here as a migration plan for scattered legacy docs; choose an explicit adoption or migration approach instead.
+Use this skill when work should leave durable repo context: resume, handoff, long-running work, reusable reference notes, a current task brief, and an append-only trail.
+
+Do not bootstrap for read-only questions, one-shot inspections, or implicit migration of scattered legacy docs. If the layout is missing, choose explicit adoption or migration.
 
 ## Core Bias
 
 - Ordinary repo files over external systems or hidden memory.
-- Current trusted topic context in `docs/reference/**`; current task resume state in `BRIEF.md`; append-only trail in `logs/*.md`.
-- Small contract over many top-level surfaces.
-- Repo-relative or stable placeholder paths over user-specific paths.
-- When task reuse is unclear, prefer a new dated task.
-- Never store secrets.
+- Current trusted topic context: `docs/reference/**`.
+- Current task resume state: `BRIEF.md`.
+- Append-only trail: `logs/*.md`.
+- Small contract, portable paths, no secrets.
+- When reuse is unclear, create a new dated task.
 
 ## Contract
 
@@ -40,91 +38,142 @@ docs/
   [optional] BACKLOG.md
 ```
 
-- `docs/reference/**`: current trusted reference context only. Keep principles, rules, and recent reliable facts here. It may change often, but do not turn it into investigation history, progress tracking, or timeline narrative.
-- `docs/tasks/yyyy/mm-dd/<task-slug>/`: default task workspace for most real work.
-- `BRIEF.md`: rewrite-only current state for resume and handoff. Keep goal or intent, scope, current understanding or facts, current state, and the nearest next step. Do not turn it into append history, long rationale, or reusable topic docs.
+- `docs/reference/**`: current trusted reference context only. Keep principles, rules, and reliable facts here. Do not store investigation history, progress, or timeline narrative.
+- `docs/tasks/yyyy/mm-dd/<task-slug>/`: default task workspace for real work.
+- `BRIEF.md`: rewrite-only compact resume card, not a report or log. Keep goal, scope, current understanding/facts, current state, and nearest next step.
 - `logs/DECISIONS.md` and `logs/WORKLOG.md`: append-only decision and execution trail. Keep evidence here, not in the brief.
-- `[optional] <purpose-named-backlog>.md`: unresolved carry-over only, such as `RESEARCH-BACKLOG.md` or `QA-BACKLOG.md`. Add it only when one next step is no longer enough.
-- `[optional] working/` and `[optional] archive/`: helper lanes for temporary or finished working notes.
-- `[optional] docs/BACKLOG.md`: not-yet-active repo-level future work only. Once a dated task becomes active, move the active state into that task and remove the repo backlog item.
-- Keep saved doc paths portable: use repo-relative paths or stable placeholders like `<repo-root>`, `<task-root>`, and `$CODEX_HOME`, not absolute or user-specific paths.
-- In `BRIEF.md`, use heading-based top-level structure. The default skeleton is usually `Goal` or `Intent`, `Scope`, `Current Understanding` or `Current Facts`, `Current State`, and `Next Step` or `Next Actions`; keep extra detail in logs or task-local docs instead of thickening the brief.
-- In `BRIEF.md`, keep `Scope` as a short boundary summary, usually 1 to 3 bullets. Do not turn it into a touched-file inventory or long path list.
-- If exact read/write paths materially lower reopen cost, keep them in an optional `Working Boundary` section instead of expanding `Scope`.
-- In `BRIEF.md`, `Next Step` or `Next Actions` own only the nearest restartable move, not a carry-over backlog.
-- In logs, follow the existing task language; if no task language exists yet, use the current user language.
-- Add log entries under dated sections using the existing `**YYYY-MM-DD**` format.
-- Keep each appended `DECISIONS.md` block as one 4-bullet block: `Background`, `Decision`, `Why`, `Impact`.
-- Keep each appended `WORKLOG.md` block short and restartable, such as `Did`, `Evidence`, `Result`, `Next`.
-- For any task that updates logs, resolve the skill-relative `scripts/task_logs.py` path from the installed `project-context` skill directory, the same way as the bundled checker, and use its `append` entrypoints as the default write path instead of hand-patching `logs/*.md`, even when the previous latest block drifted.
-- If the helper script is unavailable, append the same block shape manually and preserve append-only history.
-- Parent agent owns `BRIEF.md` and canonical log updates. Subagents should write only temporary notes or artifacts unless explicitly assigned canonical writeback.
-- Subagents start without inherited context; pass only a small task brief: goal, constraints, relevant boundary notes if you have them, validation command, artifact path.
+- `[optional] <purpose-named-backlog>.md`: unresolved carry-over only, such as `RESEARCH-BACKLOG.md` or `QA-BACKLOG.md`. Add it only when one next step is not enough.
+- `[optional] working/` and `[optional] archive/`: temporary notes and finished remnants.
+- `[optional] docs/BACKLOG.md`: not-yet-active repo-level future work only. Once active, move state into a dated task and remove the repo backlog item.
+
+## `BRIEF.md` Limits
+
+Use only these top-level headings unless the user explicitly asks otherwise:
+
+- `Goal` or `Intent`
+- `Scope`
+- `Current Understanding` or `Current Facts`
+- `Current State`
+- `Next Step` or `Next Actions`
+- optional `Working Boundary`
+
+Hard rules:
+
+- Usually 300-500 words maximum.
+- Each section should usually have 1-5 bullets.
+- `Scope` is a 1-3 bullet boundary summary, not a touched-file list.
+- `Next Step` owns only the nearest restartable move, not a backlog.
+- Do not add sections such as `Validation`, `Files Changed`, `Touched Files`, `History`, `Worklog`, `Investigation`, `Evidence`, `Completed`, or `Checklist`.
+- Do not include command output, validation transcripts, investigation history, completed-work history, or touched-file inventories.
+- If validation status matters, summarize it in one `Current State` sentence and keep details in `logs/WORKLOG.md`.
+- If exact paths materially lower reopen cost, put at most 5 repo-relative paths in `Working Boundary`.
+
+## Log Limits
+
+Logs are append-only, but not command transcripts.
+
+For `logs/WORKLOG.md`:
+
+- Append one block per meaningful work batch, not per command or file.
+- Merge repetitive edits, retries, and validation attempts into one short block.
+- Do not paste raw shell output unless the exact text is essential evidence.
+- Keep `Evidence` concise: command names, repo-relative paths, or summarized results.
+- Record failed attempts only when they affect the next restartable step.
+- Prefer fewer, denser blocks over many micro-blocks.
+
+For `logs/DECISIONS.md`:
+
+- Record only decisions affecting future interpretation, scope, architecture, rollback, or rule application.
+- Do not log routine edits, validation passes, file creation, or obvious implementation steps.
+- Keep each block as 4 bullets: `Background`, `Decision`, `Why`, `Impact`.
+
+For both logs:
+
+- Add entries under dated sections using `**YYYY-MM-DD**`.
+- Keep language consistent with the existing task; otherwise use the current user language.
+- For log writes, resolve the skill-relative `scripts/task_logs.py` path and use its `append` entrypoints by default. If unavailable, append manually with the same block shape.
+
+## Path and Ownership Rules
+
+- Use repo-relative paths or placeholders like `<repo-root>`, `<task-root>`, and `$CODEX_HOME`; never user-specific absolute paths.
+- Never store secrets.
+- Parent agent owns `BRIEF.md` and canonical logs.
+- Subagents write only temporary notes or artifacts unless explicitly assigned canonical writeback.
+- Subagents start without inherited context; pass a small brief: goal, constraints, boundary notes, validation command, artifact path.
 
 ## Operating Model
 
-- If durable context is warranted for this task and the repo is effectively empty, bootstrap first by creating `docs/reference/` and one dated task with `BRIEF.md` and `logs/DECISIONS.md` / `logs/WORKLOG.md`.
-- If the repo does not yet have a usable project-context layout, choose explicit adoption instead of treating bootstrap as migration; seed references plus one active task first rather than bulk-moving scattered docs.
-
 1. Read reusable context.
-- Use `rg` to search within `docs/reference/**/*.md` for the active topic.
-- Start with up to 3 narrow reference files closest to the active task.
+
+   - Use `rg` in `docs/reference/**/*.md` for the active topic.
+   - Start with up to 3 narrow reference files closest to the task.
 
 2. Check one related task.
-- Start with one related older `docs/tasks/...` task.
-- Read `BRIEF.md` first.
-- Open logs only if the brief still looks like the same unfinished line of work.
+
+   - Read `BRIEF.md` first.
+   - Open logs only if the brief still matches the same unfinished work.
 
 3. Decide reuse or new task.
-- Reuse only when the unresolved work and expected output still match.
-- Use declared boundary notes as hints, not as the task identity.
-- Otherwise start a new dated task.
+
+   - Reuse only when unresolved work and expected output still match.
+   - Use boundary notes as hints, not task identity.
+   - Otherwise start a new dated task.
 
 4. Ensure the task shell.
-- For most write-bearing tasks, create or update one dated task.
-- Skip task creation only for very small, low-judgment, immediately-finished changes.
+
+   - If durable context is warranted and the repo is effectively empty, create `docs/reference/` and one dated task with `BRIEF.md` and logs.
+   - For most write-bearing tasks, create or update one dated task.
+   - Skip task creation only for very small, low-judgment, immediately finished changes.
 
 5. Write canonical surfaces.
-- Rewrite `BRIEF.md` in place.
-- Append decisions to `logs/DECISIONS.md` and execution to `logs/WORKLOG.md`.
-- Write reusable current rules or facts into `docs/reference/**` when they become clear, but keep investigation history and progress trail in task files.
+
+   - Rewrite `BRIEF.md` in place.
+   - Append decisions and worklog entries.
+   - Move reusable current rules or facts into `docs/reference/**`; keep investigation and progress in logs.
 
 6. Add optional surfaces only when needed.
-- Add task-local backlog only when one next step is not enough.
-- Keep repo backlog only for not-yet-active work.
-- Once a dated task becomes active, move the active state into that task and remove the repo backlog item.
 
-7. If context is missing, proceed with explicit assumptions.
-- Record corrections after execution.
+   - Add a task-local backlog only when one next step is not enough.
+   - Keep repo backlog only for inactive future work.
+   - Do not mirror open work across brief, backlog, working notes, and logs.
+
+7. If context is missing, proceed with explicit assumptions and record corrections after execution.
 
 ## Anti-Patterns
 
-- Bootstrapping project-context files for read-only work that is not meant to leave durable context behind.
-- Reusing a task because of topic similarity rather than the same unresolved work and expected output.
-- Letting `BRIEF.md` turn into append history, reusable domain docs, or long rationale.
-- Letting `Scope` turn into a per-file inventory instead of a short boundary summary.
-- Turning `docs/reference/**` into investigation notes, progress status, or timeline narrative.
-- Letting `Next Step` or `Next Actions` turn into a many-item backlog.
+- Bootstrapping project-context files for read-only or one-shot work.
+- Reusing a task because the topic is similar rather than the same unresolved work.
+- Turning `BRIEF.md` into append history, reusable docs, validation notes, file inventory, or rationale.
+- Letting `Scope` become a touched-file list.
+- Letting `Current State` narrate work sequence instead of resumable state.
+- Letting `Next Step` become a backlog.
+- Turning `docs/reference/**` into investigation notes, progress, or timeline narrative.
 - Creating generic overflow files instead of purpose-named task-local docs.
-- Mirroring the same open work across `BRIEF.md`, a backlog doc, `working/`, and logs.
-- Keeping completed items or task-internal checklist detail in a repo backlog such as `docs/BACKLOG.md`.
-- Mixing canonical current docs, temporary working notes, and finished remnants at one task root.
+- Keeping completed items in `docs/BACKLOG.md`.
+- Mixing canonical docs, temporary notes, and finished remnants at one task root.
 - Dumping raw command transcripts, repetitive micro-steps, or noisy shell output into `WORKLOG.md`.
-- Saving absolute user-specific paths or secrets in docs.
-- Treating declared read and write scope as the task identity instead of quick boundary hints.
+- Logging routine edits or validation passes as decisions.
+- Saving absolute user-specific paths or secrets.
 
 ## Guardrail Check
 
-- Checks only current runtime shape: required paths/files, latest log-block shape, task/reference path markers, and secret-like markers.
-- Does not judge ownership, semantic quality, full history, merge correctness, or broader scope discipline.
+Run the bundled checker by resolving `scripts/check_runtime_shape.py` from the installed `project-context` skill directory and executing it from the active repo root. If running from a subdirectory, pass `--repo-root <path>` when nested `docs` trees could confuse root detection.
 
-Run the bundled checker by resolving the skill-relative script `scripts/check_runtime_shape.py` from the installed `project-context` skill directory and executing it from the active repo root. If running from a subdirectory, pass `--repo-root <path>` when nested `docs` trees could confuse root detection.
+The checker covers runtime shape only: required files, latest log-block shape, task/reference path markers, and secret-like markers. It does not judge ownership, semantic quality, full history, merge correctness, or broader scope discipline.
+
+Before finalizing, reject or rewrite `BRIEF.md` if:
+
+- It contains forbidden sections such as validation, files changed, history, evidence, or checklist.
+- `Scope` is functioning as a file inventory.
+- `Current State` narrates the work sequence instead of the current resumable state.
+- `Next Step` contains a backlog instead of one nearest action.
+- The brief is longer than needed to resume the task.
 
 ## Final Gates
 
-- Can a later session reopen the work from `BRIEF.md` without reconstructing state from scratch?
-- Is current trusted reference context in `docs/reference/**` instead of buried in task logs?
-- Is the latest execution and decision trail confined to `logs/*.md`?
-- If the task became long-running, are canonical root docs not confusingly mixed with temporary working notes and finished remnants?
-- Did task reuse follow the unresolved work and expected output rather than topic similarity?
+- Can a later session reopen the work from `BRIEF.md` without reconstructing state?
+- Is reusable current context in `docs/reference/**` instead of task logs?
+- Is the execution and decision trail confined to `logs/*.md`?
+- Are canonical docs separate from temporary notes and finished remnants?
+- Did task reuse follow unresolved work and expected output rather than topic similarity?
 - Are paths portable and secrets absent?
