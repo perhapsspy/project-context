@@ -351,6 +351,59 @@ class LogShapeTests(unittest.TestCase):
 
             self.assertEqual(failures, [])
 
+    def test_worklog_allows_nested_evidence_bullets(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            worklog = Path(tmp) / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-03-09**\n"
+                "- current valid line\n"
+                "  - targeted auth tests passed\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.worklog_file_failures(worklog)
+
+            self.assertEqual(failures, [])
+
+    def test_worklog_rejects_orphan_nested_evidence_bullets(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            worklog = Path(tmp) / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-03-09**\n"
+                "  - orphan evidence\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.worklog_file_failures(worklog)
+
+            self.assertEqual(
+                failures,
+                [
+                    f"{runtime_shape_check.rel(worklog)}: "
+                    "nested bullet must follow a top-level bullet line"
+                ],
+            )
+
+    def test_worklog_rejects_nested_evidence_before_parent_bullet(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            worklog = Path(tmp) / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-03-09**\n"
+                "  - orphan evidence\n"
+                "- later parent\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.worklog_file_failures(worklog)
+
+            self.assertEqual(
+                failures,
+                [
+                    f"{runtime_shape_check.rel(worklog)}: "
+                    "nested bullet must follow a top-level bullet line"
+                ],
+            )
+
     def test_decisions_latest_block_rejects_non_bullet_text(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
             decisions = Path(tmp) / "DECISIONS.md"
@@ -386,6 +439,28 @@ class LogShapeTests(unittest.TestCase):
                 failures,
                 [
                     f"{runtime_shape_check.rel(decisions)}: latest decision block must contain exactly 4 bullet lines"
+                ],
+            )
+
+    def test_decisions_latest_block_rejects_nested_bullets(self):
+        with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:
+            decisions = Path(tmp) / "DECISIONS.md"
+            decisions.write_text(
+                "**2026-03-09**\n"
+                "- 배경: sample\n"
+                "  - nested evidence belongs in WORKLOG\n"
+                "- 결정: sample\n"
+                "- 이유: sample\n"
+                "- 영향: sample\n",
+                encoding="utf-8",
+            )
+
+            failures = runtime_shape_check.decisions_log_failures(decisions)
+
+            self.assertEqual(
+                failures,
+                [
+                    f"{runtime_shape_check.rel(decisions)}: latest decision block must contain only top-level bullet lines"
                 ],
             )
 

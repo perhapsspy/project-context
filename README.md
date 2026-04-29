@@ -7,7 +7,11 @@
 - `docs/reference/`: 현재 믿고 사용할 원칙, 규칙, 최근 믿을 수 있는 사실 같은 기준 맥락
 - `docs/tasks/...`: 대부분의 실제 작업이 남는 날짜별 task 기록
 
-선택 스킬인 `project-context-migration`은 이미 문서가 흩어져 있거나 일부만 이 구조로 옮겨진 저장소를 처음 정리하며 도입할 때만 사용합니다.
+## 언제 쓰나
+
+- 새 저장소에서 장기 작업을 시작할 때: `project-context`로 바로 `docs/reference/`와 날짜별 task를 만든다.
+- 기존 문서가 흩어진 저장소를 처음 정리할 때: `project-context-migration`으로 현재 문서를 분류한 뒤 필요한 것만 옮긴다.
+- 읽기 전용 질문, 일회성 점검, 짧은 답변만 필요한 경우: 아무 파일도 만들지 않는다.
 
 ## 빠른 시작
 
@@ -31,6 +35,14 @@ npx skills add perhapsspy/project-context
 - 직접 언급하며 작업할 경우: `$project-context 를 사용해서 로그인 페이지 구현을 진행해줘`
 - 특정 task를 이어 할 때: `docs/tasks/2026/03-11/login 작업을 이어서해줘`
 - 기존 문서 구조 이관: `$project-context-migration 을 사용해서 기존 문서나 맥락을 $project-context 로 옮겨줘`
+
+## 좋은 기록 모양
+
+- `BRIEF.md`: 지금 믿을 수 있는 사실, 현재 상태, 가장 가까운 다음 행동만 담는다.
+- `WORKLOG.md`: 의미 있는 작업 묶음과 검증 근거를 남긴다. 명령어별 실행 기록이 아니라 나중에 판단을 복원할 수 있는 근거를 남긴다.
+- `DECISIONS.md`: 미래 해석에 영향을 주는 결정만 `Background / Decision / Why / Impact` 4개 bullet로 남긴다.
+
+구체적인 예시는 [`docs/examples.md`](docs/examples.md)를 본다.
 
 ## 함께 쓰기 좋은 스킬
 

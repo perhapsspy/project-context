@@ -87,6 +87,27 @@ class AppendLogTests(unittest.TestCase):
                 "- second entry\n",
             )
 
+    def test_append_uses_same_latest_block_after_nested_worklog_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = make_task_dir(Path(tmp))
+            worklog = task_dir / "logs" / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-04-05**\n"
+                "- fixed redirect recovery and separated unrelated lint debt.\n"
+                "  - targeted auth tests passed\n",
+                encoding="utf-8",
+            )
+
+            task_logs.append_log_bullet(worklog, "2026-04-05", "reran browser smoke")
+
+            self.assertEqual(
+                worklog.read_text(encoding="utf-8"),
+                "**2026-04-05**\n"
+                "- fixed redirect recovery and separated unrelated lint debt.\n"
+                "  - targeted auth tests passed\n"
+                "- reran browser smoke\n",
+            )
+
     def test_append_starts_new_block_for_later_date(self):
         with tempfile.TemporaryDirectory() as tmp:
             task_dir = make_task_dir(Path(tmp))
@@ -317,6 +338,34 @@ class LatestBlockTests(unittest.TestCase):
                 "**2026-04-05**\n- latest entry",
             )
 
+    def test_tail_preserves_nested_worklog_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = make_task_dir(Path(tmp))
+            worklog = task_dir / "logs" / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-04-05**\n"
+                "- latest entry\n"
+                "  - nested evidence\n",
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+
+            with contextlib.redirect_stdout(stdout):
+                exit_code = task_logs.main(
+                    [
+                        "worklog",
+                        "tail",
+                        "--task-root",
+                        str(task_dir),
+                    ]
+                )
+
+            self.assertEqual(exit_code, 0)
+            self.assertEqual(
+                stdout.getvalue().strip(),
+                "**2026-04-05**\n- latest entry\n  - nested evidence",
+            )
+
     def test_decision_tail_rejects_malformed_latest_block(self):
         with tempfile.TemporaryDirectory() as tmp:
             task_dir = make_task_dir(Path(tmp))
@@ -375,6 +424,29 @@ class LatestBlockTests(unittest.TestCase):
                 worklog.read_text(encoding="utf-8"),
                 "**2026-04-05**\n"
                 "legacy note\n"
+                "\n"
+                "**2026-04-05**\n"
+                "- latest entry\n",
+            )
+            block = task_logs.read_latest_block_for_log(worklog, "WORKLOG")
+            self.assertEqual(block.bullet_lines, ("- latest entry",))
+
+    def test_append_worklog_starts_new_valid_block_after_orphan_nested_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = make_task_dir(Path(tmp))
+            worklog = task_dir / "logs" / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-04-05**\n"
+                "  - orphan evidence\n",
+                encoding="utf-8",
+            )
+
+            task_logs.append_log_bullet(worklog, "2026-04-05", "latest entry")
+
+            self.assertEqual(
+                worklog.read_text(encoding="utf-8"),
+                "**2026-04-05**\n"
+                "  - orphan evidence\n"
                 "\n"
                 "**2026-04-05**\n"
                 "- latest entry\n",
@@ -456,6 +528,61 @@ class CheckCommandTests(unittest.TestCase):
             self.assertEqual(exit_code, 1)
             self.assertIn("latest date block must contain only bullet lines", stdout.getvalue())
 
+    def test_check_rejects_worklog_orphan_nested_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = make_task_dir(Path(tmp))
+            worklog = task_dir / "logs" / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-04-05**\n"
+                "  - orphan evidence\n",
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+
+            with contextlib.redirect_stdout(stdout):
+                exit_code = task_logs.main(
+                    [
+                        "worklog",
+                        "check",
+                        "--task-root",
+                        str(task_dir),
+                    ]
+                )
+
+            self.assertEqual(exit_code, 1)
+            self.assertIn(
+                "nested bullet must follow a top-level bullet line",
+                stdout.getvalue(),
+            )
+
+    def test_check_rejects_worklog_nested_evidence_before_parent_bullet(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = make_task_dir(Path(tmp))
+            worklog = task_dir / "logs" / "WORKLOG.md"
+            worklog.write_text(
+                "**2026-04-05**\n"
+                "  - orphan evidence\n"
+                "- later parent\n",
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+
+            with contextlib.redirect_stdout(stdout):
+                exit_code = task_logs.main(
+                    [
+                        "worklog",
+                        "check",
+                        "--task-root",
+                        str(task_dir),
+                    ]
+                )
+
+            self.assertEqual(exit_code, 1)
+            self.assertIn(
+                "nested bullet must follow a top-level bullet line",
+                stdout.getvalue(),
+            )
+
     def test_check_rejects_short_decision_block(self):
         with tempfile.TemporaryDirectory() as tmp:
             task_dir = make_task_dir(Path(tmp))
@@ -479,6 +606,34 @@ class CheckCommandTests(unittest.TestCase):
 
             self.assertEqual(exit_code, 1)
             self.assertIn("latest decision block must contain exactly 4 bullet lines", stdout.getvalue())
+
+    def test_check_rejects_nested_decision_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = make_task_dir(Path(tmp))
+            decisions = task_dir / "logs" / "DECISIONS.md"
+            decisions.write_text(
+                "**2026-04-05**\n"
+                "- 배경: sample\n"
+                "  - nested evidence belongs in WORKLOG\n"
+                "- 결정: sample\n"
+                "- 이유: sample\n"
+                "- 영향: sample\n",
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+
+            with contextlib.redirect_stdout(stdout):
+                exit_code = task_logs.main(
+                    [
+                        "decision",
+                        "check",
+                        "--task-root",
+                        str(task_dir),
+                    ]
+                )
+
+            self.assertEqual(exit_code, 1)
+            self.assertIn("latest decision block must contain only top-level bullet lines", stdout.getvalue())
 
     def test_display_path_falls_back_to_absolute_outside_canonical_task_tree(self):
         with tempfile.TemporaryDirectory() as tmp:

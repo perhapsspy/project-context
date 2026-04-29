@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 
 LOG_DATE_HEADING_RE = re.compile(r"^\*\*[0-9]{4}-[0-9]{2}-[0-9]{2}\*\*$")
+LOG_BULLET_LINE_RE = re.compile(r"^(?:- |\s{2,}- )")
 DECISIONS_LOG_NAME = "DECISIONS.md"
 WORKLOG_LOG_NAME = "WORKLOG.md"
 DECISION_LINE_COUNT = 4
@@ -236,7 +237,7 @@ def append_log_bullet(path: Path, date_text: str, bullet: str) -> None:
         if (
             latest_block is not None
             and normalized_date == latest_block.date
-            and raw_block_has_only_bullets(latest_block)
+            and raw_block_has_valid_log_lines(latest_block)
         ):
             if not ends_with_newline(path):
                 handle.write("\n")
@@ -287,16 +288,17 @@ def read_latest_raw_block(path: Path) -> RawLatestLogBlock:
 
     block_lines_reversed: list[str] = []
     for raw_line in iter_lines_reversed(path):
-        stripped = raw_line.strip().lstrip("\ufeff")
-        if not stripped:
+        block_line = raw_line.rstrip().lstrip("\ufeff")
+        heading_probe = block_line.strip()
+        if not heading_probe:
             continue
-        if LOG_DATE_HEADING_RE.match(stripped):
+        if LOG_DATE_HEADING_RE.match(heading_probe):
             return RawLatestLogBlock(
                 path=path,
-                heading=stripped,
+                heading=heading_probe,
                 block_lines=tuple(reversed(block_lines_reversed)),
             )
-        block_lines_reversed.append(stripped)
+        block_lines_reversed.append(block_line)
 
     raise LogToolError("missing `**YYYY-MM-DD**` heading")
 
@@ -309,6 +311,8 @@ def read_latest_block_for_log(path: Path, log_name: str) -> LatestLogBlock:
 
 
 def validate_decisions_block(block: LatestLogBlock) -> None:
+    if any(not line.startswith("- ") for line in block.bullet_lines):
+        raise LogToolError("latest decision block must contain only top-level bullet lines")
     if len(block.bullet_lines) != DECISION_LINE_COUNT:
         raise LogToolError("latest decision block must contain exactly 4 bullet lines")
 
@@ -328,12 +332,21 @@ def latest_raw_block_or_none(path: Path) -> RawLatestLogBlock | None:
 def validate_raw_block_bullets(block_lines: tuple[str, ...]) -> tuple[str, ...]:
     if not block_lines:
         raise LogToolError("latest date block is empty")
-    if any(not line.startswith("- ") for line in block_lines):
+    if any(LOG_BULLET_LINE_RE.match(line) is None for line in block_lines):
         raise LogToolError("latest date block must contain only bullet lines")
+    has_top_level_bullet = False
+    for line in block_lines:
+        if line.startswith("- "):
+            has_top_level_bullet = True
+            continue
+        if not has_top_level_bullet:
+            raise LogToolError("nested bullet must follow a top-level bullet line")
+    if not has_top_level_bullet:
+        raise LogToolError("latest date block must contain at least one top-level bullet line")
     return block_lines
 
 
-def raw_block_has_only_bullets(block: RawLatestLogBlock) -> bool:
+def raw_block_has_valid_log_lines(block: RawLatestLogBlock) -> bool:
     try:
         validate_raw_block_bullets(block.block_lines)
     except LogToolError:

@@ -1,6 +1,6 @@
 ---
 name: project-context
-description: Keep durable repo context for session resume, handoff, long-running work, and multi-agent follow-through.
+description: Keep durable coding-agent repo context across sessions, handoff, long-running implementation, multi-agent follow-through, and reusable reference notes.
 ---
 
 # Project Context
@@ -75,17 +75,20 @@ Logs are append-only, but not command transcripts.
 For `logs/WORKLOG.md`:
 
 - Append one block per meaningful work batch, not per command or file.
-- Merge repetitive edits, retries, and validation attempts into one short block.
+- Merge repetitive edits, retries, validation attempts, and feedback micro-iterations into one short outcome block after the cluster settles.
 - Do not paste raw shell output unless the exact text is essential evidence.
-- Keep `Evidence` concise: command names, repo-relative paths, or summarized results.
+- Keep evidence concise: command names, repo-relative paths, summarized results, or small nested evidence bullets when that is easier to scan.
 - Record failed attempts only when they affect the next restartable step.
+- Separate task validation from pre-existing repo debt or unrelated warnings.
 - Prefer fewer, denser blocks over many micro-blocks.
+- Use the existing task language and voice. Write natural bullets that include outcome, compact evidence, and remaining restart conditions only when they matter.
 
 For `logs/DECISIONS.md`:
 
 - Record only decisions affecting future interpretation, scope, architecture, rollback, or rule application.
 - Do not log routine edits, validation passes, file creation, or obvious implementation steps.
 - Keep each block as 4 bullets: `Background`, `Decision`, `Why`, `Impact`.
+- When work is paused, rejected, or converted into reference-only status, record the final decision and reopen condition in `DECISIONS.md` or the compact current state in `BRIEF.md`.
 
 For both logs:
 
@@ -152,6 +155,7 @@ For both logs:
 - Keeping completed items in `docs/BACKLOG.md`.
 - Mixing canonical docs, temporary notes, and finished remnants at one task root.
 - Dumping raw command transcripts, repetitive micro-steps, or noisy shell output into `WORKLOG.md`.
+- Duplicating the same benchmark numbers or validation matrix in both `BRIEF.md` and `WORKLOG.md` unless the second surface adds a new interpretation.
 - Logging routine edits or validation passes as decisions.
 - Saving absolute user-specific paths or secrets.
 
