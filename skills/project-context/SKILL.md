@@ -40,13 +40,14 @@ docs/
 
 - `docs/reference/**`: current trusted reference context only. Keep principles, rules, and reliable facts here. Do not store investigation history, progress, or timeline narrative.
 - `docs/tasks/yyyy/mm-dd/<task-slug>/`: default task workspace for real work.
-- `BRIEF.md`: rewrite-only compact resume card, not a report or log. Keep goal, scope, current understanding/facts, current state, and nearest next step.
+- `BRIEF.md`: rewrite-only compact resume card, not a report or log. Keep stable goal, scope boundary, current facts or conclusions, current resumable state, and nearest next step.
 - `logs/DECISIONS.md` and `logs/WORKLOG.md`: append-only decision and execution trail. Keep evidence here, not in the brief.
 - `[optional] <purpose-named-backlog>.md`: unresolved carry-over only, such as `RESEARCH-BACKLOG.md` or `QA-BACKLOG.md`. Add it only when one next step is not enough.
-- `[optional] working/` and `[optional] archive/`: temporary notes and finished remnants.
+- `[optional] working/`: in-progress drafts, probes, staging evidence, and undecided plans.
+- `[optional] archive/`: completed, rejected, replaced, or stale remnants that no longer own current state.
 - `[optional] docs/BACKLOG.md`: not-yet-active repo-level future work only. Once active, move state into a dated task and remove the repo backlog item.
 
-## `BRIEF.md` Limits
+## `BRIEF.md` Ownership
 
 Use only these top-level headings unless the user explicitly asks otherwise:
 
@@ -57,16 +58,25 @@ Use only these top-level headings unless the user explicitly asks otherwise:
 - `Next Step` or `Next Actions`
 - optional `Working Boundary`
 
-Hard rules:
+Semantic rules:
 
-- Usually 300-500 words maximum.
-- Each section should usually have 1-5 bullets.
-- `Scope` is a 1-3 bullet boundary summary, not a touched-file list.
-- `Next Step` owns only the nearest restartable move, not a backlog.
+- `Goal` states the stable task target only. Keep background and rationale elsewhere.
+- `Scope` is a boundary summary, not a touched-file list.
+- `Current Understanding` is for compact conclusions only. Move design policy or durable conclusions to a current-canonical task doc or `docs/reference/**` when reusable; move investigation notes, benchmark tables, and staging evidence to `working/` or logs.
+- `Current State` says what is true if the task resumes now. Move "what was done" narration to `logs/WORKLOG.md`.
+- `Next Step` owns only the nearest restartable move, not a backlog. For finished work, use a compact `Reopen if ...` condition when useful.
 - Do not add sections such as `Validation`, `Files Changed`, `Touched Files`, `History`, `Worklog`, `Investigation`, `Evidence`, `Completed`, or `Checklist`.
-- Do not include command output, validation transcripts, investigation history, completed-work history, or touched-file inventories.
+- Do not include command output, validation transcripts, investigation history, benchmark matrices, PR/release/deploy chronology, completed-work history, or touched-file inventories.
 - If validation status matters, summarize it in one `Current State` sentence and keep details in `logs/WORKLOG.md`.
-- If exact paths materially lower reopen cost, put at most 5 repo-relative paths in `Working Boundary`.
+- If exact paths materially lower reopen cost, put the smallest useful repo-relative path set in `Working Boundary`, usually at most 5 paths.
+
+- Budgets are soft review triggers: usually keep `BRIEF.md` around 300-500 words, each section around 1-5 bullets, and `Scope` around 1-3 bullets. Repeated pressure means the material needs another owning surface.
+
+## Task Root Ownership
+
+- Task root owns current-canonical docs and routers only. Every root markdown file should answer either "this is the current source for this topic" or "this routes readers to the current owners."
+- Small tasks default to `BRIEF.md`, `logs/DECISIONS.md`, and `logs/WORKLOG.md`; larger tasks may add current-canonical docs or routers when they make the task easier to scan.
+- Put active drafts, probes, staging evidence, and undecided plans in `working/`; chronology and validation detail in logs; completed, replaced, or stale docs in `archive/`.
 
 ## Log Limits
 
@@ -133,6 +143,7 @@ For both logs:
    - Rewrite `BRIEF.md` in place.
    - Append decisions and worklog entries.
    - Move reusable current rules or facts into `docs/reference/**`; keep investigation and progress in logs.
+   - After creating or materially editing any task doc, re-check task root ownership.
 
 6. Add optional surfaces only when needed.
 
@@ -150,6 +161,7 @@ For both logs:
 - Letting `Scope` become a touched-file list.
 - Letting `Current State` narrate work sequence instead of resumable state.
 - Letting `Next Step` become a backlog.
+- Letting task root become a mixed warehouse instead of current-canonical docs and routers.
 - Turning `docs/reference/**` into investigation notes, progress, or timeline narrative.
 - Creating generic overflow files instead of purpose-named task-local docs.
 - Keeping completed items in `docs/BACKLOG.md`.
@@ -165,19 +177,16 @@ Run the bundled checker by resolving `scripts/check_runtime_shape.py` from the i
 
 The checker covers runtime shape only: required files, latest log-block shape, task/reference path markers, and secret-like markers. It does not judge ownership, semantic quality, full history, merge correctness, or broader scope discipline.
 
-Before finalizing, reject or rewrite `BRIEF.md` if:
+Before finalizing:
 
-- It contains forbidden sections such as validation, files changed, history, evidence, or checklist.
-- `Scope` is functioning as a file inventory.
-- `Current State` narrates the work sequence instead of the current resumable state.
-- `Next Step` contains a backlog instead of one nearest action.
-- The brief is longer than needed to resume the task.
+- Rewrite `BRIEF.md` if it contains forbidden sections, path inventory, progress narration, a backlog-like next step, or more detail than needed to resume.
+- Reclassify root task docs if they mix current canonical docs with drafts, reports, evidence, or stale plans that belong in `working/`, logs, or `archive/`.
 
 ## Final Gates
 
 - Can a later session reopen the work from `BRIEF.md` without reconstructing state?
 - Is reusable current context in `docs/reference/**` instead of task logs?
 - Is the execution and decision trail confined to `logs/*.md`?
-- Are canonical docs separate from temporary notes and finished remnants?
+- Does task root contain only current-canonical docs and routers?
 - Did task reuse follow unresolved work and expected output rather than topic similarity?
 - Are paths portable and secrets absent?

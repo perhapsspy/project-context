@@ -11,6 +11,7 @@
 - repo-local 문서는 local adapter 역할만 맡는다.
 - `reference`는 현재 믿고 쓸 기준 맥락을 담는다.
 - `BRIEF.md`는 얇게, `Scope`는 파일 목록이 아닌 작업 경계로 쓴다.
+- task root는 current canonical/router 표면으로 두고, 초안은 `working/`, 이력은 logs, 완료·대체·stale 문서는 `archive/`로 계속 재분류한다.
 
 ## 피할 것
 - 숨은 메모리나 외부 시스템을 계약처럼 만들지 않는다.
@@ -18,6 +19,7 @@
 - shipped contract나 script semantics를 repo-local 문서에 다시 적지 않는다.
 - `reference`를 조사 메모, 진행 로그, provenance 설명으로 쓰지 않는다.
 - optional pattern을 required tree처럼 보이게 하지 않는다.
+- 큰 task의 root 문서를 evidence, draft, report, cleanup plan이 섞인 창고로 키우지 않는다.
 
 ## 수정 기준
 - 같은 drift가 반복될 때만 shipped contract를 바꾼다.
