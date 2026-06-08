@@ -41,6 +41,7 @@ docs/
 - `docs/reference/**`: current trusted reference context only. Keep principles, rules, and reliable facts here. Do not store investigation history, progress, or timeline narrative.
 - `docs/tasks/yyyy/mm-dd/<task-slug>/`: default task workspace for real work.
 - `BRIEF.md`: rewrite-only compact resume card, not a report or log. Keep stable goal, scope boundary, current facts or conclusions, current resumable state, and nearest next step.
+- In long-running work, rewrite `BRIEF.md` at each phase boundary so it contains only current resumable state; move phase history and evidence to `logs/`, `working/`, or `archive/`.
 - `logs/DECISIONS.md` and `logs/WORKLOG.md`: append-only decision and execution trail. Keep evidence here, not in the brief.
 - `[optional] <purpose-named-backlog>.md`: unresolved carry-over only, such as `RESEARCH-BACKLOG.md` or `QA-BACKLOG.md`. Add it only when one next step is not enough.
 - `[optional] working/`: in-progress drafts, probes, staging evidence, and undecided plans.

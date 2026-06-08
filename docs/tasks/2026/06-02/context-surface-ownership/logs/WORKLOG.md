@@ -8,3 +8,7 @@
 - Used a deep_planner review to revisit the rule-vs-ownership tradeoff. Reworked SKILL.md so BRIEF and task-root guidance leads with semantic ownership/lifecycle, moved numeric limits into soft budgets, and updated the proposal/brief to describe root-doc count as a gardening tripwire rather than the core contract.
 - Applied the follow-up skill wording review: restored the Working Boundary path budget as a soft usually-at-most-5 guardrail, replaced open-ended supporting-doc phrasing with owner/lifecycle language, and split BRIEF rewrite vs root-doc reclassification final checks without adding new filename rules.
 - Applied commit-readiness review fixes: narrowed SKILL.md so investigation notes, benchmark tables, and staging evidence go to working/logs rather than generic current docs; removed open-ended owner/lifecycle folder wording; and rewrote BRIEF.md Current State to describe the active state instead of review history.
+
+**2026-06-08**
+
+- Added the phase-boundary BRIEF rewrite rule to the shipped skill and direction docs, then aligned the task brief to say the wording-only slice is ready to validate and publish.
