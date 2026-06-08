@@ -21,10 +21,11 @@
 - Wording-only slice is active: `skills/project-context/SKILL.md` and `docs/skill-direction.md` carry the ownership/lifecycle guidance, including the phase-boundary `BRIEF.md` rewrite rule.
 - [IMPROVEMENT-PROPOSAL.md](IMPROVEMENT-PROPOSAL.md)는 checker/helper ideas를 follow-up 후보로 두고, semantic warnings는 `check_gardening.py`가 맡는 방향으로 정리했다.
 - No checker/helper changes are in this slice; those remain separate follow-up work.
+- Commit `d853038` is pushed and the global `project-context` skill install has been refreshed.
 
 ## Next Step
 
-- Validate the wording-only change, publish it, and refresh the global skill install.
+- Reopen only for a separate checker/helper warning slice or further dogfood feedback.
 
 ## Working Boundary
 

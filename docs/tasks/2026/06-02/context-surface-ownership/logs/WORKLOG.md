@@ -12,3 +12,4 @@
 **2026-06-08**
 
 - Added the phase-boundary BRIEF rewrite rule to the shipped skill and direction docs, then aligned the task brief to say the wording-only slice is ready to validate and publish.
+- Validated with the project-context runtime checker, full unittest suite, and diff whitespace check. Pushed commit `d853038` and refreshed the global `project-context` skill with `npx skills update project-context -g -y`.
