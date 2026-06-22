@@ -1,6 +1,6 @@
 ---
 name: project-context
-description: Keep durable coding-agent repo context across sessions, handoff, long-running implementation, multi-agent follow-through, and reusable reference notes.
+description: Resume, handoff, and long-running repo work by keeping durable context across threads or agents: task briefs, logs, and reusable reference notes.
 ---
 
 # Project Context
@@ -11,7 +11,7 @@ Keep durable repo context in ordinary files so later sessions can resume without
 
 ## Use / Do Not Use
 
-Use this skill when work should leave durable repo context: resume, handoff, long-running work, reusable reference notes, a current task brief, and an append-only trail.
+Use this skill when repo work needs durable context across threads or agents: resume or handoff, long-running work, subagent follow-through, reusable reference notes, a current task brief, or append-only logs.
 
 Do not bootstrap for read-only questions, one-shot inspections, or implicit migration of scattered legacy docs. If the layout is missing, choose explicit adoption or migration.
 
