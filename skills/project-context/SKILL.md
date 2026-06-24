@@ -61,6 +61,7 @@ Use only these top-level headings unless the user explicitly asks otherwise:
 
 Semantic rules:
 
+- Apply user corrections and deletion requests by rewriting current state; `BRIEF.md` keeps only the resulting fact, boundary, or next step.
 - `Goal` states the stable task target only. Keep background and rationale elsewhere.
 - `Scope` is a boundary summary, not a touched-file list.
 - `Current Understanding` is for compact conclusions only. Move design policy or durable conclusions to a current-canonical task doc or `docs/reference/**` when reusable; move investigation notes, benchmark tables, and staging evidence to `working/` or logs.
