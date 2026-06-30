@@ -38,7 +38,7 @@ docs/
   [optional] BACKLOG.md
 ```
 
-- `docs/reference/**`: current trusted reference context only. Keep principles, rules, and reliable facts here. Do not store investigation history, progress, or timeline narrative.
+- `docs/reference/**`: current trusted reference context only. Keep reusable rules and reliable facts here, not investigation history, progress, timeline narrative, code indexes, implementation tours, or source-file tables of contents. Include paths only for the minimum owner surfaces needed to verify the rule or fact.
 - `docs/tasks/yyyy/mm-dd/<task-slug>/`: default task workspace for real work.
 - `BRIEF.md`: rewrite-only compact resume card, not a report or log. Keep stable goal, scope boundary, current facts or conclusions, current resumable state, and nearest next step.
 - In long-running work, rewrite `BRIEF.md` at each phase boundary so it contains only current resumable state; move phase history and evidence to `logs/`, `working/`, or `archive/`.
@@ -122,6 +122,8 @@ For both logs:
 
    - Use `rg` in `docs/reference/**/*.md` for the active topic.
    - Start with up to 3 narrow reference files closest to the task.
+   - Before creating a new reference, or a new task for likely continuation work, check the closest project-context surfaces for the same unresolved work or reusable current context.
+   - If code, API, config, tests, or an explicitly named external owner is authoritative, link to that owner instead of restating it; keep project-context content to task-specific resume or routing context.
 
 2. Check one related task.
 
@@ -144,7 +146,7 @@ For both logs:
 
    - Rewrite `BRIEF.md` in place.
    - Append decisions and worklog entries.
-   - Move reusable current rules or facts into `docs/reference/**`; keep investigation and progress in logs.
+   - Move only reusable current rules or reliable facts into `docs/reference/**`; keep investigation, progress, and one-off task state in task-local surfaces.
    - After creating or materially editing any task doc, re-check task root ownership.
 
 6. Add optional surfaces only when needed.
@@ -165,6 +167,7 @@ For both logs:
 - Letting `Next Step` become a backlog.
 - Letting task root become a mixed warehouse instead of current-canonical docs and routers.
 - Turning `docs/reference/**` into investigation notes, progress, or timeline narrative.
+- Turning `docs/reference/**` into a code inventory, implementation tour, or table of contents for current source files.
 - Creating generic overflow files instead of purpose-named task-local docs.
 - Keeping completed items in `docs/BACKLOG.md`.
 - Mixing canonical docs, temporary notes, and finished remnants at one task root.
@@ -191,4 +194,6 @@ Before finalizing:
 - Is the execution and decision trail confined to `logs/*.md`?
 - Does task root contain only current-canonical docs and routers?
 - Did task reuse follow unresolved work and expected output rather than topic similarity?
+- If `git status --short` shows untracked project-context files, are they intentionally kept, ignored, or moved into the right task/reference/archive surface?
+- If a skill file changed, did the final note either verify the installed/runtime copy or state that install sync was out of scope?
 - Are paths portable and secrets absent?

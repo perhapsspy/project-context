@@ -1,2 +1,17 @@
 __pycache__/
 *.pyc
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+*.swp
+*.swo
+
+# Local test/build caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
