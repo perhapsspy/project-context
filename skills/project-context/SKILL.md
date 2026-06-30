@@ -1,6 +1,6 @@
 ---
 name: project-context
-description: Resume, handoff, and long-running repo work by keeping durable context across threads or agents: task briefs, logs, and reusable reference notes.
+description: "Resume, handoff, and long-running repo work by keeping durable context across threads or agents: task briefs, logs, and reusable reference notes."
 ---
 
 # Project Context

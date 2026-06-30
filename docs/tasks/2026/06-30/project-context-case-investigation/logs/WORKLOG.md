@@ -14,3 +14,4 @@
 - `skills/project-context/SKILL.md`와 설치본 `project-context` 스킬에 기준 문서 풍화 방지, 기존 담당 표면 확인, 완료 전 미추적 파일/설치본 확인 문장을 반영했다. 하위 에이전트 리뷰 지적에 따라 작업 루트가 작업 상태를 계속 소유한다는 뜻이 남도록 문장을 좁혔고, `.DS_Store` 미분류 파일을 제거했으며, 결정 로그에는 사실 조사 단계 이후 제안/반영 단계로 확장된 결정을 추가했다.
 - .gitignore에 .DS_Store, Thumbs.db, desktop.ini, 편집기 임시 파일, 로컬 테스트/빌드 캐시 규칙을 추가했다. 저장소 안 잡파일을 다시 검색해 남은 .DS_Store가 없음을 확인했고, 추적 중인 잡파일도 없는 상태다.
 - 하위 에이전트 4개 축으로 현재 diff의 충분성, 표현 간결성, 실제 실패 모드 대응, 유지보수성을 재검토했다. blocking finding은 없었고, 표현 모호성을 줄이기 위해 기존 담당 표면 확인 문장을 둘로 나누고, reference 승격 문장과 final gate 문장을 더 좁게 고쳤다.
+- npx skills가 project-context를 발견하지 못한 원인을 확인했다. project-context SKILL.md frontmatter description에 따옴표 없는 콜론이 있어 YAML 파서가 스킬을 무효로 처리했고, description을 따옴표로 감싸 npx skills add/use에서 project-context와 project-context-migration이 모두 발견되도록 고쳤다.
