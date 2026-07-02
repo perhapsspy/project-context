@@ -46,11 +46,6 @@ Or copy the skill(s) you need directly into `skills`. For migration/adoption wor
 
 See [`docs/examples.en.md`](docs/examples.en.md) for concrete examples.
 
-## Good Skills to Use Together
-
-- [`project-context`](https://github.com/perhapsspy/project-context): keep working context in the repo so later sessions can resume quickly
-- [`structure-first`](https://github.com/perhapsspy/structure-first): organize code so the primary success path reads top-down
-
 ## Support
 
 [![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/perhapsspy)
