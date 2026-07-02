@@ -38,7 +38,7 @@ docs/
   [optional] BACKLOG.md
 ```
 
-- `docs/reference/**`: current trusted reference context only. Keep reusable rules and reliable facts here, not investigation history, progress, timeline narrative, code indexes, implementation tours, or source-file tables of contents. Include paths only for the minimum owner surfaces needed to verify the rule or fact.
+- `docs/reference/**`: current trusted reference context only. Keep reusable rules and reliable facts here, not investigation history, progress, timeline narrative, code indexes, implementation tours, or source-file tables of contents. Include paths only for the minimum owner surfaces needed to verify the rule or fact. When user corrections or deletion requests affect a reference claim, rewrite or remove the stale claim; keep only the corrected reliable fact or a pointer to the authoritative owner.
 - `docs/tasks/yyyy/mm-dd/<task-slug>/`: default task workspace for real work.
 - `BRIEF.md`: rewrite-only compact resume card, not a report or log. Keep stable goal, scope boundary, current facts or conclusions, current resumable state, and nearest next step.
 - In long-running work, rewrite `BRIEF.md` at each phase boundary so it contains only current resumable state; move phase history and evidence to `logs/`, `working/`, or `archive/`.
@@ -114,7 +114,7 @@ For both logs:
 - Never store secrets.
 - Parent agent owns `BRIEF.md` and canonical logs.
 - Subagents write only temporary notes or artifacts unless explicitly assigned canonical writeback.
-- Subagents start without inherited context; pass a small brief: goal, constraints, boundary notes, validation command, artifact path.
+- Subagents start without inherited context; pass a small brief: goal, latest user constraints, boundary notes, unverified assumptions or unknowns, validation command, artifact path.
 
 ## Operating Model
 
