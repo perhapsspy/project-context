@@ -1,0 +1,5 @@
+interface:
+  display_name: "Project Context Migration"
+  short_description: "Migrate scattered docs into project context"
+  default_prompt: "Use $project-context-migration to audit and migrate scattered repository context into the project-context layout."
+
