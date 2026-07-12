@@ -2,9 +2,7 @@
 
 [Korean](README.md) | [English](README.en.md)
 
-> Note: This English text was translated and edited with LLM assistance. If anything reads awkwardly, please check the Korean version or open an issue.
-
-`project-context` is a skill that helps coding agents keep working context in the project, so future sessions can pick up the work without rebuilding the state from scratch. It leaves the minimum useful reference docs and task records as files, so humans can read and edit them directly without relying on a separate system.
+Long-running work should not restart with the same investigation every time a session changes. `project-context` keeps the current state, important decisions, and next action in short repository files so people and agents can resume from the same point.
 
 - `docs/reference/`: current trusted reference context such as principles, rules, and recent reliable facts
 - `docs/tasks/...`: dated task records for most real work

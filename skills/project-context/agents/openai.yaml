@@ -1,5 +1,4 @@
 interface:
   display_name: "Project Context"
-  short_description: "Keep long-running repo work resumable"
-  default_prompt: "Use $project-context to create or update durable context for this long-running repository task."
-
+  short_description: "Resume long-running work without rebuilding context"
+  default_prompt: "Use $project-context to record where this work stands and what the next task should do."
