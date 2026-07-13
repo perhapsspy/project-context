@@ -23,10 +23,10 @@ npx skills add perhapsspy/project-context
 
 혹은 `skills`에서 필요한 스킬을 직접 복사하기. 기존 문서 구조를 이관할 때는 `project-context`와 `project-context-migration`을 함께 복사한다.
 
-**AGENTS.md에 기본값으로 연결**
+**장기 작업의 기본값으로 연결**
 
 ```md
-- 작업 시 항상 $project-context 를 사용해
+- 여러 작업에 걸쳐 이어지는 구현에서는 $project-context를 사용해
 ```
 
 ## 프롬프트 예시

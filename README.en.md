@@ -23,10 +23,10 @@ npx skills add perhapsspy/project-context
 
 Or copy the skill(s) you need directly into `skills`. For migration/adoption work, copy both `project-context` and `project-context-migration`.
 
-**Set as a default in `AGENTS.md`**
+**Use as a default for long-running work**
 
 ```md
-- Always use $project-context for work
+- Use $project-context when implementation continues across tasks
 ```
 
 ## Prompt Examples
