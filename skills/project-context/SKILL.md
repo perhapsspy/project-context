@@ -67,6 +67,7 @@ Semantic rules:
 - `Current Understanding` is for compact conclusions only. Move design policy or durable conclusions to a current-canonical task doc or `docs/reference/**` when reusable; move investigation notes, benchmark tables, and staging evidence to `working/` or logs.
 - `Current State` says what is true if the task resumes now. Move "what was done" narration to `logs/WORKLOG.md`.
 - `Next Step` owns only the nearest restartable move, not a backlog. For finished work, use a compact `Reopen if ...` condition when useful.
+- A task that consumes a shared contract points to its canonical owner and keeps task-specific state, deviations, and the nearest next step.
 - Do not add sections such as `Validation`, `Files Changed`, `Touched Files`, `History`, `Worklog`, `Investigation`, `Evidence`, `Completed`, or `Checklist`.
 - Do not include command output, validation transcripts, investigation history, benchmark matrices, PR/release/deploy chronology, completed-work history, or touched-file inventories.
 - If validation status matters, summarize it in one `Current State` sentence and keep details in `logs/WORKLOG.md`.
@@ -78,6 +79,8 @@ Semantic rules:
 
 - Task root owns current-canonical docs and routers only. Every root markdown file should answer either "this is the current source for this topic" or "this routes readers to the current owners."
 - Small tasks default to `BRIEF.md`, `logs/DECISIONS.md`, and `logs/WORKLOG.md`; larger tasks may add current-canonical docs or routers when they make the task easier to scan.
+- When multiple tasks, owners, or phases depend on an interpretation that changes implementation or acceptance, assign one current canonical owner. Reuse an existing code, API, config, test, or project-document owner; otherwise keep a task-specific shared contract in a purpose-named task-root document and a reusable contract in `docs/reference/**`.
+- Keep a shared contract focused on the current outcome, invariants and non-goals, cross-boundary vocabulary or interfaces, ownership boundaries, and canonical proof path or accepted baseline pointer.
 - Put active drafts, probes, staging evidence, and undecided plans in `working/`; chronology and validation detail in logs; completed, replaced, or stale docs in `archive/`.
 
 ## Log Limits
@@ -115,6 +118,7 @@ For both logs:
 - Parent agent owns `BRIEF.md` and canonical logs.
 - Subagents write only temporary notes or artifacts unless explicitly assigned canonical writeback.
 - Subagents start without inherited context; pass a small brief: goal, latest user constraints, boundary notes, unverified assumptions or unknowns, validation command, artifact path.
+- When a shared contract exists, add its canonical pointer to the subagent brief.
 
 ## Operating Model
 
@@ -147,6 +151,7 @@ For both logs:
    - Rewrite `BRIEF.md` in place.
    - Append decisions and worklog entries.
    - Move only reusable current rules or reliable facts into `docs/reference/**`; keep investigation, progress, and one-off task state in task-local surfaces.
+   - Promote a confirmed shared contract into `docs/reference/**` when future tasks depend on it for different implementation or acceptance choices and the reference becomes its canonical owner.
    - After creating or materially editing any task doc, re-check task root ownership.
 
 6. Add optional surfaces only when needed.

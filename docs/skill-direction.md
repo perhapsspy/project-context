@@ -10,6 +10,7 @@
 - shipped skill과 script의 authority는 shipped asset에 둔다.
 - repo-local 문서는 local adapter 역할만 맡는다.
 - `reference`는 현재 믿고 쓸 기준 맥락을 담는다.
+- 여러 작업이 구현이나 승인 판정을 바꾸는 해석을 공유하면 기존 정본을 우선하고, 작업 전용 계약은 task root, 재사용 계약은 `docs/reference/**`에 담당자 하나를 둔다.
 - `BRIEF.md`는 얇게, `Scope`는 파일 목록이 아닌 작업 경계로 쓴다.
 - 긴 작업은 phase boundary마다 `BRIEF.md`를 다시 써서 현재 재개 상태만 남기고, 단계 이력과 증거는 `logs/`, `working/`, `archive/`로 보낸다.
 - task root는 current canonical/router 표면으로 두고, 초안은 `working/`, 이력은 logs, 완료·대체·stale 문서는 `archive/`로 계속 재분류한다.

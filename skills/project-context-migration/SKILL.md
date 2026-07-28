@@ -27,7 +27,7 @@ Audit scattered repository docs and notes before moving the right working contex
 ## Classification
 
 - `TASK`: task-local, historical, exploratory, uncertain, or migration-audit material. Start here when unsure.
-- `REFERENCE`: current trusted project-domain context by topic. Rewrite to current state, strip timeline noise, and keep only principles, rules, and recently reliable facts another task can directly use.
+- `REFERENCE`: current trusted project-domain context by topic. Rewrite to current state, strip timeline noise, and keep only principles, rules, recently reliable facts, and reusable shared contracts that another task can directly use.
 - `LEAVE`: product/user/team docs, human-facing top-level notes, and origin/about/repository narrative that do not belong in agent working context.
 - `ARCHIVE`: stale duplicates or superseded docs if the user wants cleanup; it is a migration decision, not a core `project-context` destination.
 - Common mappings: `runbook -> reference`; `task note -> task`; `ADR -> current conclusion to reference / superseded to archive`; repo-root instruction notes and `origin/about/repository` docs usually stay `LEAVE` unless they clearly remain repo-local agent guidance.
