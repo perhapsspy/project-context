@@ -7,68 +7,27 @@ description: Audit scattered repository docs and notes, then move only the right
 
 ## Purpose
 
-Audit scattered repository docs and notes before moving the right working context into `project-context`. This companion skill assumes the main `project-context` skill is installed alongside it. If the repo is effectively empty and there is nothing to migrate, use `project-context` instead.
-
-## Use / Do Not Use
-
-- Use this skill when a repo already has scattered docs or partial working-context material that needs to be sorted into the `project-context` layout.
-- Use it when you need to classify source docs into `TASK`, `REFERENCE`, `LEAVE`, or `ARCHIVE`.
-- Do not use it for empty or nearly empty repos with nothing meaningful to migrate.
-- Do not treat migration as a blind move-everything operation.
-
-## Core Bias
-
-- Audit first, move second.
-- Shipped authority stays shipped.
-- Keep only agent working context inside `project-context`.
-- When unsure, start in `TASK` rather than over-promoting into `REFERENCE`.
-- Migration correctness depends on explicit mapping and spot review, not on destination shape alone.
+Audit scattered repository docs and notes before moving the right working context into `project-context`. Apply the main [project-context contract](../project-context/SKILL.md) first. Use this companion only for existing legacy context, not to initialize an empty repo.
 
 ## Classification
 
-- `TASK`: task-local, historical, exploratory, uncertain, or migration-audit material. Start here when unsure.
-- `REFERENCE`: current trusted project-domain context by topic. Rewrite to current state, strip timeline noise, and keep only principles, rules, recently reliable facts, and reusable shared contracts that another task can directly use.
+- `TASK`: material that belongs in agent working context but is task-local, historical, exploratory, unresolved, or not trusted as current truth.
+- `REFERENCE`: current trusted rules, facts, or shared contracts another task can directly reuse.
 - `LEAVE`: product/user/team docs, human-facing top-level notes, and origin/about/repository narrative that do not belong in agent working context.
-- `ARCHIVE`: stale duplicates or superseded docs if the user wants cleanup; it is a migration decision, not a core `project-context` destination.
-- Common mappings: `runbook -> reference`; `task note -> task`; `ADR -> current conclusion to reference / superseded to archive`; repo-root instruction notes and `origin/about/repository` docs usually stay `LEAVE` unless they clearly remain repo-local agent guidance.
+- `ARCHIVE`: stale duplicates or superseded docs only when cleanup is authorized; it is not a default `project-context` destination.
 
-## Operating Model
+`LEAVE` is a valid result. If membership in agent working context is uncertain, use `LEAVE`; if membership is clear but current truth or adoption is uncertain, use `TASK`. Do not promote content to `REFERENCE` merely because it is technical.
 
-1. Read [../project-context/SKILL.md](../project-context/SKILL.md) to review the target layout.
-2. Create one dated migration task under `docs/tasks/...` first and use it as the audit surface for the whole move.
-3. Inventory likely source roots with `rg --files` across common context directories and repo-root instruction files when present.
-4. Before mapping, ask whether each source belongs in agent working context at all.
-5. Build an audit map before editing: `path | kind | current-or-stale | scope | target | note`. Add extra columns only if they materially lower confusion for this repo.
-6. Apply in order: `TASK -> REFERENCE -> LEAVE/ARCHIVE`.
-7. Once the target tree exists, run the main `project-context` runtime-shape check.
-8. Treat that check as destination-shape confirmation only; migration correctness still depends on the audit map and spot review.
+## Migration Contract
 
-## Rules
+Inventory candidate sources read-only, then resolve each source or separable part to a classification, currentness, existing owner, target or leave decision, and reason. Persist this map in one dated migration task before rewriting, moving, archiving, or deleting content.
 
-- Record audit decisions in the migration task before rewriting global files.
-- Follow the main `project-context` skill and bundled scripts by reference instead of summarizing them in repo-local migration docs.
-- Merge overlapping sources into one preferred destination reference file or one dated task.
-- When migration creates or updates `REFERENCE`, keep canonical content in the reference file and record mapping, rationale, and change trace in the migration task.
-- Normalize saved doc paths to repo-relative paths or stable placeholders.
-- Before promoting anything into `REFERENCE`, ask whether another task would reuse it as agent working context. If not, prefer `TASK`, `LEAVE`, or `ARCHIVE`.
-- Keep source inventories, comparison detail, and rewrite rationale in the audit map or task-local docs rather than thickening the migration brief.
-- If a task item has no trustworthy date, use the migration date and record the uncertainty in that task.
-- When unsure between `REFERENCE` and `LEAVE` for a human-facing top-level doc, bias toward `LEAVE` unless the current move clearly makes it canonical agent working context.
-- When cleanup is about duplication, remove duplicated repo-local summaries before touching task outputs.
+Apply only the resolved map. Preserve existing canonical and human-facing owners; merge overlapping working context into one preferred task or reference owner. Rewrite current reference truth instead of copying timeline noise, and keep comparison detail, rationale, uncertainty, and change trace in the migration task.
 
-## Anti-Patterns
+Preserve shipped authority and human-facing documents outside project-context. Normalize saved paths to repo-relative paths or stable placeholders. If an item lacks a trustworthy date, use the migration date and record that uncertainty in its task.
 
-- Rewriting repo-local docs into a second copy of the shipped skill contract or bundled script behavior.
-- Moving docs into `REFERENCE` just because they are technical, even when they are not reusable working context.
-- Using the runtime-shape check as proof that the migration itself is correct.
-- Rewriting or deleting global docs before the migration task has an explicit audit map.
-- Promoting uncertain or stale material into `REFERENCE` instead of starting in `TASK`.
-- Treating `LEAVE` as failure; many docs should remain outside the agent working-context surface.
+Run the main runtime-shape checker, then reconcile the map and spot-review representative or high-risk classifications and owner transitions. Shape success does not prove migration correctness.
 
-## Final Gates
+## Completion
 
-- Does the migration task explain why each moved source became `TASK`, `REFERENCE`, `LEAVE`, or `ARCHIVE`?
-- Is current trusted reference context rewritten into current-state reference docs instead of copied over with stale timeline noise?
-- Are uncertain, exploratory, or historical materials kept in tasks instead of over-promoted?
-- Did the destination tree pass the main `project-context` runtime-shape check?
-- Did the rollout preserve human-facing docs that do not belong in agent working context?
+Finish when every inventoried candidate has a disposition, uncertain material remains isolated, human-facing material is preserved, and both destination shape and representative mappings have been checked.
