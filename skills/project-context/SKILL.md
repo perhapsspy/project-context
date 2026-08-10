@@ -39,6 +39,8 @@ docs/
 
 ## Operation and Validation
 
+Before acting, reconcile the brief's goal, current state, and restart point. When the current state proves the goal complete, close the selected task and keep adjacent next steps as candidates until the user or an authoritative approved plan selects them.
+
 Read the brief first and only the reference or log context needed to act. Reuse the matching unfinished task or create a dated task with the core files; skip creating a new task only for a small, low-judgment change finished immediately. Add optional surfaces only for a distinct owner or reader action.
 
 Assign one writer for the brief and canonical logs. Other agents write them only under an explicit bounded assignment. Use repo-relative paths or stable placeholders, store no secrets, and pass delegated work only the current goal, constraints, unknowns, evidence command, artifact path, and canonical pointers it needs.
