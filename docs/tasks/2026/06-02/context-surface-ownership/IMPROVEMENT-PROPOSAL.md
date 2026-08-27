@@ -124,17 +124,7 @@ research/            # 필요할 때만
 
 이 질문은 final gate가 아니라 작업 중 반복되는 maintenance step이어야 한다.
 
-### 4. Checker 개선 후보
-
-`check_runtime_shape.py`는 shape failure용으로 유지한다. semantic bloat와 surface ownership drift는 이미 warning-grade 역할을 가진 `check_gardening.py`에 넣는 쪽이 맞다. 다음은 gardening warning 후보로 시작한다.
-
-- `BRIEF.md` word count soft warning: 500 words 초과.
-- `BRIEF.md` progress-language warning: `검증`, `통과`, `추가했다`, `수정했다`, `배포`, `PR`, `workflow`, `rollout`, `git diff`, `npm run`, `bun run` 등이 과다하면 경고.
-- root markdown count warning: task root의 markdown이 5개 초과하고 `README.md`가 없으면 soft 경고.
-- stale surface warning: root에 `PLAN`, `DRAFT`, `REVIEW`, `REPORT`, `SUMMARY`, `EVIDENCE`, `CLEANUP` 성격 파일이 많으면 `working/` 또는 `archive/` 검토 경고.
-- repo-wide legacy debt와 current task failure를 분리하는 모드.
-
-### 5. Helper 개선 후보
+### 4. Helper 개선 후보
 
 `task_logs.py`는 로그 block shape만 관리하지 말고, brief cleanup prompt를 제공할 수 있다.
 
@@ -152,7 +142,7 @@ task_logs.py brief check --task-root <task-root>
 - `Next Step`이 backlog처럼 보이는지.
 - `Working Boundary`가 path inventory처럼 보이는지.
 
-### 6. Reference 승격 기준 명확화
+### 5. Reference 승격 기준 명확화
 
 - 한 번 쓰는 조사 결과: task `working/` 또는 logs.
 - 현재 작업의 resume state: `BRIEF.md`.
@@ -167,17 +157,12 @@ task_logs.py brief check --task-root <task-root>
    - `docs/skill-direction.md`
    - examples if wording drift appears
 
-2. Semantic warning checker
-   - `skills/project-context/scripts/check_gardening.py`
-   - `tests/project_context/**`
-   - warning-only defaults first
-
-3. Brief helper command
+2. Brief helper command
    - `skills/project-context/scripts/task_logs.py`
    - tests for oversized brief, progress narration, root markdown budget
 
-4. Dogfood cleanup
-   - run the new warning mode against selected Conalog examples
+3. Dogfood cleanup
+   - review selected Conalog examples
    - do not rewrite those repos unless separately requested
 
 ## Acceptance Criteria

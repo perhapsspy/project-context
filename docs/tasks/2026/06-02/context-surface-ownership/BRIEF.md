@@ -6,7 +6,7 @@
 
 ## Scope
 
-- 포함: `BRIEF.md` 섹션 정책, task root budget, `working`/logs/`archive` 재분류 습관, checker/helper 후속 후보.
+- 포함: `BRIEF.md` 섹션 정책과 task root/`working`/logs/`archive` 소유권.
 - 이번 구현 slice: shipped skill wording과 repo-local direction 정합화.
 - 제외: checker/helper script 직접 수정과 Conalog dogfood 대상 repo 재작성.
 
@@ -19,18 +19,15 @@
 ## Current State
 
 - Wording-only slice is active: `skills/project-context/SKILL.md` and `docs/skill-direction.md` carry the ownership/lifecycle guidance, including the phase-boundary `BRIEF.md` rewrite rule.
-- [IMPROVEMENT-PROPOSAL.md](IMPROVEMENT-PROPOSAL.md)는 checker/helper ideas를 follow-up 후보로 두고, semantic warnings는 `check_gardening.py`가 맡는 방향으로 정리했다.
-- No checker/helper changes are in this slice; those remain separate follow-up work.
 - Commit `d853038` is pushed and the global `project-context` skill install has been refreshed.
 
 ## Next Step
 
-- Reopen only for a separate checker/helper warning slice or further dogfood feedback.
+- 완료. 새로운 실제 dogfood 근거가 생길 때 별도 task로 검토한다.
 
 ## Working Boundary
 
 - `skills/project-context/SKILL.md`
-- `skills/project-context/scripts/check_gardening.py`
 - `skills/project-context/scripts/task_logs.py`
 - `tests/project_context/**`
 - `docs/tasks/2026/06-02/context-surface-ownership/**`

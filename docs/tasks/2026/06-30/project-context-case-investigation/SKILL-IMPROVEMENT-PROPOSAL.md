@@ -179,7 +179,7 @@
    - `patch-fielder-di1850-parity-retriage.md`
    - `project-context-trigger-review-install-sync.md`
 4. `python3 -m unittest discover -s tests -p 'test_*.py'`를 실행한다.
-5. `python3 skills/project-context/scripts/check_runtime_shape.py`와 `python3 skills/project-context/scripts/check_gardening.py`를 실행한다.
+5. `python3 skills/project-context/scripts/check_runtime_shape.py`를 실행한다.
 6. 실제 설치본 동기화가 필요한 변경이면 설치본까지 직접 확인한다.
 
 ## 하위 에이전트 리뷰 반영

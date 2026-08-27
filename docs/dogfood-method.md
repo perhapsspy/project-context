@@ -13,7 +13,7 @@
 1. 대상 변경 하나를 고른다.
 2. shipped skill, direction, 필요한 보조 문서만 읽고 작업한다.
 3. `BRIEF.md`, logs, guidance가 reopen/handoff에 충분한지 본다.
-4. task 직결 check를 먼저 돌리고, 마감 전 runtime shape, gardening, 전체 테스트를 본다.
+4. task 직결 check를 먼저 돌리고, 마감 전 runtime shape와 전체 테스트를 본다.
 5. 필요하면 mature repo 1개, newer repo 1개를 read-only spot check한다.
 6. 결과는 task-local doc과 logs에 짧게 남긴다.
 
@@ -21,16 +21,14 @@
 - Activation: 시작 경로가 짧고 README/direction이 shipped contract를 재정의하지 않는가.
 - Write: 작은 변경이 과한 형식 강제 없이 가능한가.
 - Reopen: `BRIEF`, `reference`, `logs`가 역할대로 재개 정보를 주는가.
-- Guardrail: runtime shape, gardening, 전체 테스트가 통과하는가.
-- Drift: warning과 wording이 실제 drift만 잡고 noisy하지 않은가.
+- Guardrail: runtime shape와 전체 테스트가 통과하는가.
+- Drift: wording이 실제 drift를 줄이는가.
 
 ## 최소 실행
 - `python3 -m unittest discover -s tests -p 'test_*.py'`
 - `python3 skills/project-context/scripts/check_runtime_shape.py`
-- `python3 skills/project-context/scripts/check_gardening.py`
 
 ## 특히 볼 것
 - direction 문서가 process note로 비대해지지 않는가.
 - review method가 취향 문서가 아니라 contract/evidence 기준인가.
 - long-running guidance가 helper lane 예시를 표준 tree처럼 밀지 않는가.
-- gardening wording이 semantic authority처럼 읽히지 않는가.

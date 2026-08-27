@@ -36,4 +36,3 @@
 - direction 문서는 진행 기록이 아니라 기준 맥락인가.
 - `reference`가 현재 truth 대신 조사 경과를 담고 있지 않은가.
 - long-running guidance가 core required tree처럼 읽히지 않는가.
-- gardening checker가 warning-grade drift detector로 남아 있는가.
