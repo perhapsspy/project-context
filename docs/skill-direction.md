@@ -12,8 +12,8 @@
 - `reference`는 현재 믿고 쓸 기준 맥락을 담는다.
 - 여러 작업이 구현이나 승인 판정을 바꾸는 해석을 공유하면 기존 정본을 우선하고, 작업 전용 계약은 task root, 재사용 계약은 `docs/reference/**`에 담당자 하나를 둔다.
 - `BRIEF.md`는 얇게, `Scope`는 파일 목록이 아닌 작업 경계로 쓴다.
-- 긴 작업은 phase boundary마다 `BRIEF.md`를 다시 써서 현재 재개 상태만 남기고, 단계 이력과 증거는 `logs/`, `working/`, `archive/`로 보낸다.
-- task root는 current canonical/router 표면으로 두고, 초안은 `working/`, 이력은 logs, 완료·대체·stale 문서는 `archive/`로 계속 재분류한다.
+- 긴 작업은 phase boundary마다 `BRIEF.md`를 다시 써서 현재 재개 상태만 남기고, 단계 이력은 `logs/`, 사람이 읽는 초안·미결 계획·간결한 근거는 `working/`, 완료·대체·stale context는 `archive/`로 보낸다.
+- 일회성 실행 코드, run workspace, raw output, cache와 browser/session state는 저장소 밖 임시 디렉터리에서 다루고, 현재 작업이 재사용과 정식 owner를 정한 부분만 유지보수 자산으로 승격한다.
 
 ## 피할 것
 - 숨은 메모리나 외부 시스템을 계약처럼 만들지 않는다.
