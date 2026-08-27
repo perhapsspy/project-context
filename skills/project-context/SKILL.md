@@ -29,7 +29,7 @@ docs/
 - `BRIEF.md` is a rewrite-only resume card: stable goal, scope boundary, current conclusions and state, and the nearest restartable step. It is not a report, history, evidence log, file inventory, or backlog. At a phase boundary, rewrite it to the new resume state and move prior evidence or chronology to logs, `working/`, or `archive/`.
 - `logs/WORKLOG.md` records one concise outcome entry per meaningful settled batch, not commands or micro-iterations. `logs/DECISIONS.md` records only decisions that change future interpretation, scope, architecture, rollback, or rule application. Let the bundled log helper own exact block shape.
 - A task root contains current-canonical documents and routers. Keep durable human-readable drafts, investigation notes, undecided plans, methods, and compact evidence summaries in `working/`. Put completed, rejected, replaced, or stale context in `archive/`.
-- Keep disposable experiment and browser-test code, state, and raw output in an isolated workspace outside the repository, then discard them after inspection. Put durable code and sanitized derived evidence under their normal repository owner.
+- Keep disposable experiment and browser-test code, state, and raw output in an isolated workspace outside the repository, then discard them after inspection. Put retained code and evidence under their normal repository owner.
 - Use a purpose-named task backlog only when one nearest step is insufficient. Keep inactive repo-level work in `docs/BACKLOG.md`.
 
 ## Task Identity and Shared Ownership

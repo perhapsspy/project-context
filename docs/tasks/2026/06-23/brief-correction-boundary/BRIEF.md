@@ -19,7 +19,7 @@
 
 - `skills/project-context/SKILL.md`는 사용자 정정과 삭제 요청을 현재 상태 rewrite로 반영하라는 semantic rule을 포함한다.
 - README, migration skill, examples, direction에는 같은 rule을 복제할 필요가 없다.
-- runtime shape, full unittest, diff whitespace check는 통과했고, gardening은 기존 4월 long-running task info만 남겼다.
+- runtime shape, full unittest, diff whitespace check는 통과했다.
 - task-local 제안과 playground 요약은 보강 근거로 남아 있다.
 
 ## Next Step

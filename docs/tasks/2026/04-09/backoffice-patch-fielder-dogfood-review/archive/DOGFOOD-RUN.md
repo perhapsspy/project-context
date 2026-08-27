@@ -4,17 +4,17 @@
 - 현재 `project-context` 변경셋이 실제 reopen 흐름과 drift 억제 관점에서 쓸 만한지, 이 레포 안에서 직접 다시 써 보며 점검한다.
 
 ## Method
-- 기준은 [`docs/dogfood-method.md`](../../../../dogfood-method.md) 를 따른다.
+- 기준은 [`docs/dogfood-method.md`](../../../../../dogfood-method.md) 를 따른다.
 - 외부 repo는 read-only evidence로만 보고, 수정은 이 레포 안에서만 한다.
 
 ## Executed Passes
 
 ### Activation Pass
 - 입력:
-  - [`AGENTS.md`](../../../../AGENTS.md)
-  - [`skills/project-context/SKILL.md`](../../../../skills/project-context/SKILL.md)
-  - [`docs/skill-direction.md`](../../../../docs/skill-direction.md)
-  - [`docs/review-method.md`](../../../../docs/review-method.md)
+  - [`AGENTS.md`](../../../../../../AGENTS.md)
+  - [`skills/project-context/SKILL.md`](../../../../../../skills/project-context/SKILL.md)
+  - [`docs/skill-direction.md`](../../../../../skill-direction.md)
+  - [`docs/review-method.md`](../../../../../review-method.md)
 - 결과:
   - 시작 경로는 짧았다.
   - `skill-direction`가 기준 문서 역할로 돌아오면서 shipped contract와의 경계가 더 분명해졌다.
@@ -30,7 +30,7 @@
 
 ### Reopen Pass
 - 확인:
-  - 현재 task [`BRIEF.md`](./BRIEF.md) 를 다시 읽고, 실제 변경 범위와 current state가 따라갔는지 확인했다.
+  - 현재 task [`BRIEF.md`](../BRIEF.md) 를 다시 읽고, 실제 변경 범위와 current state가 따라갔는지 확인했다.
 - 발견:
   - 이전 상태에서는 `declared write scope`가 이미 실제 변경 범위를 따라가지 못했다.
   - `docs/skill-direction.md`의 현재 구조 설명도 한 차례 stale해져 있었다.

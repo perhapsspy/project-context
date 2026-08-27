@@ -28,7 +28,7 @@
 - 브레인스토밍 결과를 반영해 `README`는 surface 정의 링크만 남기는 landing page로 더 줄였고, `docs/skill-direction.md`는 `Purpose / What To Preserve / What To Avoid / When To Revise` 형태로 다시 썼다.
 - `docs/reference/model/context-surfaces.md`는 inventory-only 쪽으로 더 얇게 조정했고, shipped `SKILL.md`는 surface one-liner 중심 contract와 단계형 operating model로 다시 압축했다.
 - shipped `SKILL.md`를 현재 작업에 직접 다시 적용해 dogfood했고, README 진입, current task reopen, `task_logs.py` append, 현재 task docs 갱신 흐름은 별도 막힘 없이 수행됐다.
-- guardrail pass에서 `python3 -m unittest discover -s tests -p 'test_*.py'`와 `python3 skills/project-context/scripts/check_runtime_shape.py`는 통과했고, `python3 skills/project-context/scripts/check_gardening.py`는 기존 `docs/tasks/2026/04-09/backoffice-patch-fielder-dogfood-review`의 extra top-level docs warning만 남겼다.
+- guardrail pass에서 `python3 -m unittest discover -s tests -p 'test_*.py'`와 `python3 skills/project-context/scripts/check_runtime_shape.py`는 통과했다.
 
 ## Next Step
 - 없음
@@ -36,7 +36,6 @@
 ## Latest Validation
 - `python3 -m unittest discover -s tests -p 'test_*.py'`
 - `python3 skills/project-context/scripts/check_runtime_shape.py`
-- `python3 skills/project-context/scripts/check_gardening.py`
 
 ## Working Boundary
 - declared read scope: `AGENTS.md`, `skills/project-context/SKILL.md`, `README.md`, `README.en.md`, `docs/skill-direction.md`, `docs/reference/model/context-surfaces.md`, `docs/tasks/2026/04-09/backoffice-patch-fielder-dogfood-review/**`, `../work-board/**`, `../conalog/backoffice/docs/reference/conventions/task-working-docs.md`, `../conalog/backoffice/docs/tasks/2026/03-31/fieldwork/**`

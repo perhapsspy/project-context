@@ -18,8 +18,8 @@
 - shipped `project-context`/`project-context-migration`는 `BRIEF`를 얇게 유지하는 기준을 더 짧게 정리하도록 갱신됐다.
 - local direction, review, dogfood 문서도 같은 판정선으로 맞췄다.
 - representative `BRIEF` example 3건은 optional heading을 걷어내고 현재 상태 중심으로 더 얇게 다시 썼다.
-- 새 heuristic gardening rule은 넣지 않았다. 현재 evidence로는 noise 위험이 더 크다고 봤다.
-- checks는 통과했고 gardening에는 기존 long-running task 1건만 info로 남는다.
+- 현재 계약과 대표 예시는 얇은 `BRIEF.md`를 일관되게 안내한다.
+- 전체 테스트와 runtime shape 검증은 통과했다.
 
 ## Next Step
 - 없음

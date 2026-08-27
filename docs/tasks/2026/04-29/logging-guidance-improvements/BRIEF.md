@@ -19,7 +19,7 @@
 - `docs/examples.md` and `docs/examples.en.md` show good/poor `BRIEF.md`, good `WORKLOG.md`, and good `DECISIONS.md` shapes without encouraging mechanical WORKLOG labels.
 - Shipped `SKILL.md` now clarifies outcome/tranche-level worklogs, natural task-language bullets, pre-existing debt separation, and pause/reopen decision handling.
 - `task_logs.py` now allows nested WORKLOG evidence bullets while preserving indentation in `tail`; DECISIONS still rejects nested evidence and requires exactly four top-level bullets.
-- Validation passed: full unittest discovery, runtime shape check, and gardening check. Gardening still reports the existing 2026/04-09 extra-doc-growth info.
+- Validation passed: full unittest discovery and runtime shape check.
 
 ## Next Step
 - Review the diff for wording weight and merge if the examples/tooling shape is acceptable.

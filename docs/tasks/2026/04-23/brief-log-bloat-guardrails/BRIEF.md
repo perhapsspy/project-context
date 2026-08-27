@@ -17,8 +17,8 @@
 ## Current State
 - status는 in_progress다.
 - diff review 결과 blocking issue는 없고, 이 방향 자체는 유지해도 된다.
-- 현재 check 기준에서는 전체 unittest, runtime shape, gardening이 모두 통과한다.
-- 개선 포인트는 새 hard rule을 전부 enforcement로 밀어 넣는 것이 아니라, low-noise로 검출 가능한 항목만 추리고 나머지는 wording 강도를 조정할지 판단하는 데 있다.
+- 현재 check 기준에서는 전체 unittest와 runtime shape가 통과한다.
+- 개선 포인트는 문구의 강도를 실제 근거와 맞추고, 정적 검증은 안정적으로 판정할 수 있는 구조 계약에 한정하는 데 있다.
 
 ## Next Step
-- `SKILL.md`의 새 BRIEF/log 제한을 항목별로 나눠 `즉시 유지`, `soften 필요`, `checker/test 후보`로 분류한 뒤 최소 follow-up 변경안을 만든다.
+- `SKILL.md`의 새 BRIEF/log 제한을 항목별로 나눠 유지하거나 완화할 문구를 정리한다.
