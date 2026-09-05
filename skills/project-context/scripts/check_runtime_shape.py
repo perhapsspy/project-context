@@ -93,7 +93,7 @@ def main(
         )
         runtime = runtime_paths(repo_root)
     set_display_root(runtime.repo_root)
-    failures = run_runtime_shape_checks(runtime)
+    failures = run_runtime_shape_checks(runtime, args.task_root)
     return report_failures(failures, runtime.repo_root)
 
 
@@ -113,12 +113,41 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "detection would be ambiguous"
         ),
     )
+    parser.add_argument(
+        "--task-root",
+        type=Path,
+        help="check only this task; relative paths are resolved from the repo root",
+    )
     return parser.parse_args(argv)
 
 
-def run_runtime_shape_checks(runtime: RuntimePaths | None = None) -> list[str]:
+def run_runtime_shape_checks(
+    runtime: RuntimePaths | None = None,
+    task_root: Path | None = None,
+) -> list[str]:
     runtime = runtime or runtime_paths(detect_repo_root(Path.cwd()))
     set_display_root(runtime.repo_root)
+    if task_root is not None:
+        selected = (runtime.repo_root / task_root).resolve()
+        try:
+            parts = selected.relative_to(runtime.task_root.resolve()).parts
+        except ValueError:
+            parts = ()
+        if (
+            len(parts) != 3
+            or not TASK_YEAR_RE.fullmatch(parts[0])
+            or not TASK_DATE_RE.fullmatch(parts[1])
+            or not is_valid_task_date(parts[0], parts[1])
+            or not KEBAB_NAME_RE.fullmatch(parts[2])
+        ):
+            return [f"Expected task under docs/tasks/yyyy/mm-dd/<task-slug>: {rel(selected)}"]
+        if not selected.is_dir():
+            return [f"Missing task directory: {rel(selected)}"]
+        return [
+            *task_failures(selected),
+            *check_portable_path_scan(runtime, selected),
+            *check_secret_marker_scan(selected),
+        ]
     return [
         *check_reference_contract(runtime.reference_root),
         *check_task_contract(runtime.task_root),
@@ -273,7 +302,8 @@ def worklog_file_failures(path: Path) -> list[str]:
 
 def latest_log_block(path: Path, log_name: str) -> list[str] | str:
     try:
-        return list(read_latest_block_for_log(path, log_name).bullet_lines)
+        block = read_latest_block_for_log(path, log_name)
+        return list(block.bullet_lines) if block is not None else []
     except LogToolError as exc:
         return f"{rel(path)}: {exc}"
 
@@ -297,14 +327,17 @@ def check_secret_marker_scan(docs_root: Path | None = None) -> list[str]:
     return failures
 
 
-def check_portable_path_scan(runtime: RuntimePaths | None = None) -> list[str]:
+def check_portable_path_scan(
+    runtime: RuntimePaths | None = None,
+    task_root: Path | None = None,
+) -> list[str]:
     runtime = runtime or runtime_paths(detect_repo_root(Path.cwd()))
     if not runtime.docs_root.exists():
         return []
 
     repo_markers = tuple(repo_root_markers(runtime.repo_root))
     failures: list[str] = []
-    for path in iter_portable_path_files(runtime):
+    for path in iter_portable_path_files(runtime, task_root):
         text = read_text_if_scannable(path)
         if text is None:
             continue
@@ -334,14 +367,18 @@ def contains_portable_path_marker(
     return any(pattern.search(text) for pattern in ENVIRONMENT_PATH_MARKERS)
 
 
-def iter_portable_path_files(runtime: RuntimePaths) -> Iterator[Path]:
-    if runtime.reference_root.exists():
-        yield from sorted(runtime.reference_root.rglob("*.md"))
-
-    if not runtime.task_root.exists():
-        return
-
-    tasks, _ = collect_tasks(runtime.task_root)
+def iter_portable_path_files(
+    runtime: RuntimePaths,
+    task_root: Path | None = None,
+) -> Iterator[Path]:
+    if task_root is not None:
+        tasks = [task_root]
+    else:
+        if runtime.reference_root.exists():
+            yield from sorted(runtime.reference_root.rglob("*.md"))
+        if not runtime.task_root.exists():
+            return
+        tasks, _ = collect_tasks(runtime.task_root)
     for task_dir in tasks:
         yield from sorted(task_dir.glob("*.md"))
 

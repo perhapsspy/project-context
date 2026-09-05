@@ -86,6 +86,42 @@ def write_reference_file(root: Path, relative_path: str) -> Path:
     return path
 
 
+class SelectedTaskTests(unittest.TestCase):
+    def test_selected_task_passes_while_unrelated_context_fails_full_check(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            runtime, task = make_valid_runtime_tree(Path(tmp))
+            (task / "logs/DECISIONS.md").write_text("", encoding="utf-8")
+            self.assertEqual(runtime_shape_check.run_runtime_shape_checks(runtime), [])
+            old = task.parent / "old-task"
+            old.mkdir()
+            (old / "BRIEF.md").write_text("/home/someone/project\nsecret: abcdefghijklmnop", encoding="utf-8")
+            write_reference_file(runtime.reference_root, "Bad-Topic.md")
+            self.assertTrue(runtime_shape_check.run_runtime_shape_checks(runtime))
+            for path in (task, task.relative_to(runtime.repo_root)):
+                with contextlib.redirect_stdout(io.StringIO()):
+                    result = runtime_shape_check.main(["--repo-root", str(runtime.repo_root), "--task-root", str(path)])
+                self.assertEqual(result, 0)
+
+    def test_selected_task_retains_core_log_path_and_secret_checks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            runtime, task = make_valid_runtime_tree(Path(tmp))
+            (task / "BRIEF.md").unlink()
+            (task / "logs/DECISIONS.md").write_text("**2026-09-05**\n", encoding="utf-8")
+            (task / "logs/WORKLOG.md").write_text("**2026-09-05**\n- /home/someone/project\n", encoding="utf-8")
+            (task / "working").mkdir()
+            (task / "working/note.txt").write_text("secret: abcdefghijklmnop", encoding="utf-8")
+            failures = runtime_shape_check.run_runtime_shape_checks(runtime, task)
+            for expected in ("Missing task core file", "latest date block is empty", "path marker", "secret-like marker"):
+                self.assertTrue(any(expected in failure for failure in failures), failures)
+
+    def test_invalid_or_missing_task_selection_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            runtime, task = make_valid_runtime_tree(Path(tmp))
+            for path in (".", "../outside", "docs/reference", "docs/tasks/2026/02-31/sample", "docs/tasks/26/03-09/sample", "docs/tasks/2026/03-09/Bad", "docs/tasks/2026/03-09/missing"):
+                with self.subTest(path=path):
+                    self.assertTrue(runtime_shape_check.run_runtime_shape_checks(runtime, Path(path)))
+
+
 class ReferenceShapeTests(unittest.TestCase):
     def test_missing_reference_directory_fails(self):
         with tempfile.TemporaryDirectory(dir=runtime_shape_check.REPO_ROOT) as tmp:

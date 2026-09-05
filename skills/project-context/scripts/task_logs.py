@@ -149,12 +149,13 @@ def run_command(args: argparse.Namespace) -> int:
 
     if args.command == "tail":
         block = read_latest_block_for_log(log_path, target.log_name)
-        print(render_latest_block(block))
+        print(render_latest_block(block) if block is not None else "[OK] no decisions recorded")
         return 0
 
     if args.command == "check":
-        read_latest_block_for_log(log_path, target.log_name)
-        print(f"[OK] latest block valid: {display_log_path}")
+        block = read_latest_block_for_log(log_path, target.log_name)
+        status = "no decisions recorded" if block is None else "latest block valid"
+        print(f"[OK] {status}: {display_log_path}")
         return 0
 
     raise LogToolError(f"unsupported command: {args.surface} {args.command}")
@@ -303,9 +304,14 @@ def read_latest_raw_block(path: Path) -> RawLatestLogBlock:
     raise LogToolError("missing `**YYYY-MM-DD**` heading")
 
 
-def read_latest_block_for_log(path: Path, log_name: str) -> LatestLogBlock:
+def read_latest_block_for_log(path: Path, log_name: str) -> LatestLogBlock | None:
+    """Return no block for an existing, blank decision log."""
+    canonical_name = canonical_log_name(log_name)
+    if canonical_name == DECISIONS_LOG_NAME and path.is_file():
+        if not any(line.strip() for line in iter_lines_reversed(path)):
+            return None
     block = read_latest_block(path)
-    if canonical_log_name(log_name) == DECISIONS_LOG_NAME:
+    if canonical_name == DECISIONS_LOG_NAME:
         validate_decisions_block(block)
     return block
 

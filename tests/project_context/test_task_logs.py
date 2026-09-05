@@ -39,6 +39,41 @@ def rel_display(*parts: str) -> str:
     return str(Path(*parts))
 
 
+class EmptyDecisionTests(unittest.TestCase):
+    def test_empty_decision_check_tail_and_first_append(self):
+        for initial in ("", " \n\t\n"):
+            with self.subTest(initial=initial), tempfile.TemporaryDirectory() as tmp:
+                task = make_task_dir(Path(tmp))
+                log = task / "logs/DECISIONS.md"
+                log.write_text(initial, encoding="utf-8")
+                for command in ("check", "tail"):
+                    output = io.StringIO()
+                    with contextlib.redirect_stdout(output):
+                        result = task_logs.main(["decision", command, "--task-root", str(task)])
+                    self.assertEqual(result, 0)
+                    self.assertIn("no decisions recorded", output.getvalue())
+                    self.assertEqual(log.read_text(encoding="utf-8"), initial)
+                task_logs.append_decision_block(log, "2026-09-05", ("background", "decision", "why", "impact"))
+                block = task_logs.read_latest_block_for_log(log, "DECISIONS")
+                self.assertEqual(block.date, "2026-09-05")
+                self.assertEqual(len(block.bullet_lines), 4)
+                self.assertTrue(log.read_text(encoding="utf-8").startswith(initial))
+
+    def test_missing_worklog_and_nonempty_malformed_decisions_still_fail(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task_dir(Path(tmp))
+            log = task / "logs/DECISIONS.md"
+            with self.assertRaises(task_logs.LogToolError):
+                task_logs.read_latest_block_for_log(log, "DECISIONS")
+            for text in ("# Decisions\n", "**2026-09-05**\n", "**2026-09-05**\n- incomplete\n"):
+                log.write_text(text, encoding="utf-8")
+                with self.assertRaises(task_logs.LogToolError):
+                    task_logs.read_latest_block_for_log(log, "DECISIONS")
+            log.write_text("", encoding="utf-8")
+            with self.assertRaises(task_logs.LogToolError):
+                task_logs.read_latest_block_for_log(log, "WORKLOG")
+
+
 class AppendLogTests(unittest.TestCase):
     def test_append_creates_new_log_with_heading_and_bullet(self):
         with tempfile.TemporaryDirectory() as tmp:
