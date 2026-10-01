@@ -29,12 +29,12 @@ docs/
 - `BRIEF.md` is a rewrite-only resume card: stable goal, scope boundary, current conclusions and state, and the nearest restartable step. It is not a report, history, evidence log, file inventory, or backlog. At a phase boundary, rewrite it to the new resume state and move prior evidence or chronology to logs, `working/`, or `archive/`.
 - `logs/WORKLOG.md` records one concise outcome entry per meaningful settled batch, not commands or micro-iterations. `logs/DECISIONS.md` records only decisions that change future interpretation, scope, architecture, rollback, or rule application. Keep `DECISIONS.md` empty until there is a decision to record. Let the bundled log helper own exact block shape.
 - A task root contains current-canonical documents and routers. Keep durable human-readable drafts, investigation notes, undecided plans, methods, and compact evidence summaries in `working/`. Put completed, rejected, replaced, or stale context in `archive/`.
-- Keep disposable experiment and browser-test code, state, and raw output in an isolated workspace outside the repository, then discard them after inspection. Put retained code and evidence under their normal repository owner.
+- Keep disposable experiment and browser-test code, state, and raw output in an isolated workspace outside the repository, then discard them after inspection. Keep reusable tools and retained evidence with their source, test, or runbook owner; task documents point to them.
 - Use a purpose-named task backlog only when one nearest step is insufficient. Keep inactive repo-level work in `docs/BACKLOG.md`.
 
 ## Task Identity and Shared Ownership
 
-- Reuse a task only when the unresolved work and expected output still match. Topic similarity or an old boundary note is not task identity; when uncertain, create a new dated task.
+- Reuse a task or session only when the unresolved goal, write scope, and expected output still match. When purpose or completion criteria change, pass the smallest resumable handoff into a new task; keep the active writer unique.
 - When multiple tasks, owners, or phases depend on an interpretation that changes implementation or acceptance, assign one current canonical owner. Prefer an existing code, API, config, test, or project-document owner. Otherwise use a purpose-named task-root contract for task-specific meaning or `docs/reference/**` for reusable meaning.
 - Consumers point to that owner and keep only task-specific state, deviations, and next action. Do not mirror the same open work across brief, backlog, working notes, and logs.
 
