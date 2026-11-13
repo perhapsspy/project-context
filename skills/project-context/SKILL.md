@@ -35,6 +35,8 @@ docs/
 ## Task Identity and Shared Ownership
 
 - Reuse a task or session only when the unresolved goal, write scope, and expected output still match. When purpose or completion criteria change, pass the smallest resumable handoff into a new task; keep the active writer unique.
+- Before concurrent repository writes, establish checkout, branch, index, and commit ownership. A clean starting status does not establish exclusive access. Use isolated worktrees/checkouts or serialize shared index and commit operations, and check the staged scope before committing.
+- Changes contributing to the same product release candidate share one integration owner and canonical candidate identity. Reconcile their source revisions and evidence there before promotion; task-local progress alone does not establish a separate candidate.
 - When multiple tasks, owners, or phases depend on an interpretation that changes implementation or acceptance, assign one current canonical owner. Prefer an existing code, API, config, test, or project-document owner. Otherwise use a purpose-named task-root contract for task-specific meaning or `docs/reference/**` for reusable meaning.
 - Consumers point to that owner and keep only task-specific state, deviations, and next action. Do not mirror the same open work across brief, backlog, working notes, and logs.
 
